@@ -1,0 +1,99 @@
+
+### Dang ky
+POST http://localhost:8080/api/auth/signup 
+Content-Type: application/json
+
+{
+    "username": "hoang111",
+    "fullname":"Phạm Thanh Hoàng",
+    "email":"hoang123@gmail.com",
+    "password":"123123"
+}
+### Dang nhap
+POST http://localhost:8080/api/auth/signin 
+Content-Type: application/json
+
+{
+    "username": "lieu111",
+    "password":"123123"
+}
+###Doi quyen cua nguoi dung
+PUT http://localhost:8080/api/auth/64b75f34581042c76dec6d1c
+Content-Type: application/json
+
+{
+    "role":"admin"
+}
+
+### Xem ke hoach
+GET http://localhost:8080/api/projects
+
+### Them ke hoach
+POST http://localhost:8080/api/projects?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWVlZDM3NWRmYThkMGUwY2YxNiIsImlhdCI6MTY4OTkyMzM4NiwiZXhwIjoxNjkwMDA5Nzg2fQ.Z95C30VU4-I4ZaNk7Mw8MPTtZyFb-e8FtKFL1HXyOJs
+Content-Type: application/json
+
+{
+    "title": "Kế Hoạch 11",
+    "description": "Nội dung kế hoạch 11",
+    "startDate": "2023-10-25",
+    "endDate": "2023-12-25",
+    "budget": 13000,
+    "members":[]
+}
+
+
+
+### Sua ke hoach
+PUT http://localhost:8080/api/projects/64b53c92833c2b346e3df0cd
+Content-Type: application/json
+
+{
+    "title": "Lap trinh Node js",
+    "description": "Design and develop a new website for our company",
+    "startDate": "2023-09-01",
+    "endDate": "2023-11-30",
+    "budget": 6000,
+    "members":["64b4c89d1d9bf83d4e189acb","64b631c31de14e3e3eb41813"]
+} 
+### Xoa ke hoach
+DELETE http://localhost:8080/api/projects/64b632b805e22dd9cb9fa506
+### Xem ke hoach cua nhan vien
+
+GET http://localhost:8080/api/projects/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWVlZDM3NWRmYThkMGUwY2YxNiIsImlhdCI6MTY4OTkyMzkzMCwiZXhwIjoxNjkwMDEwMzMwfQ.TbtDh58MPVECal5JWWeUZF_cwP-0Y-lSLfu96BQvDxY
+
+### Them cong viec
+
+POST http://localhost:8080/api/tasks/
+Content-Type: application/json
+
+{
+  "id": "64ba303a37726af9f993b52a",
+  "title": "Công việc 11",
+  "description": "Nội dung công việc 11",
+  "dueDate": "2023-11-30",
+  "members":["64b811b8d375dfa8d0e0cf12"]
+}
+
+### Xem cong viec
+GET http://localhost:8080/api/tasks
+
+### Xem cong viec theo ke hoach
+GET http://localhost:8080/api/tasks/64b81283d375dfa8d0e0cf1a
+
+### Xoa cong viec
+DELETE http://localhost:8080/api/tasks/64b814646f1ca6aeb13ab39b
+### Sua cong viec
+
+PUT http://localhost:8080/api/tasks/64b812e5d375dfa8d0e0cf1f
+Content-Type: application/json
+
+{
+    "title": "Công việc 5",
+    "description": "Nội dung công việc 5",
+    "members":["64b811b8d375dfa8d0e0cf12","64b811eed375dfa8d0e0cf16"]
+} 
+### Xem cong viec cua nhan vien
+GET http://localhost:8080/api/tasks/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY4OTc4NzA5OSwiZXhwIjoxNjg5ODczNDk5fQ.LxRMs8tUk6Vsf4yYZFOvn_mlzxE3_aQe6as-YUBb-C4
+
+### Danh sach nhan vien
+GET http://localhost:8080/api/users/dsAdmin

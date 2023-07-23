@@ -1,0 +1,175 @@
+const { BadRequestError } = require("../helpers/errors");
+const handle = require("../helpers/promise");
+const jwt = require("jsonwebtoken");
+const config = require("../config");
+const db = require("../models");
+const Project = db.Project;
+
+//Lay tat ca ke hoach
+exports.get_KeHoach = async (req, res, next) => {
+  try {
+    const condition = {};
+    const title = req.query.title;
+    if (title) {
+      condition.title = { $regex: new RegExp(title), $options: "i" };
+    }
+
+    const projects = await Project.find(condition)
+      .populate({
+        path: "members",
+        select: "fullname",
+      })
+      .populate({
+        path: "tasks",
+        select: "title",
+      })
+      .populate({
+        path: "owner",
+        select: "fullname",
+      });
+    const formattedProjects = projects.map((project) => {
+      const formattedStartDate = new Date(project.startDate).toLocaleDateString(
+        "en-GB"
+      );
+      const formattedEndDate = new Date(project.endDate).toLocaleDateString(
+        "en-GB"
+      );
+      return {
+        ...project._doc,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      };
+    });
+    return res.status(200).json(formattedProjects);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while retrieving projects")
+    );
+  }
+};
+//Them ke hoach
+exports.them_KeHoach = async (req, res, next) => {
+  if (!req.body.title) {
+    return next(new BadRequestError(400, "Title can not be empty"));
+  }
+  const token = req.query.token;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const decodedToken = jwt.verify(token, config.jwt.secret);
+  const userId = decodedToken.id;
+  const members = req.body.members || req.query.members || [];
+  const project = new Project({
+    title: req.body.title,
+    description: req.body.description,
+    startDate: req.body.startDate,
+    endDate: req.body.endDate,
+    budget: req.body.budget,
+    owner: userId,
+    members: [...members],
+  });
+
+  try {
+    const document = await project.save();
+    return res.send(document);
+  } catch (error) {
+    return next(
+      new BadRequestError(500, "An error occurred while creating the project")
+    );
+  }
+};
+//Sua ke hoach
+exports.sua_KeHoach = async (req, res, next) => {
+  const projectId = req.params.id;
+  const updates = req.body;
+
+  try {
+    const project = await Project.findOne({ _id: projectId });
+    if (!project) {
+      return next(new BadRequestError(404, "Project not found"));
+    }
+
+    // Only allow the owner of the project to update it
+    if (
+      req.userId &&
+      project.owner &&
+      req.userId.toString() !== project.owner.toString()
+    ) {
+      return next(new BadRequestError(403, "Forbidden"));
+    }
+
+    // Update the project fields with the new values
+    Object.keys(updates).forEach((key) => {
+      project[key] = updates[key];
+    });
+
+    const updatedProject = await project.save();
+    return res.status(200).json(updatedProject);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while updating the project")
+    );
+  }
+};
+
+//Xoa ke hoach
+exports.xoa_KeHoach = async (req, res, next) => {
+  const projectId = req.params.id;
+
+  try {
+    const project = await Project.findOne({ id: projectId });
+    if (!project) {
+      return next(new BadRequestError(404, "Project not found"));
+    }
+
+    // Only allow the owner or a privileged user to delete the project
+    if (
+      project.owner &&
+      req.userId.toString() !== project.owner.toString() &&
+      !req.userIsPrivileged
+    ) {
+      return next(new BadRequestError(403, "Forbidden"));
+    }
+
+    await project.deleteOne();
+    return res.status(204).send("Đã xóa thành công kế hoạch");
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while deleting the project")
+    );
+  }
+};
+// Xem ke hoach cua nhan vien
+exports.get_KeHoach_Nv = async (req, res, next) => {
+  try {
+    const condition = {};
+    const title = req.query.title;
+    if (title) {
+      condition.title = { $regex: new RegExp(title), $options: "i" };
+    }
+
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const memberId = decodedToken.id;
+
+    const projects = await Project.find({
+      ...condition,
+      members: memberId,
+    }).populate({
+      path: "members",
+      select: "-password",
+    });
+    return res.status(200).json(projects);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while retrieving projects")
+    );
+  }
+};
