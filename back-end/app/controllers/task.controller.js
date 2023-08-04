@@ -5,6 +5,7 @@ const config = require("../config");
 const db = require("../models");
 const Task = db.Task;
 const Project = db.Project;
+const Board = db.Board;
 
 //them cong viec
 exports.them_CongViec1 = async (req, res, next) => {
@@ -35,20 +36,20 @@ exports.them_CongViec1 = async (req, res, next) => {
 exports.them_CongViec = async (req, res, next) => {
   try {
     // Get the project ID and task data from the request body
-    const { id, title, description, dueDate } = req.body;
+    const { board_id, title, description, dueDate } = req.body;
     const members = req.body.members || req.query.members || [];
     // Check if the project ID and task data are provided
-    if (!id || !title || !description || !dueDate) {
+    if (!board_id || !title || !description || !dueDate) {
       return next(
-        new BadRequestError(400, "Project ID and task data are required")
+        new BadRequestError(400, "Board ID and task data are required")
       );
     }
 
     // Find the project document by ID
-    const project = await Project.findById(id);
+    const board = await Board.findById(board_id);
 
     // If the project document does not exist, return a 404 error
-    if (!project) {
+    if (!board) {
       return next(new BadRequestError(404, "Project not found"));
     }
 
@@ -57,18 +58,12 @@ exports.them_CongViec = async (req, res, next) => {
       title,
       description,
       dueDate,
-      project: id,
+      board: board_id,
       members: [...members],
     });
 
     // Save the task document to the database
     const savedTask = await task.save();
-
-    // Add the task ID to the project document's tasks array
-    project.tasks.push(savedTask._id);
-
-    // Save the updated project document to the database
-    const savedProject = await project.save();
 
     // Return the saved task document as a JSON response
     return res.status(200).json(savedTask);
@@ -97,8 +92,8 @@ exports.get_CongViec = async (req, res, next) => {
         select: "fullname",
       })
       .populate({
-        path: "project",
-        select: "title",
+        path: "board",
+        select: "board_name",
       });
 
     // Format the dueDate property of each task object in the response
@@ -106,8 +101,10 @@ exports.get_CongViec = async (req, res, next) => {
       const formattedDate = new Date(task.dueDate).toLocaleDateString("en-GB");
       return { ...task._doc, dueDate: formattedDate };
     });
-
-    return res.status(200).json(formattedTasks);
+    const response = {
+      tasks: formattedTasks,
+    };
+    return res.status(200).json(response);
   } catch (err) {
     console.error(err);
     return next(
@@ -115,33 +112,31 @@ exports.get_CongViec = async (req, res, next) => {
     );
   }
 };
-// xem cong viec theo id ke hoach
+// xem cong viec theo id bang cong viec
 exports.get_CV_KeHoach = async (req, res, next) => {
   try {
-    const projectId = req.params.id;
+    const board_id = req.params.id;
 
-    const tasks = await Task.find({ project: projectId })
+    const tasks = await Task.find({ board: board_id })
       .populate({
         path: "members",
-        select: "-password",
+        select: "fullname",
       })
-      .populate({
-        path: "project",
-        select: "title",
-      });
-
+      .populate();
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toLocaleDateString("en-GB");
       return { ...task._doc, dueDate: formattedDate };
     });
-
-    return res.status(200).json(formattedTasks);
+    const response = {
+      tasks: formattedTasks,
+    };
+    return res.status(200).json(response);
   } catch (err) {
     console.error(err);
     return next(
       new BadRequestError(
         500,
-        "An error occurred while retrieving tasks for the project"
+        "An error occurred while retrieving tasks for the board"
       )
     );
   }
@@ -149,33 +144,29 @@ exports.get_CV_KeHoach = async (req, res, next) => {
 // xoa cong viec
 exports.xoa_CongViec = async (req, res) => {
   try {
-    const { id } = req.params;
+    const taskId = req.params.id;
 
-    // Find the task to be deleted
-    const task = await Task.findById(id);
+    // Find the task with the specified ID and remove it
+    const deletedTask = await Task.findByIdAndRemove(taskId);
 
-    if (!task) {
-      return res.status(404).send({ message: "Task not found" });
+    if (!deletedTask) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
     }
 
-    // Find the project that the task belongs to
-    const project = await Project.findById(task.project);
-
-    if (!project) {
-      return res.status(404).send({ message: "Project not found" });
-    }
-
-    // Remove the task from the project's tasks array
-    project.tasks.pull(id);
-    await project.save();
-
-    // Delete the task
-    await Task.deleteOne({ _id: id });
-
-    res.send({ message: "Task deleted successfully" });
+    res.status(200).json({
+      success: true,
+      message: "Task deleted successfully",
+      data: deletedTask,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ message: "Internal server error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
 //Sua cong viec
@@ -224,13 +215,18 @@ exports.get_CongViec_Nv = async (req, res, next) => {
 
     const tasks = await Task.find({
       members: memberId,
-    })
-      .populate({
-        path: "members",
-        select: "-password",
-      })
-      .populate({ path: "owner", select: "-password" });
-    return res.status(200).json(tasks);
+    }).populate({
+      path: "members",
+      select: "fullname",
+    });
+    const formattedTasks = tasks.map((task) => {
+      const formattedDate = new Date(task.dueDate).toLocaleDateString("en-GB");
+      return { ...task._doc, dueDate: formattedDate };
+    });
+    const response = {
+      tasks: formattedTasks,
+    };
+    return res.status(200).json(response);
   } catch (err) {
     console.error(err);
     return next(

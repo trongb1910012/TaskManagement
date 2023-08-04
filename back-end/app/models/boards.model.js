@@ -1,35 +1,18 @@
-const User = require("./user.model");
-const Task = require("./tasks.model");
 const mongoose = require("mongoose");
-
+const Project = require("../models/project.model");
 module.exports = (mongoose) => {
   const schema = mongoose.Schema(
     {
-      title: {
+      board_name: {
         type: String,
         required: true,
         trim: true,
       },
-      content: {
-        type: String,
-        required: true,
-        trim: true,
-      },
-      created_at: {
-        type: Date,
-        default: Date.now,
-      },
-      author: {
+      project: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Project",
         required: true,
       },
-      tasks: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Task",
-        },
-      ],
     },
     { timestamps: true }
   );
@@ -41,5 +24,5 @@ module.exports = (mongoose) => {
     return object;
   });
 
-  return mongoose.model("Note", schema);
+  return mongoose.model("Board", schema);
 };

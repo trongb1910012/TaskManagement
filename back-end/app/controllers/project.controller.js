@@ -14,19 +14,10 @@ exports.get_KeHoach = async (req, res, next) => {
       condition.title = { $regex: new RegExp(title), $options: "i" };
     }
 
-    const projects = await Project.find(condition)
-      .populate({
-        path: "members",
-        select: "fullname",
-      })
-      .populate({
-        path: "tasks",
-        select: "title",
-      })
-      .populate({
-        path: "owner",
-        select: "fullname",
-      });
+    const projects = await Project.find(condition).populate({
+      path: "owner",
+      select: "fullname",
+    });
     const formattedProjects = projects.map((project) => {
       const formattedStartDate = new Date(project.startDate).toLocaleDateString(
         "en-GB"
@@ -40,7 +31,10 @@ exports.get_KeHoach = async (req, res, next) => {
         endDate: formattedEndDate,
       };
     });
-    return res.status(200).json(formattedProjects);
+    const response = {
+      projects: formattedProjects,
+    };
+    return res.status(200).json(response);
   } catch (err) {
     console.error(err);
     return next(
@@ -59,7 +53,6 @@ exports.them_KeHoach = async (req, res, next) => {
   }
   const decodedToken = jwt.verify(token, config.jwt.secret);
   const userId = decodedToken.id;
-  const members = req.body.members || req.query.members || [];
   const project = new Project({
     title: req.body.title,
     description: req.body.description,
@@ -67,7 +60,6 @@ exports.them_KeHoach = async (req, res, next) => {
     endDate: req.body.endDate,
     budget: req.body.budget,
     owner: userId,
-    members: [...members],
   });
 
   try {
@@ -89,13 +81,14 @@ exports.sua_KeHoach = async (req, res, next) => {
     if (!project) {
       return next(new BadRequestError(404, "Project not found"));
     }
-
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const userId = decodedToken.id;
     // Only allow the owner of the project to update it
-    if (
-      req.userId &&
-      project.owner &&
-      req.userId.toString() !== project.owner.toString()
-    ) {
+    if (userId !== project.owner.toString()) {
       return next(new BadRequestError(403, "Forbidden"));
     }
 
@@ -123,23 +116,36 @@ exports.xoa_KeHoach = async (req, res, next) => {
     if (!project) {
       return next(new BadRequestError(404, "Project not found"));
     }
-
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const userId = decodedToken.id;
     // Only allow the owner or a privileged user to delete the project
-    if (
-      project.owner &&
-      req.userId.toString() !== project.owner.toString() &&
-      !req.userIsPrivileged
-    ) {
+    if (userId !== project.owner.toString()) {
       return next(new BadRequestError(403, "Forbidden"));
     }
 
     await project.deleteOne();
-    return res.status(204).send("Đã xóa thành công kế hoạch");
+    return res.status(200).send("Đã xóa thành công kế hoạch");
   } catch (err) {
     console.error(err);
     return next(
       new BadRequestError(500, "An error occurred while deleting the project")
     );
+  }
+};
+
+exports.deleteProject = async (req, res) => {
+  try {
+    const deletedProject = await Project.findByIdAndDelete(req.params.id);
+    if (!deletedProject) {
+      return res.status(404).send("Project not found");
+    }
+    res.send("Delete successful");
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 };
 // Xem ke hoach cua nhan vien
@@ -160,12 +166,28 @@ exports.get_KeHoach_Nv = async (req, res, next) => {
 
     const projects = await Project.find({
       ...condition,
-      members: memberId,
+      owner: memberId,
     }).populate({
-      path: "members",
-      select: "-password",
+      path: "owner",
+      select: "fullname",
     });
-    return res.status(200).json(projects);
+    const formattedProjects = projects.map((project) => {
+      const formattedStartDate = new Date(project.startDate).toLocaleDateString(
+        "en-GB"
+      );
+      const formattedEndDate = new Date(project.endDate).toLocaleDateString(
+        "en-GB"
+      );
+      return {
+        ...project._doc,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      };
+    });
+    const response = {
+      projects: formattedProjects,
+    };
+    return res.status(200).json(response);
   } catch (err) {
     console.error(err);
     return next(

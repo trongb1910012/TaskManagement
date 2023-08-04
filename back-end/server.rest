@@ -4,9 +4,9 @@ POST http://localhost:8080/api/auth/signup
 Content-Type: application/json
 
 {
-    "username": "hoang111",
-    "fullname":"Phạm Thanh Hoàng",
-    "email":"hoang123@gmail.com",
+    "username": "liem111",
+    "fullname":"Nguyễn Tuấn Liêm",
+    "email":"liem123@gmail.com",
     "password":"123123"
 }
 ### Dang nhap
@@ -14,7 +14,7 @@ POST http://localhost:8080/api/auth/signin
 Content-Type: application/json
 
 {
-    "username": "lieu111",
+    "username": "thang111",
     "password":"123123"
 }
 ###Doi quyen cua nguoi dung
@@ -29,37 +29,35 @@ Content-Type: application/json
 GET http://localhost:8080/api/projects
 
 ### Them ke hoach
-POST http://localhost:8080/api/projects?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWVlZDM3NWRmYThkMGUwY2YxNiIsImlhdCI6MTY4OTkyMzM4NiwiZXhwIjoxNjkwMDA5Nzg2fQ.Z95C30VU4-I4ZaNk7Mw8MPTtZyFb-e8FtKFL1HXyOJs
+POST http://localhost:8080/api/projects?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTAzNDg2MSwiZXhwIjoxNjkxMTIxMjYxfQ.uu5gguL-DHaihgi3hz25pyhd7dE_sNrO2X2uCCfjxMc
 Content-Type: application/json
 
 {
-    "title": "Kế Hoạch 11",
-    "description": "Nội dung kế hoạch 11",
-    "startDate": "2023-10-25",
-    "endDate": "2023-12-25",
-    "budget": 13000,
-    "members":[]
+    "title": "Kế Hoạch 2",
+    "description": "Nội dung kế hoạch 2",
+    "startDate": "2023-9-25",
+    "endDate": "2023-10-25",
+    "budget": 10000
 }
 
 
 
 ### Sua ke hoach
-PUT http://localhost:8080/api/projects/64b53c92833c2b346e3df0cd
+PUT http://localhost:8080/api/projects/64c5cbaf3329e57e71aa23a8?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MDY4NDMyMywiZXhwIjoxNjkwNzcwNzIzfQ.g7d1lqC86zOkPFDM6h1c0ZlzUQV73UZ7KTWdwA82gJ4
 Content-Type: application/json
 
 {
-    "title": "Lap trinh Node js",
-    "description": "Design and develop a new website for our company",
+    "title": "Ke hoach 2 updated",
+    "description": "222222",
     "startDate": "2023-09-01",
     "endDate": "2023-11-30",
-    "budget": 6000,
-    "members":["64b4c89d1d9bf83d4e189acb","64b631c31de14e3e3eb41813"]
+    "budget": 6000
 } 
 ### Xoa ke hoach
-DELETE http://localhost:8080/api/projects/64b632b805e22dd9cb9fa506
+DELETE http://localhost:8080/api/projects/64c200b2867b77af6b976ae3
 ### Xem ke hoach cua nhan vien
 
-GET http://localhost:8080/api/projects/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWVlZDM3NWRmYThkMGUwY2YxNiIsImlhdCI6MTY4OTkyMzkzMCwiZXhwIjoxNjkwMDEwMzMwfQ.TbtDh58MPVECal5JWWeUZF_cwP-0Y-lSLfu96BQvDxY
+GET http://localhost:8080/api/projects/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTAzNDg2MSwiZXhwIjoxNjkxMTIxMjYxfQ.uu5gguL-DHaihgi3hz25pyhd7dE_sNrO2X2uCCfjxMc
 
 ### Them cong viec
 
@@ -67,7 +65,7 @@ POST http://localhost:8080/api/tasks/
 Content-Type: application/json
 
 {
-  "id": "64ba303a37726af9f993b52a",
+  "board_id": "64c3b069f5cc276bb4360e71",
   "title": "Công việc 11",
   "description": "Nội dung công việc 11",
   "dueDate": "2023-11-30",
@@ -77,14 +75,14 @@ Content-Type: application/json
 ### Xem cong viec
 GET http://localhost:8080/api/tasks
 
-### Xem cong viec theo ke hoach
-GET http://localhost:8080/api/tasks/64b81283d375dfa8d0e0cf1a
+### Xem cong viec theo bang cong viec
+GET http://localhost:8080/api/tasks/64c3b3f4ca280774e57d0d97
 
 ### Xoa cong viec
-DELETE http://localhost:8080/api/tasks/64b814646f1ca6aeb13ab39b
+DELETE http://localhost:8080/api/tasks/64c4947575d09cc91f1ee4a2
 ### Sua cong viec
 
-PUT http://localhost:8080/api/tasks/64b812e5d375dfa8d0e0cf1f
+PUT http://localhost:8080/api/tasks/64c497992e1ff91ebfebefe0
 Content-Type: application/json
 
 {
@@ -93,7 +91,46 @@ Content-Type: application/json
     "members":["64b811b8d375dfa8d0e0cf12","64b811eed375dfa8d0e0cf16"]
 } 
 ### Xem cong viec cua nhan vien
-GET http://localhost:8080/api/tasks/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY4OTc4NzA5OSwiZXhwIjoxNjg5ODczNDk5fQ.LxRMs8tUk6Vsf4yYZFOvn_mlzxE3_aQe6as-YUBb-C4
+GET http://localhost:8080/api/tasks/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTAzNDg2MSwiZXhwIjoxNjkxMTIxMjYxfQ.uu5gguL-DHaihgi3hz25pyhd7dE_sNrO2X2uCCfjxMc
 
 ### Danh sach nhan vien
-GET http://localhost:8080/api/users/dsAdmin
+GET http://localhost:8080/api/users/
+
+
+### Them bang cong viec
+POST http://localhost:8080/api/boards/
+Content-Type: application/json
+
+{
+  "board_name": "BCV 2 của kế hoạch 2",
+  "project": "64c3aff8f5cc276bb4360e6d"
+}
+### Danh sach bang cong viec
+GET  http://localhost:8080/api/boards/
+
+###Danh sach bang cong viec cua 1 project
+GET  http://localhost:8080/api/boards/64c3aff8f5cc276bb4360e6d
+### Chinh sua bang cong viec
+PUT http://localhost:8080/api/boards/64c32d2c96054d9613a4fc01
+Content-Type: application/json
+
+{
+  "board_name": "BCV của kế hoạch 1"
+}
+
+### Xoa bang cong viec
+DELETE http://localhost:8080/api/boards/64c32db96034f4adfc3137cb
+### Them Comment
+POST http://localhost:8080/api/comments?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTEyMzk4OCwiZXhwIjoxNjkxMjEwMzg4fQ.Q6ngGBUyAgOv-ppe9MqIPA4udHfOBB7SyIy8uMc06vw
+Content-Type: application/json
+
+{
+  "task_id": "64c497992e1ff91ebfebefe0",
+  "comment_text": "Bai tap nay bo ich"
+}
+### Xem tat ca comment
+GET http://localhost:8080/api/comments
+
+### Xem tat ca comment theo task id
+GET http://localhost:8080/api/comments/64c8787d91d4993cdc3fa19e
+

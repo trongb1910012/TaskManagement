@@ -1,23 +1,46 @@
-import "./App.css";
+import { Fragment } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { publicRoutes } from "./routes";
+import DefaultLayout from "./layouts/defaultLayout/DefaultLayout";
+import Login from "./pages/Login/login";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          {publicRoutes.map((route, index) => {
+            const Page = route.component;
+            let Layout = DefaultLayout;
+
+            if (route.layout) {
+              Layout = route.layout;
+            } else if (route.layout === null) {
+              Layout = Fragment;
+            }
+
+            return (
+              <Route
+                key={index}
+                path={`/tasking/${route.path}`}
+                element={
+                  <Layout>
+                    <Page />
+                  </Layout>
+                }
+              />
+            );
+          })}
+          <Route path="/" element={<Navigate to="/tasking" />} />
+          <Route path="/tasking" element={<Login />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

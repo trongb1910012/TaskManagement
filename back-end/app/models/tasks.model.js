@@ -1,5 +1,5 @@
 const User = require("../models/user.model");
-const Project = require("../models/project.model");
+const Board = require("../models/boards.model");
 module.exports = (mongoose) => {
   const schema = mongoose.Schema(
     {
@@ -23,9 +23,9 @@ module.exports = (mongoose) => {
         default: "not started",
       },
       // Reference to the project this task belongs to
-      project: {
+      board: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Project",
+        ref: "Board",
         required: true,
       },
       members: [

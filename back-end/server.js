@@ -5,6 +5,8 @@ const setupAuthRoutes = require("./app/routes/auth.routes");
 const setupProjectRoutes = require("./app/routes/project.routes");
 const setupTaskRoutes = require("./app/routes/task.routes");
 const setupUserRoutes = require("./app/routes/user.routes");
+const setupBoardRoutes = require("./app/routes/board.routes");
+const setupCommentRoutes = require("./app/routes/comment.routes");
 const { BadRequestError } = require("./app/helpers/errors");
 const db = require("./app/models");
 
@@ -32,6 +34,8 @@ setupAuthRoutes(app);
 setupProjectRoutes(app);
 setupTaskRoutes(app);
 setupUserRoutes(app);
+setupBoardRoutes(app);
+setupCommentRoutes(app);
 // handle 404 response
 app.use((req, res, next) => {
   next(new BadRequestError(404, "Resource not found"));
