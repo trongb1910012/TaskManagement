@@ -3,13 +3,13 @@ import Sidebar from "../components/Sidebar/sidebar";
 
 function DefaultLayout({ children }) {
   return (
-    <div>
+    <>
       <Header />
-      <Sidebar />
-      <div>
-        <div>{children}</div>
+      <div style={{ display: "flex" }}>
+        <Sidebar />
+        <main style={{ flex: 1, padding: "70px" }}>{children}</main>
       </div>
-    </div>
+    </>
   );
 }
 

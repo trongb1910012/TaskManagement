@@ -29,12 +29,12 @@ Content-Type: application/json
 GET http://localhost:8080/api/projects
 
 ### Them ke hoach
-POST http://localhost:8080/api/projects?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTAzNDg2MSwiZXhwIjoxNjkxMTIxMjYxfQ.uu5gguL-DHaihgi3hz25pyhd7dE_sNrO2X2uCCfjxMc
+POST http://localhost:8080/api/projects?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTM4MzI4NywiZXhwIjoxNjkxNDY5Njg3fQ.3bMiUsV59qxXLftonDKdtPdNlWs1e0du3KQ9dj8utGY
 Content-Type: application/json
 
 {
-    "title": "Kế Hoạch 2",
-    "description": "Nội dung kế hoạch 2",
+    "title": "Kế Hoạch 3",
+    "description": "Nội dung kế hoạch 3",
     "startDate": "2023-9-25",
     "endDate": "2023-10-25",
     "budget": 10000
