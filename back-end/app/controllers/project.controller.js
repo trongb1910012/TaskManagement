@@ -112,22 +112,25 @@ exports.xoa_KeHoach = async (req, res, next) => {
   const projectId = req.params.id;
 
   try {
-    const project = await Project.findOne({ id: projectId });
+    const project = await Project.findOne({ _id: projectId });
     if (!project) {
       return next(new BadRequestError(404, "Project not found"));
     }
+
     const token = req.query.token;
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
+
     const decodedToken = jwt.verify(token, config.jwt.secret);
     const userId = decodedToken.id;
+
     // Only allow the owner or a privileged user to delete the project
     if (userId !== project.owner.toString()) {
       return next(new BadRequestError(403, "Forbidden"));
     }
 
-    await project.deleteOne();
+    await Project.deleteOne({ _id: projectId });
     return res.status(200).send("Đã xóa thành công kế hoạch");
   } catch (err) {
     console.error(err);

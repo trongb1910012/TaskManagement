@@ -13,7 +13,9 @@ import {
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useState } from "react";
 import axiosClient from "../../api/api";
+import { useNavigate } from "react-router-dom";
 const Login = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const paperStyle = {
@@ -36,9 +38,10 @@ const Login = () => {
         password,
       });
       const token = response.data.accessToken;
+      const fullname = response.data.fullname;
       localStorage.setItem("token", token);
-      alert("đăng nhập thành công");
-      // Lưu thông tin đăng nhập vào localStorage hoặc Redux nếu cần thiết
+      localStorage.setItem("fullname", fullname);
+      navigate("/tasking/home");
     } catch (error) {
       alert("Đăng nhập thất bại", error);
     }

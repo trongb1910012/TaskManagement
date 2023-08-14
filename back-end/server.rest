@@ -29,7 +29,7 @@ Content-Type: application/json
 GET http://localhost:8080/api/projects
 
 ### Them ke hoach
-POST http://localhost:8080/api/projects?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTM4MzI4NywiZXhwIjoxNjkxNDY5Njg3fQ.3bMiUsV59qxXLftonDKdtPdNlWs1e0du3KQ9dj8utGY
+POST http://localhost:8080/api/projects?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Yjc1ZjM0NTgxMDQyYzc2ZGVjNmQxYyIsImlhdCI6MTY5MTU3MjM3NiwiZXhwIjoxNjkxNjU4Nzc2fQ.byUdy59QiIXndN_bJx6W4NudrhjHWV_n7TEiuneW-64
 Content-Type: application/json
 
 {
@@ -39,8 +39,17 @@ Content-Type: application/json
     "endDate": "2023-10-25",
     "budget": 10000
 }
+###
+POST http://localhost:8080/api/projects
+Content-Type: application/json
 
-
+{
+    "title": "Kế Hoạch 3",
+    "description": "Nội dung kế hoạch 3",
+    "startDate": "2023-9-25",
+    "endDate": "2023-10-25",
+    "budget": 10000
+}
 
 ### Sua ke hoach
 PUT http://localhost:8080/api/projects/64c5cbaf3329e57e71aa23a8?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MDY4NDMyMywiZXhwIjoxNjkwNzcwNzIzfQ.g7d1lqC86zOkPFDM6h1c0ZlzUQV73UZ7KTWdwA82gJ4
@@ -54,7 +63,7 @@ Content-Type: application/json
     "budget": 6000
 } 
 ### Xoa ke hoach
-DELETE http://localhost:8080/api/projects/64c200b2867b77af6b976ae3
+DELETE http://localhost:8080/api/projects/64d3a6535113b2cf8e7b87ba?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Yjc1ZjM0NTgxMDQyYzc2ZGVjNmQxYyIsImlhdCI6MTY5MTc0MDgxMSwiZXhwIjoxNjkxODI3MjExfQ.bSPR2ZzTKEdl3SuOjgIzi_13T2-9VB9IbqZRwuwmnB0
 ### Xem ke hoach cua nhan vien
 
 GET http://localhost:8080/api/projects/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTAzNDg2MSwiZXhwIjoxNjkxMTIxMjYxfQ.uu5gguL-DHaihgi3hz25pyhd7dE_sNrO2X2uCCfjxMc

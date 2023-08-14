@@ -1,62 +1,93 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import CssBaseline from "@mui/material/CssBaseline";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-const drawerWidth = 240;
+import { useState } from "react";
+import { NavLink, useMatch } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBars,
+  faClipboard,
+  faHome,
+  faList,
+  faPowerOff,
+  faTh,
+} from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames/bind";
+import styles from "./Sidebar.module.scss";
 
-export default function Sidebar() {
+const cx = classNames.bind(styles);
+
+const SidebarLink = ({ to, name, icon, isOpen }) => {
+  const isActive = useMatch(to);
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
+    <NavLink to={to} className={cx("link", { active: isActive })}>
+      <div className={cx("icon")}>{icon}</div>
+      <div
+        className={cx("link_text")}
+        style={{ display: isOpen ? "block" : "none" }}
       >
-        <Toolbar />
-        <Box sx={{ overflow: "auto" }}>
-          <List>
-            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {["All mail", "Trash", "Spam"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
-    </Box>
+        {name}
+      </div>
+    </NavLink>
   );
-}
+};
+
+const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggle = () => setIsOpen(!isOpen);
+  const menuItem = [
+    {
+      path: "/tasking/home",
+      name: "Home",
+      icon: <FontAwesomeIcon icon={faHome} />,
+    },
+    {
+      path: "tasking/employee",
+      name: "Employee",
+      icon: <FontAwesomeIcon icon={faList} />,
+    },
+    {
+      path: "/tasking/project",
+      name: "Project",
+      icon: <FontAwesomeIcon icon={faClipboard} />,
+    },
+    {
+      path: "/tasking/binhluan",
+      name: "Unknow",
+      icon: <FontAwesomeIcon icon={faTh} />,
+    },
+    {
+      path: "/tasking",
+      name: "Log Out",
+      icon: <FontAwesomeIcon icon={faPowerOff} />,
+    },
+  ];
+
+  return (
+    <div className={cx("wrapper")}>
+      <div
+        className={cx("container")}
+        style={{ width: isOpen ? "230px" : "70px" }}
+      >
+        <div className={cx("top_section")}>
+          <div
+            className={cx("bars")}
+            style={{ marginLeft: isOpen ? "50px" : "0px" }}
+          >
+            <FontAwesomeIcon icon={faBars} onClick={toggle} />
+          </div>
+        </div>
+        {menuItem.map((item, index) => (
+          <SidebarLink
+            key={index}
+            to={item.path}
+            name={item.name}
+            icon={item.icon}
+            isOpen={isOpen}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;

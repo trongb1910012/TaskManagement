@@ -1,4 +1,8 @@
 import HomePage from "../pages/HomePage/homePage";
-const publicRoutes = [{ path: "home", component: HomePage }];
+import TableComponent from "../pages/ProjectPage/project";
+const publicRoutes = [
+  { path: "home", component: HomePage },
+  { path: "project", component: TableComponent },
+];
 const privateRoutes = [];
 export { publicRoutes, privateRoutes };
