@@ -9,4 +9,5 @@ module.exports = (app) => {
   );
   app.post("/api/auth/signin", auth.signin);
   app.put("/api/auth/:id", auth.changeUserRole);
+  app.put("/api/auth/:userId/password", auth.changePassword);
 };

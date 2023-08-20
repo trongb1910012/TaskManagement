@@ -85,3 +85,34 @@ exports.changeUserRole = async (req, res, next) => {
     return next(error);
   }
 };
+//Doi mat khau nguoi dung
+exports.changePassword = async (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body;
+
+  try {
+    // Find the user by userId
+    const user = await User.findById(userId);
+
+    // Verify the current password
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Current password is incorrect" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while changing the password" });
+  }
+};

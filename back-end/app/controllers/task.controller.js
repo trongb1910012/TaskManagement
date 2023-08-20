@@ -234,3 +234,28 @@ exports.get_CongViec_Nv = async (req, res, next) => {
     );
   }
 };
+// Tu dong doi trang thai cong viec
+exports.updateTaskStatus = async (req, res) => {
+  try {
+    // Tìm tất cả các công việc có dueDate ít hơn thời gian hiện tại
+    const tasks = await Task.find({
+      dueDate: { $lt: new Date() },
+    });
+
+    // Cập nhật trạng thái của từng công việc thành "completed"
+    tasks.forEach(async (task) => {
+      task.status = "completed";
+      await task.save();
+    });
+
+    res
+      .status(200)
+      .json({ message: "Cập nhật trạng thái công việc thành công" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        error: "Đã xảy ra lỗi trong quá trình cập nhật trạng thái công việc",
+      });
+  }
+};

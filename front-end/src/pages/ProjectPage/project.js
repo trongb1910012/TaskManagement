@@ -15,6 +15,8 @@ const TableComponent = () => {
   const [data, setData] = useState([]);
   const [newRow, setNewRow] = useState({});
   const [showForm, setShowForm] = useState(false);
+  const [sortColumn, setSortColumn] = useState(""); // Track the currently sorted column
+  const [sortDirection, setSortDirection] = useState(""); // Track the sorting direction (asc or desc)
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -75,22 +77,142 @@ const TableComponent = () => {
   const toggleForm = () => {
     setShowForm(!showForm); // Toggle the state variable
   };
+  const handleSort = (column) => {
+    if (column === sortColumn) {
+      // If the same column is clicked, toggle the sorting direction
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      // If a different column is clicked, set the new column and default sorting direction to ascending
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+  // Inside the return statement, before mapping the data
+  // Inside the return statement, before mapping the data
+  // Inside the return statement, before mapping the data
+  const sortedData = [...data];
+  if (sortColumn) {
+    sortedData.sort((a, b) => {
+      const valueA = new Date(a[sortColumn]);
+      const valueB = new Date(b[sortColumn]);
+
+      if (valueA < valueB) {
+        return sortDirection === "asc" ? -1 : 1;
+      }
+      if (valueA > valueB) {
+        return sortDirection === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+  }
+  const sortDataByDate = (data, column, direction) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      const valueA = new Date(a[column]);
+      const valueB = new Date(b[column]);
+
+      if (valueA < valueB) {
+        return direction === "asc" ? -1 : 1;
+      }
+      if (valueA > valueB) {
+        return direction === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+
+    return sortedData;
+  };
+
   return (
     <div>
+      <div className={cx("button-group")}>
+        <Button
+          className={cx("add-button")}
+          variant="outlined"
+          color="primary"
+          onClick={toggleForm}
+        >
+          {showForm ? "Cancel" : "Add"}
+        </Button>
+      </div>
       <Table className={cx("table")}>
         <TableHead className={cx("table-head")}>
           <TableRow>
-            <TableCell>Title</TableCell>
+            <TableCell>
+              <Button
+                onClick={() => handleSort("title")}
+                variant="text"
+                color="inherit"
+              >
+                Title
+                {sortColumn === "title" && (
+                  <span
+                    className={cx("sort-icon", {
+                      asc: sortDirection === "asc",
+                      desc: sortDirection === "desc",
+                    })}
+                  ></span>
+                )}
+              </Button>
+            </TableCell>
             <TableCell>Description</TableCell>
-            <TableCell>Start Date</TableCell>
-            <TableCell>End Date</TableCell>
-            <TableCell>Budget</TableCell>
+            <TableCell>
+              <Button
+                onClick={() => handleSort("startDate")}
+                variant="text"
+                color="inherit"
+              >
+                Start Date
+                {sortColumn === "startDate" && (
+                  <span
+                    className={cx("sort-icon", {
+                      asc: sortDirection === "asc",
+                      desc: sortDirection === "desc",
+                    })}
+                  ></span>
+                )}
+              </Button>
+            </TableCell>
+            <TableCell>
+              <Button
+                onClick={() => handleSort("endDate")}
+                variant="text"
+                color="inherit"
+              >
+                End Date
+                {sortColumn === "endDate" && (
+                  <span
+                    className={cx("sort-icon", {
+                      asc: sortDirection === "asc",
+                      desc: sortDirection === "desc",
+                    })}
+                  ></span>
+                )}
+              </Button>
+            </TableCell>
+            <TableCell>
+              <Button
+                onClick={() => handleSort("budget")}
+                variant="text"
+                color="inherit"
+              >
+                Budget
+                {sortColumn === "budget" && (
+                  <span
+                    className={cx("sort-icon", {
+                      asc: sortDirection === "asc",
+                      desc: sortDirection === "desc",
+                    })}
+                  ></span>
+                )}
+              </Button>
+            </TableCell>
             <TableCell>Owner</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((item) => (
+          {sortedData.map((item) => (
             <TableRow className={cx("table-row")} key={item._id}>
               <TableCell>{item.title}</TableCell>
               <TableCell>{item.description}</TableCell>
@@ -176,14 +298,6 @@ const TableComponent = () => {
           )}
         </TableBody>
       </Table>
-      <Button
-        className={cx("button")}
-        variant="outlined"
-        color="primary"
-        onClick={toggleForm}
-      >
-        {showForm ? "Hủy Thêm" : "Thêm"}
-      </Button>
     </div>
   );
 };

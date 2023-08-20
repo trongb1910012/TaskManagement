@@ -41,7 +41,7 @@ const Sidebar = () => {
       icon: <FontAwesomeIcon icon={faHome} />,
     },
     {
-      path: "tasking/employee",
+      path: "/tasking/employee",
       name: "Employee",
       icon: <FontAwesomeIcon icon={faList} />,
     },

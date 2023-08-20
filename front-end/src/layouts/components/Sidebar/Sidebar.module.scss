@@ -1,20 +1,21 @@
 .wrapper {
     display: flex;
+    position: relative;
 }
 
 .container {
-    min-height: 100vh;
+    min-height: 900px;
     color: rgb(86, 153, 219);
     font-weight: 500;
     background: #fff;
-    border-right: 3px solid rgb(150, 150, 150);
+    border-right: 1px solid rgb(150, 150, 150);
     transition: all 0.1s;
 }
 
 .top_section {
     display: flex;
     align-items: center;
-    padding: 20px 5px;
+    padding: 17px 20px;
 
     h2 {
         color: #207cca;
@@ -33,6 +34,7 @@
     padding: 17px 20px;
     color: var(--text-white);
     transition: all 0.1s;
+    text-decoration: none;
 
     &:hover {
         color: var(--text-black);
@@ -42,7 +44,7 @@
 
     .icon,
     .link_text {
-        font-size: 20px;
+        font-size: 15px;
         text-decoration: none;
     }
 }
@@ -50,4 +52,8 @@
 .active {
     color: #000;
     background: lightskyblue;
+}
+
+.sidebar .link_text {
+    text-decoration-line: none;
 }
