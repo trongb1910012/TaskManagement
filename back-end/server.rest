@@ -152,4 +152,6 @@ GET http://localhost:8080/api/comments
 
 ### Xem tat ca comment theo task id
 GET http://localhost:8080/api/comments/64c8787d91d4993cdc3fa19e
+### Xem tat ca bao cao cua mot nhan vien
+GET http://localhost:8080/api/reports?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MjcwOTg0NCwiZXhwIjoxNjkyNzk2MjQ0fQ.4u_eMIoa2Na5hsVlC0T6UII6LhS2BSXbhbNxl8squDk
 
