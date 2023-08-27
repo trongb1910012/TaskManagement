@@ -6,10 +6,19 @@ import {
   TableRow,
   TableCell,
   Button,
+  IconButton,
 } from "@mui/material";
 import axiosClient from "../../api/api";
 import classNames from "classnames/bind";
 import styles from "./project.module.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCancel,
+  faPenToSquare,
+  faPlus,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import cogoToast from "cogo-toast";
 const cx = classNames.bind(styles);
 const TableComponent = () => {
   const [data, setData] = useState([]);
@@ -17,6 +26,8 @@ const TableComponent = () => {
   const [showForm, setShowForm] = useState(false);
   const [sortColumn, setSortColumn] = useState(""); // Track the currently sorted column
   const [sortDirection, setSortDirection] = useState(""); // Track the sorting direction (asc or desc)
+  const [editRow, setEditRow] = useState(null);
+  const [showEditForm, setShowEditForm] = useState(false);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -29,11 +40,6 @@ const TableComponent = () => {
   useEffect(() => {
     fetchData();
   });
-
-  function handleUpdate(projectId) {
-    // Handle update logic for the selected project
-    console.log("Update project:", projectId);
-  }
 
   const handleDelete = async (projectId) => {
     try {
@@ -59,8 +65,8 @@ const TableComponent = () => {
         newRow,
         {}
       );
-
-      console.log(response.data); // Xử lý phản hồi theo ý muốn
+      console.log(response);
+      cogoToast.success("Thêm dự án thành công");
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       fetchData();
@@ -68,7 +74,7 @@ const TableComponent = () => {
       // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
       setNewRow({});
     } catch (error) {
-      console.error(error); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Cần điền các thông tin trống"); // Xử lý lỗi một cách phù hợp
     }
   };
   const handleChange = (e, field) => {
@@ -105,35 +111,50 @@ const TableComponent = () => {
       return 0;
     });
   }
-  const sortDataByDate = (data, column, direction) => {
-    const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      const valueA = new Date(a[column]);
-      const valueB = new Date(b[column]);
-
-      if (valueA < valueB) {
-        return direction === "asc" ? -1 : 1;
-      }
-      if (valueA > valueB) {
-        return direction === "asc" ? 1 : -1;
-      }
-      return 0;
-    });
-
-    return sortedData;
+  // Sua ke hoach
+  const handleEdit = (row) => {
+    setEditRow(row); // Lưu thông tin của hàng dữ liệu đang được chỉnh sửa
+    setShowEditForm(true); // Hiển thị pop-up form
   };
+  const handleUpdateSubmit = async (event) => {
+    event.preventDefault();
 
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axiosClient.put(
+        `/projects/${editRow._id}?token=${token}`,
+        editRow
+      );
+
+      console.log(response.data); // Xử lý phản hồi theo ý muốn
+      cogoToast.success("Cập nhật dự án thành công");
+      fetchData(); // Cập nhật dữ liệu sau khi chỉnh sửa thành công
+
+      // Đặt lại giá trị cho editRow và đóng pop-up form
+      setEditRow(null);
+      setShowEditForm(false);
+    } catch (error) {
+      console.error(error); // Xử lý lỗi một cách phù hợp
+    }
+  };
+  const handleCancelEdit = () => {
+    setEditRow(null); // Đặt lại giá trị cho editRow
+    setShowEditForm(false); // Tắt pop-up form
+  };
   return (
     <div>
       <div className={cx("button-group")}>
-        <Button
+        <IconButton
           className={cx("add-button")}
-          variant="outlined"
           color="primary"
           onClick={toggleForm}
         >
-          {showForm ? "Cancel" : "Add"}
-        </Button>
+          {showForm ? (
+            <FontAwesomeIcon icon={faCancel} />
+          ) : (
+            <FontAwesomeIcon icon={faPlus} />
+          )}
+        </IconButton>
       </div>
       <Table className={cx("table")}>
         <TableHead className={cx("table-head")}>
@@ -207,36 +228,40 @@ const TableComponent = () => {
                 )}
               </Button>
             </TableCell>
-            <TableCell>Owner</TableCell>
+            {/* <TableCell>Owner</TableCell> */}
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {sortedData.map((item) => (
             <TableRow className={cx("table-row")} key={item._id}>
-              <TableCell>{item.title}</TableCell>
-              <TableCell>{item.description}</TableCell>
-              <TableCell>{item.startDate}</TableCell>
-              <TableCell>{item.endDate}</TableCell>
-              <TableCell>{item.budget}</TableCell>
-              <TableCell>{item.owner.fullname}</TableCell>
-              <TableCell>
-                <Button
+              <TableCell className={cx("small-font")}>{item.title}</TableCell>
+              <TableCell className={cx("small-font")}>
+                {item.description}
+              </TableCell>
+              <TableCell className={cx("small-font")}>
+                {item.startDate}
+              </TableCell>
+              <TableCell className={cx("small-font")}>{item.endDate}</TableCell>
+              <TableCell className={cx("small-font")}>{item.budget}</TableCell>
+              {/* <TableCell>{item.owner.fullname}</TableCell> */}
+              <TableCell className={cx("small-font")}>
+                <IconButton
                   className={cx("button")}
                   variant="outlined"
                   color="primary"
-                  onClick={() => handleUpdate(item._id)}
+                  onClick={() => handleEdit(item)}
                 >
-                  Update
-                </Button>
-                <Button
+                  <FontAwesomeIcon icon={faPenToSquare} />
+                </IconButton>
+                <IconButton
                   className={cx("button")}
                   variant="outlined"
                   color="error"
                   onClick={() => handleDelete(item._id)}
                 >
-                  Delete
-                </Button>
+                  <FontAwesomeIcon icon={faTrash} />
+                </IconButton>
               </TableCell>
             </TableRow>
           ))}
@@ -244,6 +269,7 @@ const TableComponent = () => {
             <TableRow className={cx("table-row")}>
               <TableCell>
                 <input
+                  className={cx("form-input")}
                   type="text"
                   value={newRow.title || ""}
                   onChange={(e) => handleChange(e, "title")}
@@ -252,6 +278,7 @@ const TableComponent = () => {
               </TableCell>
               <TableCell>
                 <input
+                  className={cx("form-input")}
                   type="text"
                   value={newRow.description || ""}
                   onChange={(e) => handleChange(e, "description")}
@@ -260,6 +287,7 @@ const TableComponent = () => {
               </TableCell>
               <TableCell>
                 <input
+                  className={cx("form-input")}
                   type="date"
                   value={newRow.startDate || ""}
                   onChange={(e) => handleChange(e, "startDate")}
@@ -268,6 +296,7 @@ const TableComponent = () => {
               </TableCell>
               <TableCell>
                 <input
+                  className={cx("form-input")}
                   type="date"
                   value={newRow.endDate || ""}
                   onChange={(e) => handleChange(e, "endDate")}
@@ -276,6 +305,7 @@ const TableComponent = () => {
               </TableCell>
               <TableCell>
                 <input
+                  className={cx("form-input")}
                   type="text"
                   value={newRow.budget || ""}
                   onChange={(e) => handleChange(e, "budget")}
@@ -283,7 +313,7 @@ const TableComponent = () => {
                 />
               </TableCell>
 
-              <TableCell>{localStorage.getItem("fullname")}</TableCell>
+              {/* <TableCell>{localStorage.getItem("fullname")}</TableCell> */}
               <TableCell>
                 <Button
                   className={cx("button")}
@@ -298,6 +328,78 @@ const TableComponent = () => {
           )}
         </TableBody>
       </Table>
+      {showEditForm && (
+        <div className={cx("popup-form")}>
+          <form onSubmit={handleUpdateSubmit}>
+            {/* Hiển thị các trường dữ liệu để chỉnh sửa */}
+            <input
+              className={cx("pop-form-input")}
+              type="text"
+              value={editRow.title || ""}
+              onChange={(e) =>
+                setEditRow({ ...editRow, title: e.target.value })
+              }
+              placeholder="Title"
+            />
+            <input
+              className={cx("pop-form-input")}
+              type="text"
+              value={editRow.description || ""}
+              onChange={(e) =>
+                setEditRow({ ...editRow, description: e.target.value })
+              }
+              placeholder="Description"
+            />
+            <input
+              className={cx("pop-form-input")}
+              type="date"
+              value={editRow.startDate || ""}
+              onChange={(e) =>
+                setEditRow({ ...editRow, startDate: e.target.value })
+              }
+              placeholder="Start date"
+            />
+            <input
+              className={cx("pop-form-input")}
+              type="date"
+              value={editRow.endDate || ""}
+              onChange={(e) =>
+                setEditRow({ ...editRow, endDate: e.target.value })
+              }
+              placeholder="End date"
+            />
+            <input
+              className={cx("pop-form-input")}
+              type="text"
+              value={editRow.budget || ""}
+              onChange={(e) =>
+                setEditRow({ ...editRow, budget: e.target.value })
+              }
+              placeholder="Budget"
+            />
+            <div className={cx("edit-button")}>
+              <Button
+                className={cx("edit-save-button")}
+                variant="outlined"
+                color="primary"
+                type="submit"
+                style={{ display: "inline-block", marginRight: "10px" }}
+              >
+                Update
+              </Button>
+              <Button
+                className={cx("edit-cancel-button")}
+                variant="outlined"
+                color="secondary"
+                onClick={handleCancelEdit}
+                style={{ display: "inline-block" }}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

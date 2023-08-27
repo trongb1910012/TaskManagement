@@ -60,11 +60,10 @@ Content-Type: application/json
 }
 
 ### Sua ke hoach
-PUT http://localhost:8080/api/projects/64c5cbaf3329e57e71aa23a8?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MDY4NDMyMywiZXhwIjoxNjkwNzcwNzIzfQ.g7d1lqC86zOkPFDM6h1c0ZlzUQV73UZ7KTWdwA82gJ4
-Content-Type: application/json
+PUT http://localhost:8080/api/projects/64e1a654f61443b157af7e02?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5Mjg4MTY1OCwiZXhwIjoxNjkyOTY4MDU4fQ.GnnKtCCVhOhNV2iv1pD0vQal8n0ToWgL3Y02YG-JTfo
 
 {
-    "title": "Ke hoach 2 updated",
+    "title": "Ke hoach 2 updatdsadasded",
     "description": "222222",
     "startDate": "2023-09-01",
     "endDate": "2023-11-30",
@@ -154,4 +153,17 @@ GET http://localhost:8080/api/comments
 GET http://localhost:8080/api/comments/64c8787d91d4993cdc3fa19e
 ### Xem tat ca bao cao cua mot nhan vien
 GET http://localhost:8080/api/reports?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MjcwOTg0NCwiZXhwIjoxNjkyNzk2MjQ0fQ.4u_eMIoa2Na5hsVlC0T6UII6LhS2BSXbhbNxl8squDk
+### Xem tat ca bao cao cua mot task
+GET http://localhost:8080/api/reports/64c497992e1ff91ebfebefe0
+### Thêm báo cáo
+POST http://localhost:8080/api/reports?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5Mjc2NjIzMywiZXhwIjoxNjkyODUyNjMzfQ.LU8Ftz3vlt_Jf5J9dpomYoWxVIjf_JOdISvXtuCtAZM
+Content-Type: application/json
 
+{
+  "title": "Báo cáo tổng kết 22",
+  "description": "Báo cáo tổng kết hoạt động trong tháng",
+  "project": "64d076062d4ee8a99f2194eb",
+  "task": "61503e4f9a3e9e001fd7f1b3"
+}
+### Xóa báo cáo
+DELETE http://localhost:8080/api/reports/64e59024f1a3d7dd5729de04

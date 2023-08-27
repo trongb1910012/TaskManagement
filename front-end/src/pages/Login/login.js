@@ -14,6 +14,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useState } from "react";
 import axiosClient from "../../api/api";
 import { useNavigate } from "react-router-dom";
+import cogoToast from "cogo-toast";
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -43,14 +44,11 @@ const Login = () => {
       localStorage.setItem("fullname", fullname);
       navigate("/tasking/home");
     } catch (error) {
-      alert("Đăng nhập thất bại", error);
+      cogoToast.error("Failed to sign in");
     }
   };
   return (
     <>
-      <Grid>
-        <h1 style={headingStyle}>TASKING</h1>
-      </Grid>
       <Grid>
         <Paper elevation={10} style={paperStyle}>
           <Grid align="center">
@@ -98,7 +96,7 @@ const Login = () => {
           </Typography>
           <Typography>
             {" "}
-            Do you have an account ?<Link href="#">Sign Up</Link>
+            Do you have an account ?<Link href="/tasking/signup">Sign Up</Link>
           </Typography>
         </Paper>
       </Grid>

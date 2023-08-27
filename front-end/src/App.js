@@ -8,6 +8,7 @@ import {
 import { publicRoutes } from "./routes";
 import DefaultLayout from "./layouts/defaultLayout/DefaultLayout";
 import Login from "./pages/Login/login";
+import SignUp from "./pages/SignUp/signup";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           })}
           <Route path="/" element={<Navigate to="/tasking" />} />
           <Route path="/tasking" element={<Login />} />
+          <Route path="/tasking/signup" element={<SignUp />} />
         </Routes>
       </div>
     </Router>

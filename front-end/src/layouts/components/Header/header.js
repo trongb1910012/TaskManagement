@@ -12,7 +12,6 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import WorkIcon from "@mui/icons-material/Work";
-
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Header() {
@@ -22,10 +21,12 @@ function Header() {
     setAnchorElUser(event.currentTarget);
   };
 
+  // const handleCloseUserMenu = () => {
+  //   setAnchorElUser(null);
+  // };
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
   return (
     <AppBar
       position="relative"

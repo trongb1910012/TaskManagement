@@ -1,7 +1,9 @@
 // project.module.scss
 .table {
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 10px;
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+
 }
 
 .table-head {
@@ -15,14 +17,68 @@
 
 .button {
     margin-right: 8px;
+    padding-right: 5px;
 }
 
 .add-button {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     margin-right: 8px;
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+
 }
 
 .button-group {
     display: flex;
     float: right;
+    padding-bottom: 10px;
+}
+
+.popup-form {
+    position: fixed;
+    width: 500px;
+    height: 450px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+}
+
+.popup-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-form input {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.popup-form .button {
+    align-self: flex-end;
+}
+
+.edit-button {
+    display: flex;
+    justify-content: center;
+}
+
+.form-input {
+    width: 120px;
+    height: 30px;
+    border: 1px solid #404040ae;
+    border-radius: 5px;
+}
+
+.pop-form-input {
+    width: auto;
+    height: 50px;
+    border: 1px solid #404040ae;
+    border-radius: 5px;
+}
+
+.small-font {
+    font-size: 555px;
 }
