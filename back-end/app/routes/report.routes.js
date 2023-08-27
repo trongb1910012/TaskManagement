@@ -5,5 +5,7 @@ module.exports = (app) => {
   const router = express.Router();
   router.get("/", reports.get_BaoCao_Nv);
   router.get("/:task_id", reports.getReport_ByTaskId);
+  router.post("/", reports.addReport);
+  router.delete("/:id", reports.deleteReportById);
   app.use("/api/reports", router);
 };

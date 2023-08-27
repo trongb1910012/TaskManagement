@@ -19,12 +19,12 @@ exports.get_KeHoach = async (req, res, next) => {
       select: "fullname",
     });
     const formattedProjects = projects.map((project) => {
-      const formattedStartDate = new Date(project.startDate).toLocaleDateString(
-        "en-GB"
-      );
-      const formattedEndDate = new Date(project.endDate).toLocaleDateString(
-        "en-GB"
-      );
+      const formattedStartDate = new Date(project.startDate)
+        .toISOString()
+        .substr(0, 10);
+      const formattedEndDate = new Date(project.endDate)
+        .toISOString()
+        .substr(0, 10);
       return {
         ...project._doc,
         startDate: formattedStartDate,
@@ -175,12 +175,12 @@ exports.get_KeHoach_Nv = async (req, res, next) => {
       select: "fullname",
     });
     const formattedProjects = projects.map((project) => {
-      const formattedStartDate = new Date(project.startDate).toLocaleDateString(
-        "en-GB"
-      );
-      const formattedEndDate = new Date(project.endDate).toLocaleDateString(
-        "en-GB"
-      );
+      const formattedStartDate = new Date(project.startDate)
+        .toISOString()
+        .substr(0, 10);
+      const formattedEndDate = new Date(project.endDate)
+        .toISOString()
+        .substr(0, 10);
       return {
         ...project._doc,
         startDate: formattedStartDate,
