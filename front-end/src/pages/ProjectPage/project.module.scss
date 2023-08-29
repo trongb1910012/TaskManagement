@@ -1,8 +1,6 @@
 // project.module.scss
 .table {
     border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
 
 }
 
@@ -21,10 +19,23 @@
 }
 
 .add-button {
-    margin-bottom: 5px;
-    margin-right: 8px;
-    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+    background: #7171e8;
+    margin-right: 10px;
+    margin-top: 10px;
+    color: #fff;
+    border: none;
+    position: relative;
+    height: 30px;
+    font-size: 1.6em;
+    padding: 0 1em;
+    cursor: pointer;
+    outline: none;
+    border-radius: 50px;
 
+}
+
+.add-button:hover {
+    background: #5454e9;
 }
 
 .button-group {
@@ -79,6 +90,14 @@
     border-radius: 5px;
 }
 
-.small-font {
-    font-size: 555px;
+.pagination {
+    display: flex;
+    justify-content: flex-end;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.table-wrapper {
+    box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14), 0px 1px 14px 0px rgba(0, 0, 0, 0.12);
+    border-radius: 5px;
 }

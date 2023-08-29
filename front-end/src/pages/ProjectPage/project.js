@@ -18,7 +18,9 @@ import {
   faPlus,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { Pagination } from "@mui/material";
 import cogoToast from "cogo-toast";
+import swal from "sweetalert";
 const cx = classNames.bind(styles);
 const TableComponent = () => {
   const [data, setData] = useState([]);
@@ -28,6 +30,13 @@ const TableComponent = () => {
   const [sortDirection, setSortDirection] = useState(""); // Track the sorting direction (asc or desc)
   const [editRow, setEditRow] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
+  const PAGE_SIZE = 3; // Số lượng dòng hiển thị trên mỗi trang
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const getPageData = () => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
+    return sortedData.slice(startIndex, endIndex);
+  };
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -41,19 +50,40 @@ const TableComponent = () => {
     fetchData();
   });
 
-  const handleDelete = async (projectId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.delete(
-        `/projects/${projectId}?token=${token}`
-      );
-      if (response.status === 200) {
-        console.log("Project deleted successfully");
-        fetchData(); // Fetch updated data after deletion
+  // const handleDelete = async (projectId) => {
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const response = await axiosClient.delete(
+  //       `/projects/${projectId}?token=${token}`
+  //     );
+  //     if (response.status === 200) {
+  //       console.log("Project deleted successfully");
+  //       fetchData(); // Fetch updated data after deletion
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting project:", error);
+  //   }
+  // };
+
+  const handleDelete = (projectId) => {
+    swal({
+      title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
+      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const token = localStorage.getItem("token");
+        await axiosClient.delete(`/projects/${projectId._id}?token=${token}`);
+        swal(`${projectId.title.toUpperCase()} đã được xóa`, {
+          icon: "success",
+        });
+        await fetchData();
+      } else {
+        return;
       }
-    } catch (error) {
-      console.error("Error deleting project:", error);
-    }
+    });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -91,6 +121,7 @@ const TableComponent = () => {
       // If a different column is clicked, set the new column and default sorting direction to ascending
       setSortColumn(column);
       setSortDirection("asc");
+      setCurrentPage(1); // Đặt lại trang hiện tại về 1
     }
   };
   // Inside the return statement, before mapping the data
@@ -141,193 +172,207 @@ const TableComponent = () => {
     setEditRow(null); // Đặt lại giá trị cho editRow
     setShowEditForm(false); // Tắt pop-up form
   };
+  //Phân trang
+  const pageCount = Math.ceil(sortedData.length / PAGE_SIZE); // Tính số trang
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
   return (
     <div>
       <div className={cx("button-group")}>
-        <IconButton
-          className={cx("add-button")}
-          color="primary"
-          onClick={toggleForm}
-        >
+        <button className={cx("add-button")} onClick={toggleForm}>
           {showForm ? (
             <FontAwesomeIcon icon={faCancel} />
           ) : (
             <FontAwesomeIcon icon={faPlus} />
           )}
-        </IconButton>
+        </button>
       </div>
-      <Table className={cx("table")}>
-        <TableHead className={cx("table-head")}>
-          <TableRow>
-            <TableCell>
-              <Button
-                onClick={() => handleSort("title")}
-                variant="text"
-                color="inherit"
-              >
-                Title
-                {sortColumn === "title" && (
-                  <span
-                    className={cx("sort-icon", {
-                      asc: sortDirection === "asc",
-                      desc: sortDirection === "desc",
-                    })}
-                  ></span>
-                )}
-              </Button>
-            </TableCell>
-            <TableCell>Description</TableCell>
-            <TableCell>
-              <Button
-                onClick={() => handleSort("startDate")}
-                variant="text"
-                color="inherit"
-              >
-                Start Date
-                {sortColumn === "startDate" && (
-                  <span
-                    className={cx("sort-icon", {
-                      asc: sortDirection === "asc",
-                      desc: sortDirection === "desc",
-                    })}
-                  ></span>
-                )}
-              </Button>
-            </TableCell>
-            <TableCell>
-              <Button
-                onClick={() => handleSort("endDate")}
-                variant="text"
-                color="inherit"
-              >
-                End Date
-                {sortColumn === "endDate" && (
-                  <span
-                    className={cx("sort-icon", {
-                      asc: sortDirection === "asc",
-                      desc: sortDirection === "desc",
-                    })}
-                  ></span>
-                )}
-              </Button>
-            </TableCell>
-            <TableCell>
-              <Button
-                onClick={() => handleSort("budget")}
-                variant="text"
-                color="inherit"
-              >
-                Budget
-                {sortColumn === "budget" && (
-                  <span
-                    className={cx("sort-icon", {
-                      asc: sortDirection === "asc",
-                      desc: sortDirection === "desc",
-                    })}
-                  ></span>
-                )}
-              </Button>
-            </TableCell>
-            {/* <TableCell>Owner</TableCell> */}
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortedData.map((item) => (
-            <TableRow className={cx("table-row")} key={item._id}>
-              <TableCell className={cx("small-font")}>{item.title}</TableCell>
-              <TableCell className={cx("small-font")}>
-                {item.description}
-              </TableCell>
-              <TableCell className={cx("small-font")}>
-                {item.startDate}
-              </TableCell>
-              <TableCell className={cx("small-font")}>{item.endDate}</TableCell>
-              <TableCell className={cx("small-font")}>{item.budget}</TableCell>
-              {/* <TableCell>{item.owner.fullname}</TableCell> */}
-              <TableCell className={cx("small-font")}>
-                <IconButton
-                  className={cx("button")}
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => handleEdit(item)}
-                >
-                  <FontAwesomeIcon icon={faPenToSquare} />
-                </IconButton>
-                <IconButton
-                  className={cx("button")}
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleDelete(item._id)}
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-          {showForm && (
-            <TableRow className={cx("table-row")}>
-              <TableCell>
-                <input
-                  className={cx("form-input")}
-                  type="text"
-                  value={newRow.title || ""}
-                  onChange={(e) => handleChange(e, "title")}
-                  placeholder="Title"
-                />
-              </TableCell>
-              <TableCell>
-                <input
-                  className={cx("form-input")}
-                  type="text"
-                  value={newRow.description || ""}
-                  onChange={(e) => handleChange(e, "description")}
-                  placeholder="Description"
-                />
-              </TableCell>
-              <TableCell>
-                <input
-                  className={cx("form-input")}
-                  type="date"
-                  value={newRow.startDate || ""}
-                  onChange={(e) => handleChange(e, "startDate")}
-                  placeholder="Start Date"
-                />
-              </TableCell>
-              <TableCell>
-                <input
-                  className={cx("form-input")}
-                  type="date"
-                  value={newRow.endDate || ""}
-                  onChange={(e) => handleChange(e, "endDate")}
-                  placeholder="End Date"
-                />
-              </TableCell>
-              <TableCell>
-                <input
-                  className={cx("form-input")}
-                  type="text"
-                  value={newRow.budget || ""}
-                  onChange={(e) => handleChange(e, "budget")}
-                  placeholder="Budget"
-                />
-              </TableCell>
-
-              {/* <TableCell>{localStorage.getItem("fullname")}</TableCell> */}
+      <div className={cx("table-wrapper")}>
+        <Table className={cx("table")}>
+          <TableHead className={cx("table-head")}>
+            <TableRow>
               <TableCell>
                 <Button
-                  className={cx("button")}
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleSubmit}
+                  onClick={() => handleSort("title")}
+                  variant="text"
+                  color="inherit"
                 >
-                  Add Row
+                  Title
+                  {sortColumn === "title" && (
+                    <span
+                      className={cx("sort-icon", {
+                        asc: sortDirection === "asc",
+                        desc: sortDirection === "desc",
+                      })}
+                    ></span>
+                  )}
                 </Button>
               </TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>
+                <Button
+                  onClick={() => handleSort("startDate")}
+                  variant="text"
+                  color="inherit"
+                >
+                  Start Date
+                  {sortColumn === "startDate" && (
+                    <span
+                      className={cx("sort-icon", {
+                        asc: sortDirection === "asc",
+                        desc: sortDirection === "desc",
+                      })}
+                    ></span>
+                  )}
+                </Button>
+              </TableCell>
+              <TableCell>
+                <Button
+                  onClick={() => handleSort("endDate")}
+                  variant="text"
+                  color="inherit"
+                >
+                  End Date
+                  {sortColumn === "endDate" && (
+                    <span
+                      className={cx("sort-icon", {
+                        asc: sortDirection === "asc",
+                        desc: sortDirection === "desc",
+                      })}
+                    ></span>
+                  )}
+                </Button>
+              </TableCell>
+              <TableCell>
+                <Button
+                  onClick={() => handleSort("budget")}
+                  variant="text"
+                  color="inherit"
+                >
+                  Budget
+                  {sortColumn === "budget" && (
+                    <span
+                      className={cx("sort-icon", {
+                        asc: sortDirection === "asc",
+                        desc: sortDirection === "desc",
+                      })}
+                    ></span>
+                  )}
+                </Button>
+              </TableCell>
+              {/* <TableCell>Owner</TableCell> */}
+              <TableCell>Actions</TableCell>
             </TableRow>
-          )}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {getPageData().map((item) => (
+              <TableRow className={cx("table-row")} key={item._id}>
+                <TableCell className={cx("small-font")}>{item.title}</TableCell>
+                <TableCell className={cx("small-font")}>
+                  {item.description}
+                </TableCell>
+                <TableCell className={cx("small-font")}>
+                  {item.startDate}
+                </TableCell>
+                <TableCell className={cx("small-font")}>
+                  {item.endDate}
+                </TableCell>
+                <TableCell className={cx("small-font")}>
+                  {item.budget}
+                </TableCell>
+                {/* <TableCell>{item.owner.fullname}</TableCell> */}
+                <TableCell className={cx("small-font")}>
+                  <IconButton
+                    className={cx("button")}
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleEdit(item)}
+                  >
+                    <FontAwesomeIcon icon={faPenToSquare} />
+                  </IconButton>
+                  <IconButton
+                    className={cx("button")}
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDelete(item)}
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+            {showForm && (
+              <TableRow className={cx("table-row")}>
+                <TableCell>
+                  <input
+                    className={cx("form-input")}
+                    type="text"
+                    value={newRow.title || ""}
+                    onChange={(e) => handleChange(e, "title")}
+                    placeholder="Title"
+                  />
+                </TableCell>
+                <TableCell>
+                  <input
+                    className={cx("form-input")}
+                    type="text"
+                    value={newRow.description || ""}
+                    onChange={(e) => handleChange(e, "description")}
+                    placeholder="Description"
+                  />
+                </TableCell>
+                <TableCell>
+                  <input
+                    className={cx("form-input")}
+                    type="date"
+                    value={newRow.startDate || ""}
+                    onChange={(e) => handleChange(e, "startDate")}
+                    placeholder="Start Date"
+                  />
+                </TableCell>
+                <TableCell>
+                  <input
+                    className={cx("form-input")}
+                    type="date"
+                    value={newRow.endDate || ""}
+                    onChange={(e) => handleChange(e, "endDate")}
+                    placeholder="End Date"
+                  />
+                </TableCell>
+                <TableCell>
+                  <input
+                    className={cx("form-input")}
+                    type="text"
+                    value={newRow.budget || ""}
+                    onChange={(e) => handleChange(e, "budget")}
+                    placeholder="Budget"
+                  />
+                </TableCell>
+
+                {/* <TableCell>{localStorage.getItem("fullname")}</TableCell> */}
+                <TableCell>
+                  <Button
+                    className={cx("button")}
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleSubmit}
+                  >
+                    Add Row
+                  </Button>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        <Pagination
+          className={cx("pagination")}
+          count={pageCount}
+          page={currentPage}
+          onChange={handlePageChange}
+        />
+      </div>
+
       {showEditForm && (
         <div className={cx("popup-form")}>
           <form onSubmit={handleUpdateSubmit}>

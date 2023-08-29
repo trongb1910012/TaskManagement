@@ -5,7 +5,7 @@
 
 .container {
     min-height: 900px;
-    color: rgb(86, 153, 219);
+    color: #7171e8;
     font-weight: 500;
     background: #fff;
     border-right: 1px solid rgb(150, 150, 150);
@@ -15,7 +15,7 @@
 .top_section {
     display: flex;
     align-items: center;
-    padding: 17px 20px;
+    padding: 20px 20px;
 
     h2 {
         color: #207cca;
@@ -23,7 +23,7 @@
 
     .bars {
         font-size: 30px;
-        margin-left: 50px;
+        margin-left: 10px;
         cursor: pointer;
     }
 }
@@ -31,14 +31,15 @@
 .link {
     display: flex;
     gap: 30px;
-    padding: 17px 20px;
+    padding: 20px 20px;
     color: var(--text-white);
     transition: all 0.1s;
     text-decoration: none;
 
     &:hover {
         color: var(--text-black);
-        background: lightskyblue;
+        background: #7171e8;
+        color: #fff;
         transition: all 0.1s;
     }
 
@@ -50,8 +51,8 @@
 }
 
 .active {
-    color: #000;
-    background: lightskyblue;
+    color: #fff;
+    background: #7171e8
 }
 
 .sidebar .link_text {
