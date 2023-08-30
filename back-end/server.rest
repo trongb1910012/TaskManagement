@@ -73,7 +73,7 @@ PUT http://localhost:8080/api/projects/64e1a654f61443b157af7e02?token=eyJhbGciOi
 DELETE http://localhost:8080/api/projects/64d3a6535113b2cf8e7b87ba?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Yjc1ZjM0NTgxMDQyYzc2ZGVjNmQxYyIsImlhdCI6MTY5MTc0MDgxMSwiZXhwIjoxNjkxODI3MjExfQ.bSPR2ZzTKEdl3SuOjgIzi_13T2-9VB9IbqZRwuwmnB0
 ### Xem ke hoach cua nhan vien
 
-GET http://localhost:8080/api/projects/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTAzNDg2MSwiZXhwIjoxNjkxMTIxMjYxfQ.uu5gguL-DHaihgi3hz25pyhd7dE_sNrO2X2uCCfjxMc
+GET http://localhost:8080/api/projects/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MzI3OTAwOCwiZXhwIjoxNjkzMzY1NDA4fQ.7N_KDlU50ngauEVtIHuCELzveg27t3rZwM6uGY6A8Ro
 
 ### Them cong viec
 

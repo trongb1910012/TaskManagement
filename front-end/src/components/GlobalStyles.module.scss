@@ -1,0 +1,39 @@
+@import 'normalize.css';
+
+:root {
+    --text-white: #f0f0f0;
+    --text-black: #000000;
+    --primary: #fe2c55;
+
+    --font-family: "Segoe UI", "Segoe WP", Arial, Sans-Serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: 1.6rem;
+    line-height: 1.5;
+    text-rendering: optimizespeed;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+button {
+    border: none;
+    outline: none;
+}

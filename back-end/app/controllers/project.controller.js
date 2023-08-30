@@ -167,13 +167,23 @@ exports.get_KeHoach_Nv = async (req, res, next) => {
     const decodedToken = jwt.verify(token, config.jwt.secret);
     const memberId = decodedToken.id;
 
-    const projects = await Project.find({
+    const projectsPromise = Project.find({
       ...condition,
       owner: memberId,
     }).populate({
       path: "owner",
       select: "fullname",
     });
+    const countPromise = Project.countDocuments({
+      ...condition,
+      owner: memberId,
+    });
+
+    const [projects, count] = await Promise.all([
+      projectsPromise,
+      countPromise,
+    ]);
+
     const formattedProjects = projects.map((project) => {
       const formattedStartDate = new Date(project.startDate)
         .toISOString()
@@ -187,9 +197,12 @@ exports.get_KeHoach_Nv = async (req, res, next) => {
         endDate: formattedEndDate,
       };
     });
+
     const response = {
       projects: formattedProjects,
+      count: count, // Số lượng kế hoạch
     };
+
     return res.status(200).json(response);
   } catch (err) {
     console.error(err);

@@ -13,12 +13,6 @@ const CustomGrid = ({ items }) => {
         </Grid>
         <Grid item xs={3}></Grid>
       </Grid>
-      <Grid container spacing={5}>
-        <Grid item xs={6}>
-          <TableComponent></TableComponent>
-        </Grid>
-        <Grid item xs={6}></Grid>
-      </Grid>
     </div>
   );
 };

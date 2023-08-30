@@ -21,6 +21,8 @@ import {
 import { Pagination } from "@mui/material";
 import cogoToast from "cogo-toast";
 import swal from "sweetalert";
+import { Gantt } from "gantt-task-react";
+import "gantt-task-react/dist/index.css";
 const cx = classNames.bind(styles);
 const TableComponent = () => {
   const [data, setData] = useState([]);
@@ -37,11 +39,29 @@ const TableComponent = () => {
     const endIndex = startIndex + PAGE_SIZE;
     return sortedData.slice(startIndex, endIndex);
   };
+  const [tasks, setTasks] = useState([]);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.get(`/projects/nv?token=${token}`);
       setData(response.data.projects);
+
+      // Create tasks array from the API response
+      const tasksData = response.data.projects.map((project) => ({
+        start: new Date(project.startDate),
+        end: new Date(project.endDate),
+        name: project.title,
+        id: project._id,
+        type: "task",
+        progress: 50,
+        isDisabled: false, // Assuming all tasks are enabled
+        styles: {
+          progressColor: "#7171e8",
+          progressSelectedColor: "#7171e8",
+        },
+      }));
+
+      setTasks(tasksData); // Update the tasks state with the fetched data
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -177,8 +197,10 @@ const TableComponent = () => {
   const handlePageChange = (event, page) => {
     setCurrentPage(page);
   };
+
   return (
-    <div>
+    <div className={cx("wrapper")}>
+      {tasks.length > 0 && <Gantt tasks={tasks} />}
       <div className={cx("button-group")}>
         <button className={cx("add-button")} onClick={toggleForm}>
           {showForm ? (
