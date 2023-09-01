@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Project = require("../models/project.model");
+const User = require("../models/user.model");
 module.exports = (mongoose) => {
   const schema = mongoose.Schema(
     {
@@ -11,7 +12,10 @@ module.exports = (mongoose) => {
       project: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Project",
-        required: true,
+      },
+      board_leader: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
       },
     },
     { timestamps: true }

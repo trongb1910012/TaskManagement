@@ -6,26 +6,49 @@ const config = require("../config");
 const db = require("../models");
 const Board = db.Board;
 const Project = db.Project;
+const Task = db.Task;
 // Them bang cong viec
-exports.createBoard = async (req, res) => {
+exports.createBoard = async (req, res, next) => {
+  if (!req.body.board_name) {
+    return next(new BadRequestError(400, "Title cannot be empty"));
+  }
+  const token = req.query.token;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const decodedToken = jwt.verify(token, config.jwt.secret);
+  const userId = decodedToken.id;
+
+  // Truy xuất thông tin dự án từ cơ sở dữ liệu
+  const project = await Project.findById(req.body.project);
+  if (!project) {
+    return next(new BadRequestError(404, "Project not found"));
+  }
+  const ownerString = JSON.stringify(project.owner);
+  const ownerId = ownerString.replace(/"/g, "");
+  // Kiểm tra xem người đăng nhập có phải là chủ sở hữu của dự án hay không
+  if (ownerId !== userId) {
+    return next(
+      new BadRequestError(403, `Only project owner can create boards`)
+    );
+  }
+
+  const board = new Board({
+    board_name: req.body.board_name,
+    project: req.body.project,
+    board_leader: req.body.board_leader,
+  });
+
   try {
-    const { board_name, project } = req.body;
-
-    // Create a new board object
-    const board = new Board({
-      board_name,
-      project,
-    });
-
-    // Save the new board to the database
-    const newBoard = await board.save();
-    // Return the new board object as JSON
-    res.status(201).json(newBoard);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
+    const document = await board.save();
+    return res.send(document);
+  } catch (error) {
+    return next(
+      new BadRequestError(500, "An error occurred while creating the board")
+    );
   }
 };
+
 // Xem danh sach bang cong viec
 exports.get_AllBoards = async (req, res, next) => {
   try {
@@ -35,10 +58,15 @@ exports.get_AllBoards = async (req, res, next) => {
       condition.board_name = { $regex: new RegExp(board_name), $options: "i" };
     }
 
-    const boards = await Board.find(condition).populate({
-      path: "project",
-      select: "title",
-    });
+    const boards = await Board.find(condition)
+      .populate({
+        path: "project",
+        select: "title",
+      })
+      .populate({
+        path: "board_leader",
+        select: "fullname",
+      });
 
     return res.status(200).json(boards);
   } catch (err) {
@@ -69,20 +97,72 @@ exports.updateBoard = async (req, res) => {
   }
 };
 
+exports.update_Board = async (req, res, next) => {
+  const boardId = req.params.id;
+  const updates = req.body;
+
+  try {
+    const board = await Board.findOne({ _id: boardId });
+    if (!board) {
+      return next(new BadRequestError(404, "Board not found"));
+    }
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const userId = decodedToken.id;
+
+    const project = await Project.findById(board.project);
+    if (!project) {
+      return next(new BadRequestError(404, "Project not found"));
+    }
+    const ownerString = JSON.stringify(project.owner);
+    const leaderString = JSON.stringify(board.board_leader);
+    const ownerId = ownerString.replace(/"/g, "");
+    const leaderId = leaderString.replace(/"/g, "");
+    // Only allow the owner of the project to update it
+    if (ownerId !== userId && leaderId !== userId) {
+      return next(
+        new BadRequestError(403, `${leaderString} ${leaderId} ${userId}`)
+      );
+    }
+
+    // Update the project fields with the new values
+    Object.keys(updates).forEach((key) => {
+      board[key] = updates[key];
+    });
+
+    const updatedBoard = await board.save();
+    return res.status(200).json(updatedBoard);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while updating the board")
+    );
+  }
+};
 // xoa bang cong viec
 exports.deleteBoard = async (req, res) => {
   const boardId = req.params.id;
 
   try {
-    // Find the board and get the project ID
+    // Find the board
     const board = await Board.findById(boardId);
-    const projectId = board.project;
+
+    // If board is not found, return an error message
+    if (!board) {
+      return res.status(404).send({ message: "Board not found" });
+    }
+
+    // Find all tasks in the board
+    const tasks = await Task.find({ boardId });
+
+    // Delete all tasks
+    await Task.deleteMany({ boardId });
 
     // Delete the board
     await Board.findByIdAndDelete(boardId);
-
-    // Remove the board ID from the project's boards array
-    await Project.findByIdAndUpdate(projectId, { $pull: { boards: boardId } });
 
     res.send({ message: "Board deleted successfully" });
   } catch (error) {
@@ -90,6 +170,7 @@ exports.deleteBoard = async (req, res) => {
     res.status(500).send({ message: "Internal server error" });
   }
 };
+
 // Danh sach cac boards cua mot project
 exports.getBoardsByProjectId = async (req, res) => {
   const projectId = req.params.id;
@@ -101,5 +182,56 @@ exports.getBoardsByProjectId = async (req, res) => {
     res.status(200).json(boards);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+//Lay cac board theo id leader
+exports.getBoardsByUserId = async (req, res) => {
+  const userId = req.params.u_id;
+
+  try {
+    const boards = await Board.find({
+      board_leader: mongoose.Types.ObjectId(userId),
+    })
+      .populate({ path: "project", select: "title" })
+      .populate({
+        path: "board_leader",
+        select: "fullname",
+      });
+    res.status(200).json(boards);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+//Laay cac board theo token
+exports.get_Boards_byToken = async (req, res, next) => {
+  try {
+    const condition = {};
+    const board_name = req.query.board_name;
+    if (board_name) {
+      condition.board_name = { $regex: new RegExp(board_name), $options: "i" };
+    }
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const userId = decodedToken.id;
+
+    const boards = await Board.find({ ...condition, board_leader: userId })
+      .populate({
+        path: "project",
+        select: "title",
+      })
+      .populate({
+        path: "board_leader",
+        select: "fullname",
+      });
+
+    return res.status(200).json(boards);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while retrieving projects")
+    );
   }
 };

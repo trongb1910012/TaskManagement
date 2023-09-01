@@ -37,7 +37,7 @@ Content-Type: application/json
 GET http://localhost:8080/api/projects
 
 ### Them ke hoach
-POST http://localhost:8080/api/projects?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Yjc1ZjM0NTgxMDQyYzc2ZGVjNmQxYyIsImlhdCI6MTY5MTU3MjM3NiwiZXhwIjoxNjkxNjU4Nzc2fQ.byUdy59QiIXndN_bJx6W4NudrhjHWV_n7TEiuneW-64
+POST http://localhost:8080/api/projects?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MzQwOTI2OCwiZXhwIjoxNjkzNDk1NjY4fQ.uwU0-y-gGpGEl_KFZcmdwg5Gk-_oVrgtYhKrasl-5h4
 Content-Type: application/json
 
 {
@@ -116,28 +116,32 @@ GET http://localhost:8080/api/users/
 
 
 ### Them bang cong viec
-POST http://localhost:8080/api/boards/
+POST http://localhost:8080/api/boards?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MzQ4OTUxOCwiZXhwIjoxNjkzNTc1OTE4fQ.LenMmpdw9RrJgzjxXmd4msvtEY9qKQsFPVnv0BGyAOI
 Content-Type: application/json
 
 {
   "board_name": "BCV 2 của kế hoạch 2",
-  "project": "64c3aff8f5cc276bb4360e6d"
+  "project": "64d076062d4ee8a99f2194eb",
+  "board_leader": "64b75f34581042c76dec6d1c"
 }
 ### Danh sach bang cong viec
 GET  http://localhost:8080/api/boards/
 
 ###Danh sach bang cong viec cua 1 project
 GET  http://localhost:8080/api/boards/64c3aff8f5cc276bb4360e6d
+
+###Danh sach bang cong viec cua 1 leader
+GET  http://localhost:8080/api/boards/bb?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MzQ4OTUxOCwiZXhwIjoxNjkzNTc1OTE4fQ.LenMmpdw9RrJgzjxXmd4msvtEY9qKQsFPVnv0BGyAOI
 ### Chinh sua bang cong viec
-PUT http://localhost:8080/api/boards/64c32d2c96054d9613a4fc01
+PUT http://localhost:8080/api/boards/64f099e07e9ce59190bbc65a?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0Yjc1ZjM0NTgxMDQyYzc2ZGVjNmQxYyIsImlhdCI6MTY5MzU3NzE0OCwiZXhwIjoxNjkzNjYzNTQ4fQ.YSnptcSSh7b-TKVWVR4GgI8sx9b69QFwtlG8Ga4arb0
 Content-Type: application/json
 
 {
-  "board_name": "BCV của kế hoạch 1"
+  "board_name": "BCV của kế hoạch 1115457811"
 }
 
 ### Xoa bang cong viec
-DELETE http://localhost:8080/api/boards/64c32db96034f4adfc3137cb
+DELETE http://localhost:8080/api/boards/64f03b1fea0f1b3e87fd1440
 ### Them Comment
 POST http://localhost:8080/api/comments?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTEyMzk4OCwiZXhwIjoxNjkxMjEwMzg4fQ.Q6ngGBUyAgOv-ppe9MqIPA4udHfOBB7SyIy8uMc06vw
 Content-Type: application/json
