@@ -8,6 +8,7 @@ import {
   faList,
   faPowerOff,
   faTh,
+  faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames/bind";
 import styles from "./Sidebar.module.scss";
@@ -31,7 +32,7 @@ const SidebarLink = ({ to, name, icon, isOpen }) => {
 };
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
   const menuItem = [
@@ -54,6 +55,11 @@ const Sidebar = () => {
       path: "/tasking/binhluan",
       name: "Unknow",
       icon: <FontAwesomeIcon icon={faTh} />,
+    },
+    {
+      path: "/tasking/board",
+      name: "Board",
+      icon: <FontAwesomeIcon icon={faUserGroup} />,
     },
     {
       path: "/tasking",

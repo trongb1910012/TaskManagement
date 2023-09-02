@@ -21,7 +21,7 @@ import {
 import { Pagination } from "@mui/material";
 import cogoToast from "cogo-toast";
 import swal from "sweetalert";
-import { Gantt } from "gantt-task-react";
+// import { Gantt } from "gantt-task-react";
 import "gantt-task-react/dist/index.css";
 const cx = classNames.bind(styles);
 const TableComponent = () => {
@@ -32,14 +32,29 @@ const TableComponent = () => {
   const [sortDirection, setSortDirection] = useState(""); // Track the sorting direction (asc or desc)
   const [editRow, setEditRow] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
-  const PAGE_SIZE = 3; // Số lượng dòng hiển thị trên mỗi trang
+  const PAGE_SIZE = 5; // Số lượng dòng hiển thị trên mỗi trang
   const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  //gantt state
+  // const [tasks, setTasks] = useState([]);
+  //filter
+  const [titleFilter, setTitleFilter] = useState("");
+  const [startDateFilter, setStartDateFilter] = useState("");
+  const [endDateFilter, setEndDateFilter] = useState("");
+  const [isFilterChanged, setIsFilterChanged] = useState(false);
   const getPageData = () => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
-    return sortedData.slice(startIndex, endIndex);
+    const filteredData = sortedData.filter((item) => {
+      const titleMatch = item.title
+        .toLowerCase()
+        .includes(titleFilter.toLowerCase());
+      const startDateMatch = item.startDate.includes(startDateFilter);
+      const endDateMatch = item.endDate.includes(endDateFilter);
+      return titleMatch && startDateMatch && endDateMatch;
+    });
+    return filteredData.slice(startIndex, endIndex);
   };
-  const [tasks, setTasks] = useState([]);
+
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -47,21 +62,21 @@ const TableComponent = () => {
       setData(response.data.projects);
 
       // Create tasks array from the API response
-      const tasksData = response.data.projects.map((project) => ({
-        start: new Date(project.startDate),
-        end: new Date(project.endDate),
-        name: project.title,
-        id: project._id,
-        type: "task",
-        progress: 50,
-        isDisabled: false, // Assuming all tasks are enabled
-        styles: {
-          progressColor: "#7171e8",
-          progressSelectedColor: "#7171e8",
-        },
-      }));
+      // const tasksData = response.data.projects.map((project) => ({
+      //   start: new Date(project.startDate),
+      //   end: new Date(project.endDate),
+      //   name: project.title,
+      //   id: project._id,
+      //   type: "task",
+      //   progress: 50,
+      //   isDisabled: false, // Assuming all tasks are enabled
+      //   styles: {
+      //     progressColor: "#7171e8",
+      //     progressSelectedColor: "#7171e8",
+      //   },
+      // }));
 
-      setTasks(tasksData); // Update the tasks state with the fetched data
+      // setTasks(tasksData); // Update the tasks state with the fetched data
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -69,22 +84,28 @@ const TableComponent = () => {
   useEffect(() => {
     fetchData();
   });
+  //filter
+  const resetFilters = () => {
+    setTitleFilter("");
+    setStartDateFilter("");
+    setEndDateFilter("");
+    setIsFilterChanged(false);
+  };
 
-  // const handleDelete = async (projectId) => {
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     const response = await axiosClient.delete(
-  //       `/projects/${projectId}?token=${token}`
-  //     );
-  //     if (response.status === 200) {
-  //       console.log("Project deleted successfully");
-  //       fetchData(); // Fetch updated data after deletion
-  //     }
-  //   } catch (error) {
-  //     console.error("Error deleting project:", error);
-  //   }
-  // };
+  const getTitleFilter = (value) => {
+    setTitleFilter(value);
+    setIsFilterChanged(true);
+  };
 
+  const getStartDateFilter = (value) => {
+    setStartDateFilter(value);
+    setIsFilterChanged(true);
+  };
+
+  const getEndDateFilter = (value) => {
+    setEndDateFilter(value);
+    setIsFilterChanged(true);
+  };
   const handleDelete = (projectId) => {
     swal({
       title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
@@ -144,9 +165,6 @@ const TableComponent = () => {
       setCurrentPage(1); // Đặt lại trang hiện tại về 1
     }
   };
-  // Inside the return statement, before mapping the data
-  // Inside the return statement, before mapping the data
-  // Inside the return statement, before mapping the data
   const sortedData = [...data];
   if (sortColumn) {
     sortedData.sort((a, b) => {
@@ -197,11 +215,42 @@ const TableComponent = () => {
   const handlePageChange = (event, page) => {
     setCurrentPage(page);
   };
-
   return (
     <div className={cx("wrapper")}>
-      {tasks.length > 0 && <Gantt tasks={tasks} />}
+      {/* {tasks.length > 0 && <Gantt tasks={tasks} />} */}
       <div className={cx("button-group")}>
+        <div className={cx("filter-container")}>
+          <div className={cx("filter-item")}>
+            <input
+              type="text"
+              value={titleFilter}
+              onChange={(e) => getTitleFilter(e.target.value)}
+              placeholder="Filter by title"
+            />
+          </div>
+          <div className={cx("filter-item")}>
+            <input
+              type="date"
+              value={startDateFilter}
+              onChange={(e) => getStartDateFilter(e.target.value)}
+              placeholder="Filter by start date"
+            />
+          </div>
+          <div className={cx("filter-item")}>
+            <input
+              type="date"
+              value={endDateFilter}
+              onChange={(e) => getEndDateFilter(e.target.value)}
+              placeholder="Filter by end date"
+            />
+          </div>
+
+          {isFilterChanged && (
+            <button className={cx("reset-button")} onClick={resetFilters}>
+              Reset Filters
+            </button>
+          )}
+        </div>
         <button className={cx("add-button")} onClick={toggleForm}>
           {showForm ? (
             <FontAwesomeIcon icon={faCancel} />
@@ -214,6 +263,7 @@ const TableComponent = () => {
         <Table className={cx("table")}>
           <TableHead className={cx("table-head")}>
             <TableRow>
+              <TableCell>#</TableCell>
               <TableCell>
                 <Button
                   onClick={() => handleSort("title")}
@@ -288,8 +338,11 @@ const TableComponent = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getPageData().map((item) => (
+            {getPageData().map((item, index) => (
               <TableRow className={cx("table-row")} key={item._id}>
+                <TableCell className={cx("small-font")}>
+                  {(currentPage - 1) * PAGE_SIZE + index + 1}
+                </TableCell>
                 <TableCell className={cx("small-font")}>{item.title}</TableCell>
                 <TableCell className={cx("small-font")}>
                   {item.description}
@@ -326,6 +379,9 @@ const TableComponent = () => {
             ))}
             {showForm && (
               <TableRow className={cx("table-row")}>
+                <TableCell className={cx("small-font")}>
+                  {data.length + 1}
+                </TableCell>
                 <TableCell>
                   <input
                     className={cx("form-input")}
