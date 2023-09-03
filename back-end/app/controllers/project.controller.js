@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const db = require("../models");
 const Project = db.Project;
-
+const Board = db.Board;
 //Lay tat ca ke hoach
 exports.get_KeHoach = async (req, res, next) => {
   try {
@@ -129,7 +129,10 @@ exports.xoa_KeHoach = async (req, res, next) => {
     if (userId !== project.owner.toString()) {
       return next(new BadRequestError(403, "Forbidden"));
     }
+    // Delete all boards associated with the project
+    await Board.deleteMany({ project: projectId });
 
+    // Delete the project itself
     await Project.deleteOne({ _id: projectId });
     return res.status(200).send("Đã xóa thành công kế hoạch");
   } catch (err) {
