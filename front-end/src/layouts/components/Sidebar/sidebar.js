@@ -52,8 +52,8 @@ const Sidebar = () => {
       icon: <FontAwesomeIcon icon={faClipboard} />,
     },
     {
-      path: "/tasking/binhluan",
-      name: "Unknow",
+      path: "/tasking/task",
+      name: "Task",
       icon: <FontAwesomeIcon icon={faTh} />,
     },
     {
