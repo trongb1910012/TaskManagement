@@ -68,7 +68,12 @@ exports.get_AllBoards = async (req, res, next) => {
         select: "fullname",
       });
 
-    return res.status(200).json(boards);
+    const formattedBoards = boards.map((board) => ({
+      ...board._doc,
+      createdAt: board.createdAt.toISOString().split("T")[0],
+    }));
+
+    return res.status(200).json(formattedBoards);
   } catch (err) {
     console.error(err);
     return next(
@@ -227,7 +232,12 @@ exports.get_Boards_byToken = async (req, res, next) => {
         select: "fullname",
       });
 
-    return res.status(200).json(boards);
+    const formattedBoards = boards.map((board) => ({
+      ...board._doc,
+      createdAt: board.createdAt.toISOString().split("T")[0],
+    }));
+
+    return res.status(200).json(formattedBoards);
   } catch (err) {
     console.error(err);
     return next(

@@ -1,20 +1,15 @@
 import React from "react";
-import { Grid } from "@material-ui/core";
-import TableComponent from "./project";
-import classNames from "classnames/bind";
-import styles from "./projectpage.module.scss";
-const cx = classNames.bind(styles);
-const CustomGrid = ({ items }) => {
+import ProjectTable from "./ProjectTable";
+import ProjectList from "../TaskPage/taskTable";
+const ProjectPage = () => {
   return (
-    <div className={cx("wrapper")}>
-      <Grid container spacing={5}>
-        <Grid item xs={12}>
-          <TableComponent></TableComponent>
-        </Grid>
-        <Grid item xs={3}></Grid>
-      </Grid>
+    <div>
+      <h1>Project Page</h1>
+      <ProjectTable />
+      <h1>All Project Page</h1>
+      <ProjectList />
     </div>
   );
 };
 
-export default CustomGrid;
+export default ProjectPage;

@@ -1,40 +1,11 @@
-.task-table {
-  width: 90%;
-  border-collapse: collapse;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-}
-
-.task-table-header {
-  display: flex;
-  align-items: center;
-  background-color: #f5f6f8;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 8px;
-  font-weight: bold;
-}
-
-.task-table-cell {
-  flex: 1;
-  padding: 8px;
-  border-bottom: 1px solid #e0e0e0;
-}
-.task-table-row{
-    display: flex;
-}
-.task-table-row:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.task-table-cell:last-child {
-  text-align: right;
-}
-
-.task-table-cell a {
-  color: #0366d6;
-  text-decoration: none;
-}
-
-.task-table-cell a:hover {
-  text-decoration: underline;
+.ag-theme-alpine {
+    --ag-header-height: 50px;
+    --ag-header-foreground-color: white;
+    --ag-header-background-color: #7171e8;
+    /* then add back a border between rows */
+    --ag-row-border-style: solid;
+    --ag-row-border-width: 2px;
+    --ag-row-border-color: rgb(150, 150, 200);
+    --ag-selected-row-background-color: rgb(113, 113, 232,0.1);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }

@@ -4,29 +4,28 @@ import "ag-grid-enterprise";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
-import "./TaskTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPenToSquare,
+  faSave,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
-var checkboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
-
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
 };
-
-const ProjectList = () => {
+const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
-
+  const [newRowData, setNewRowData] = useState({
+    startDate: new Date().toISOString().substring(0, 10),
+  });
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axiosClient.get(`/projects`);
+      const response = await axiosClient.get(`/projects/nv?token=${token}`);
       setProjects(response.data.projects);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -36,6 +35,38 @@ const ProjectList = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  const handleRowSubmit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axiosClient.post(
+        `/projects?token=${token}`,
+        newRowData
+      );
+
+      console.log(response.data);
+      cogoToast.success("Tạo hàng mới thành công");
+
+      fetchData();
+      setNewRowData({}); // Đặt lại dữ liệu hàng mới về trạng thái ban đầu
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // const handleAddRow = () => {
+  //   const emptyRow = {
+  //     title: "",
+  //     description: "",
+  //     startDate: "",
+  //     endDate: "",
+  //     status: "",
+  //     budget: "",
+  //     owner: {
+  //       fullname: "",
+  //     },
+  //   };
+
+  //   setProjects([...projects, emptyRow]);
+  // };
   const handleEdit = async (rowData) => {
     try {
       const token = localStorage.getItem("token");
@@ -78,7 +109,6 @@ const ProjectList = () => {
       field: "title",
       sortable: true,
       filter: true,
-      checkboxSelection: checkboxSelection,
       headerCheckboxSelection: headerCheckboxSelection,
     },
     {
@@ -107,38 +137,43 @@ const ProjectList = () => {
       filter: true,
     },
     {
-      headerName: "Owner",
-      field: "owner.fullname",
-      sortable: true,
-      filter: true,
-    },
-    {
       headerName: "Action",
       field: "action",
       cellRenderer: (params) => (
         <div>
-          <IconButton
-            onClick={() => handleEdit(params.data)}
-            variant="outlined"
-            color="primary"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </IconButton>
-          <IconButton
-            onClick={() => handleDelete(params.data)}
-            variant="outlined"
-            color="error"
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </IconButton>
+          {params.data !== newRowData && (
+            <>
+              <IconButton
+                onClick={() => handleEdit(params.data)}
+                variant="outlined"
+                color="primary"
+              >
+                <FontAwesomeIcon icon={faPenToSquare} />
+              </IconButton>
+              <IconButton
+                onClick={() => handleDelete(params.data)}
+                variant="outlined"
+                color="error"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </IconButton>
+            </>
+          )}
+
+          {params.data === newRowData && (
+            <IconButton
+              onClick={handleRowSubmit}
+              variant="outlined"
+              color="primary"
+            >
+              <FontAwesomeIcon icon={faSave} />
+            </IconButton>
+          )}
         </div>
       ),
     },
   ];
 
-  // const onFilterTextBoxChanged = (event) => {
-  //   gridApi.setQuickFilter(event.target.value);
-  // };
   const autoGroupColumnDef = useMemo(() => {
     return {
       headerName: "Group",
@@ -179,7 +214,7 @@ const ProjectList = () => {
       >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={projects}
+          rowData={[...projects, newRowData]}
           defaultColDef={defaultColDef}
           onGridReady={fetchData}
           pagination={true}
@@ -193,4 +228,4 @@ const ProjectList = () => {
   );
 };
 
-export default ProjectList;
+export default ProjectTable;
