@@ -223,30 +223,33 @@ exports.get_Boards_byToken = async (req, res, next) => {
     const decodedToken = jwt.verify(token, config.jwt.secret);
     const userId = decodedToken.id;
 
+    // Find all boards where the logged-in user is either the owner of the project or the leader
     const boards = await Board.find({
+      $or: [
+        { board_leader: userId }, // Logged-in user is the leader of the board
+        { project: { $in: await getProjectsOwnedByUser(userId) } }, // Logged-in user is the owner of the associated project
+      ],
       ...condition,
-      board_leader: userId,
     });
 
-    const projectIds = []; // Mảng tạm thời lưu danh sách ID dự án
+    const projectIds = [];
     const userIds = [];
     const formattedBoards = boards.map((board) => {
       projectIds.push(board.project._id);
-      userIds.push(board.board_leader._id); // Lưu ID dự án vào mảng tạm thời
+      userIds.push(board.board_leader._id);
       return {
         ...board._doc,
         createdAt: board.createdAt.toISOString().split("T")[0],
       };
     });
 
-    const projects = await Project.find({ _id: { $in: projectIds } }); // Truy vấn danh sách dự án theo ID
-
-    const projectMap = {}; // Đối tượng tạm thời lưu thông tin dự án theo ID
+    const projects = await Project.find({ _id: { $in: projectIds } });
+    const projectMap = {};
     projects.forEach((project) => {
-      projectMap[project._id.toString()] = project.title; // Gán thông tin dự án vào đối tượng tạm thời theo ID
+      projectMap[project._id.toString()] = project.title;
     });
-    const users = await User.find({ _id: { $in: userIds } }); // Truy vấn danh sách dự án theo ID
 
+    const users = await User.find({ _id: { $in: userIds } });
     const userMap = {};
     users.forEach((user) => {
       userMap[user._id.toString()] = user.fullname;
@@ -255,7 +258,7 @@ exports.get_Boards_byToken = async (req, res, next) => {
     formattedBoards.forEach((board) => {
       const projectId = board.project._id.toString();
       board.projectName = projectMap[projectId];
-      board.leaderName = userMap[userId];
+      board.leaderName = userMap[board.board_leader._id.toString()];
     });
 
     return res.status(200).json(formattedBoards);
@@ -266,3 +269,7 @@ exports.get_Boards_byToken = async (req, res, next) => {
     );
   }
 };
+async function getProjectsOwnedByUser(userId) {
+  const projects = await Project.find({ owner: userId });
+  return projects.map((project) => project._id);
+}

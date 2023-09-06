@@ -11,6 +11,7 @@ const CreateBoardForm = ({ onBoardCreated }) => {
     board_leader: "",
   });
   const [dSKeHoach, setDSKeHoach] = useState([]);
+  const [userList, setUserList] = useState([]);
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -32,7 +33,13 @@ const CreateBoardForm = ({ onBoardCreated }) => {
       cogoToast.error("Cần điền các thông tin trống"); // Xử lý lỗi một cách phù hợp
     }
   };
-
+  useEffect(() => {
+    const getListUser = async () => {
+      const res = await axiosClient.get(`/users`);
+      setUserList(res.data);
+    };
+    getListUser();
+  }, []);
   useEffect(() => {
     const getListKeHoach = async () => {
       const resKH = await axiosClient.get(
@@ -79,7 +86,7 @@ const CreateBoardForm = ({ onBoardCreated }) => {
             value={formData.project}
             onChange={handleChange}
           >
-            <option value="">-- Chọn kế hoạch --</option>
+            <option value="">-- Choose project --</option>
             {dSKeHoach.map((kh) => (
               <option key={kh._id} value={kh._id}>
                 {kh.title}
@@ -88,18 +95,21 @@ const CreateBoardForm = ({ onBoardCreated }) => {
           </select>
         </div>
         <div>
-          <label className={cx("pop-form-label")} htmlFor="boardName">
-            Board Leader:
-          </label>
-          <input
+          <select
             className={cx("pop-form-input")}
             type="text"
-            id="board_leader"
             name="board_leader"
+            id="board_leader"
             value={formData.board_leader}
             onChange={handleChange}
-            required
-          />
+          >
+            <option value="">-- Choose user --</option>
+            {userList.map((user) => (
+              <option key={user._id} value={user._id}>
+                {user.fullname}
+              </option>
+            ))}
+          </select>
         </div>
         <button className={cx("submit-button")} type="submit">
           Create Board
