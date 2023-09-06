@@ -12,20 +12,21 @@ import {
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
+import CreateBoardForm from "./CreateBoardForm";
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
 };
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
-  const [newRowData, setNewRowData] = useState({
-    startDate: new Date().toISOString().substring(0, 10),
-  });
+  const [newRowData, setNewRowData] = useState({});
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axiosClient.get(`/projects/nv?token=${token}`);
-      setProjects(response.data.projects);
+      const response = await axiosClient.get(
+        `/boards/cv_leader?token=${token}`
+      );
+      setProjects(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -34,11 +35,12 @@ const ProjectTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
   const handleRowSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.post(
-        `/projects?token=${token}`,
+        `/boards?token=${token}`,
         newRowData
       );
 
@@ -70,7 +72,7 @@ const ProjectTable = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.put(
-        `/projects/${rowData._id}?token=${token}`,
+        `/boards/${rowData._id}?token=${token}`,
         rowData
       );
 
@@ -84,7 +86,7 @@ const ProjectTable = () => {
 
   const handleDelete = (projectId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
+      title: `Bạn chắc chắn muốn xóa công việc ${projectId.board_name} này`,
       text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
       icon: "warning",
       buttons: true,
@@ -92,8 +94,8 @@ const ProjectTable = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const token = localStorage.getItem("token");
-        await axiosClient.delete(`/projects/${projectId._id}?token=${token}`);
-        swal(`${projectId.title.toUpperCase()} đã được xóa`, {
+        await axiosClient.delete(`/boards/${projectId._id}?token=${token}`);
+        swal(`${projectId.board_name} đã được xóa`, {
           icon: "success",
         });
         await fetchData();
@@ -104,36 +106,32 @@ const ProjectTable = () => {
   };
   const columnDefs = [
     {
-      headerName: "Title",
-      field: "title",
+      headerName: "Name",
+      field: "board_name",
       sortable: true,
       filter: true,
       headerCheckboxSelection: headerCheckboxSelection,
     },
     {
-      headerName: "Description",
-      field: "description",
+      headerName: "Project",
+      field: "projectName",
       sortable: true,
       filter: true,
+      editable: false,
     },
     {
-      headerName: "Start Date",
-      field: "startDate",
+      headerName: "Create Date",
+      field: "createdAt",
       sortable: true,
       filter: true,
-    },
-    { headerName: "End Date", field: "endDate", sortable: true, filter: true },
-    {
-      headerName: "Status",
-      field: "status",
-      sortable: true,
-      filter: true,
+      editable: false,
     },
     {
-      headerName: "Budget",
-      field: "budget",
+      headerName: "Leader",
+      field: "leaderName",
       sortable: true,
       filter: true,
+      editable: false,
     },
     {
       headerName: "Action",
@@ -209,7 +207,7 @@ const ProjectTable = () => {
     <div>
       <div
         className="ag-theme-alpine"
-        style={{ height: "350px", width: "60%" }}
+        style={{ height: "350px", width: "100%" }}
       >
         <AgGridReact
           columnDefs={columnDefs}
@@ -223,6 +221,7 @@ const ProjectTable = () => {
           paginationPageSize={5}
         ></AgGridReact>
       </div>
+      <CreateBoardForm onBoardCreated={fetchData} />
     </div>
   );
 };

@@ -7,6 +7,7 @@ const db = require("../models");
 const Board = db.Board;
 const Project = db.Project;
 const Task = db.Task;
+const User = db.User;
 // Them bang cong viec
 exports.createBoard = async (req, res, next) => {
   if (!req.body.board_name) {
@@ -222,20 +223,40 @@ exports.get_Boards_byToken = async (req, res, next) => {
     const decodedToken = jwt.verify(token, config.jwt.secret);
     const userId = decodedToken.id;
 
-    const boards = await Board.find({ ...condition, board_leader: userId })
-      .populate({
-        path: "project",
-        select: "title",
-      })
-      .populate({
-        path: "board_leader",
-        select: "fullname",
-      });
+    const boards = await Board.find({
+      ...condition,
+      board_leader: userId,
+    });
 
-    const formattedBoards = boards.map((board) => ({
-      ...board._doc,
-      createdAt: board.createdAt.toISOString().split("T")[0],
-    }));
+    const projectIds = []; // Mảng tạm thời lưu danh sách ID dự án
+    const userIds = [];
+    const formattedBoards = boards.map((board) => {
+      projectIds.push(board.project._id);
+      userIds.push(board.board_leader._id); // Lưu ID dự án vào mảng tạm thời
+      return {
+        ...board._doc,
+        createdAt: board.createdAt.toISOString().split("T")[0],
+      };
+    });
+
+    const projects = await Project.find({ _id: { $in: projectIds } }); // Truy vấn danh sách dự án theo ID
+
+    const projectMap = {}; // Đối tượng tạm thời lưu thông tin dự án theo ID
+    projects.forEach((project) => {
+      projectMap[project._id.toString()] = project.title; // Gán thông tin dự án vào đối tượng tạm thời theo ID
+    });
+    const users = await User.find({ _id: { $in: userIds } }); // Truy vấn danh sách dự án theo ID
+
+    const userMap = {};
+    users.forEach((user) => {
+      userMap[user._id.toString()] = user.fullname;
+    });
+
+    formattedBoards.forEach((board) => {
+      const projectId = board.project._id.toString();
+      board.projectName = projectMap[projectId];
+      board.leaderName = userMap[userId];
+    });
 
     return res.status(200).json(formattedBoards);
   } catch (err) {
