@@ -184,7 +184,9 @@ exports.getBoardsByProjectId = async (req, res) => {
   try {
     const boards = await Board.find({
       project: mongoose.Types.ObjectId(projectId),
-    });
+    })
+      .populate({ path: "project", select: "title" })
+      .populate({ path: "board_leader", select: "fullname" });
     res.status(200).json(boards);
   } catch (error) {
     res.status(500).json({ message: error.message });

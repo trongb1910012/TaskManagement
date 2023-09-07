@@ -44,7 +44,7 @@ const Sidebar = () => {
     {
       path: "/tasking/employee",
       name: "Employee",
-      icon: <FontAwesomeIcon icon={faList} />,
+      icon: <FontAwesomeIcon icon={faUserGroup} />,
     },
     {
       path: "/tasking/project",
@@ -54,12 +54,12 @@ const Sidebar = () => {
     {
       path: "/tasking/task",
       name: "Task",
-      icon: <FontAwesomeIcon icon={faTh} />,
+      icon: <FontAwesomeIcon icon={faList} />,
     },
     {
       path: "/tasking/board",
       name: "Board",
-      icon: <FontAwesomeIcon icon={faUserGroup} />,
+      icon: <FontAwesomeIcon icon={faTh} />,
     },
     {
       path: "/tasking",

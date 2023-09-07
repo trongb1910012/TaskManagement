@@ -8,7 +8,7 @@ import Menu from "@mui/material/Menu";
 
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-
+import { Link } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import WorkIcon from "@mui/icons-material/Work";
@@ -102,11 +102,29 @@ function Header() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              {settings.map((setting) => {
+                if (setting === "Logout") {
+                  return (
+                    <MenuItem
+                      key={setting}
+                      onClick={() => (window.location.href = "/")}
+                    >
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  );
+                } else {
+                  return (
+                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                      <Link
+                        to={`/${setting.toLowerCase()}`}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        <Typography textAlign="center">{setting}</Typography>
+                      </Link>
+                    </MenuItem>
+                  );
+                }
+              })}
             </Menu>
           </Box>
         </Toolbar>

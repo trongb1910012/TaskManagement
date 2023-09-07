@@ -1,0 +1,37 @@
+.popup-form {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    border: 2px solid #7171e8;
+    margin-top: 50px;
+    width: 50%;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+}
+
+
+.popup-form label {
+    color: #7171e8;
+    font-weight: 700;
+}
+
+.popup-form input,
+.popup-form select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.popup-form .submit-button {
+    width: 100%;
+    background-color: #7171e8;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}

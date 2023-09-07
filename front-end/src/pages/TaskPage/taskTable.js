@@ -9,6 +9,7 @@ import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
+import AddTasksForm from "./AddTaskForm";
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
@@ -25,8 +26,8 @@ const ProjectList = () => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axiosClient.get(`/projects`);
-      setProjects(response.data.projects);
+      const response = await axiosClient.get(`/tasks/nv?token=${token}`);
+      setProjects(response.data.tasks);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -60,8 +61,7 @@ const ProjectList = () => {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const token = localStorage.getItem("token");
-        await axiosClient.delete(`/projects/${projectId._id}?token=${token}`);
+        await axiosClient.delete(`/tasks/${projectId._id}`);
         swal(`${projectId.title.toUpperCase()} đã được xóa`, {
           icon: "success",
         });
@@ -87,12 +87,11 @@ const ProjectList = () => {
       filter: true,
     },
     {
-      headerName: "Start Date",
-      field: "startDate",
+      headerName: "Due Date",
+      field: "dueDate",
       sortable: true,
       filter: true,
     },
-    { headerName: "End Date", field: "endDate", sortable: true, filter: true },
     {
       headerName: "Status",
       field: "status",
@@ -100,20 +99,22 @@ const ProjectList = () => {
       filter: true,
     },
     {
-      headerName: "Budget",
-      field: "budget",
+      headerName: "Members",
+      field: "members",
       sortable: true,
       filter: true,
-    },
-    {
-      headerName: "Owner",
-      field: "owner.fullname",
-      sortable: true,
-      filter: true,
+      cellRenderer: (params) => {
+        const members = params.value.map((member) => member.fullname);
+        return members.join(", ");
+      },
+      autoHeight: true,
+      cellStyle: { "white-space": "normal" },
     },
     {
       headerName: "Action",
       field: "action",
+      sortable: false,
+      filter: false,
       cellRenderer: (params) => (
         <div>
           <IconButton
@@ -174,7 +175,7 @@ const ProjectList = () => {
     <div>
       <div
         className="ag-theme-alpine"
-        style={{ height: "350px", width: "60%" }}
+        style={{ height: "350px", width: "100%" }}
       >
         <AgGridReact
           columnDefs={columnDefs}
@@ -187,6 +188,9 @@ const ProjectList = () => {
           rowGroupPanelShow={"always"}
           paginationPageSize={5}
         ></AgGridReact>
+      </div>
+      <div>
+        <AddTasksForm onBoardCreated={fetchData} />
       </div>
     </div>
   );

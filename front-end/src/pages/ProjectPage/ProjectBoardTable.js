@@ -5,7 +5,6 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEye,
   faPenToSquare,
   faSave,
   faTrash,
@@ -13,24 +12,17 @@ import {
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
-import ProjectBoardTable from "./ProjectBoardTable";
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
 };
-const ProjectTable = () => {
+const ProjectBoardTable = ({ projectId }) => {
   const [projects, setProjects] = useState([]);
-  const [newRowData, setNewRowData] = useState({
-    startDate: new Date().toISOString().substring(0, 10),
-  });
-
-  const [isProjectTableOpen, setIsProjectTableOpen] = useState(false);
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [newRowData, setNewRowData] = useState({});
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.get(`/projects/nv?token=${token}`);
-      setProjects(response.data.projects);
+      const response = await axiosClient.get(`/boards/${projectId}`);
+      setProjects(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -38,12 +30,14 @@ const ProjectTable = () => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const handleRowSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.post(
-        `/projects?token=${token}`,
+        `/boards?token=${token}`,
         newRowData
       );
 
@@ -75,7 +69,7 @@ const ProjectTable = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.put(
-        `/projects/${rowData._id}?token=${token}`,
+        `/boards/${rowData._id}?token=${token}`,
         rowData
       );
 
@@ -89,7 +83,7 @@ const ProjectTable = () => {
 
   const handleDelete = (projectId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
+      title: `Bạn chắc chắn muốn xóa công việc ${projectId.board_name} này`,
       text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
       icon: "warning",
       buttons: true,
@@ -97,8 +91,8 @@ const ProjectTable = () => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const token = localStorage.getItem("token");
-        await axiosClient.delete(`/projects/${projectId._id}?token=${token}`);
-        swal(`${projectId.title.toUpperCase()} đã được xóa`, {
+        await axiosClient.delete(`/boards/${projectId._id}?token=${token}`);
+        swal(`${projectId.board_name} đã được xóa`, {
           icon: "success",
         });
         await fetchData();
@@ -107,43 +101,34 @@ const ProjectTable = () => {
       }
     });
   };
-  const handleOpenTable = (projectId) => {
-    console.log(projectId);
-    setIsProjectTableOpen(!isProjectTableOpen);
-    setSelectedProjectId(projectId);
-  };
   const columnDefs = [
     {
-      headerName: "Title",
-      field: "title",
+      headerName: "Name",
+      field: "board_name",
       sortable: true,
       filter: true,
       headerCheckboxSelection: headerCheckboxSelection,
     },
     {
-      headerName: "Description",
-      field: "description",
+      headerName: "Project",
+      field: "project.title",
       sortable: true,
       filter: true,
+      editable: false,
     },
     {
-      headerName: "Start Date",
-      field: "startDate",
+      headerName: "Create Date",
+      field: "createdAt",
       sortable: true,
       filter: true,
-    },
-    { headerName: "End Date", field: "endDate", sortable: true, filter: true },
-    {
-      headerName: "Status",
-      field: "status",
-      sortable: true,
-      filter: true,
+      editable: false,
     },
     {
-      headerName: "Budget",
-      field: "budget",
+      headerName: "Leader",
+      field: "board_leader.fullname",
       sortable: true,
       filter: true,
+      editable: false,
     },
     {
       headerName: "Action",
@@ -165,12 +150,6 @@ const ProjectTable = () => {
                 color="error"
               >
                 <FontAwesomeIcon icon={faTrash} />
-              </IconButton>
-              <IconButton
-                onClick={() => handleOpenTable(params.data._id)}
-                variant="outlined"
-              >
-                <FontAwesomeIcon icon={faEye} />
               </IconButton>
             </>
           )}
@@ -239,14 +218,8 @@ const ProjectTable = () => {
           paginationPageSize={5}
         ></AgGridReact>
       </div>
-      <div>
-        {" "}
-        {isProjectTableOpen && (
-          <ProjectBoardTable projectId={selectedProjectId} />
-        )}
-      </div>
     </div>
   );
 };
 
-export default ProjectTable;
+export default ProjectBoardTable;
