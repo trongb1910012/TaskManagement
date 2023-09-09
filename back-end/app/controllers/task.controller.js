@@ -220,7 +220,7 @@ exports.get_CongViec_Nv = async (req, res, next) => {
       select: "fullname",
     });
     const formattedTasks = tasks.map((task) => {
-      const formattedDate = new Date(task.dueDate).toLocaleDateString("en-GB");
+      const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       return { ...task._doc, dueDate: formattedDate };
     });
     const response = {
@@ -252,10 +252,8 @@ exports.updateTaskStatus = async (req, res) => {
       .status(200)
       .json({ message: "Cập nhật trạng thái công việc thành công" });
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        error: "Đã xảy ra lỗi trong quá trình cập nhật trạng thái công việc",
-      });
+    res.status(500).json({
+      error: "Đã xảy ra lỗi trong quá trình cập nhật trạng thái công việc",
+    });
   }
 };

@@ -37,6 +37,7 @@ const ProjectList = () => {
     fetchData();
   }, []);
   const handleEdit = async (rowData) => {
+    console.log(rowData);
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.put(
@@ -71,6 +72,10 @@ const ProjectList = () => {
       }
     });
   };
+  function formatObjectData(object) {
+    // Assuming object has properties 'name' and 'age'
+    return `Name: ${object.fullname}, Id: ${object._id}`;
+  }
   const columnDefs = [
     {
       headerName: "Title",
@@ -103,18 +108,20 @@ const ProjectList = () => {
       field: "members",
       sortable: true,
       filter: true,
-      cellRenderer: (params) => {
-        const members = params.value.map((member) => member.fullname);
-        return members.join(", ");
+      valueGetter: function (params) {
+        return params.data.members.map(function (member) {
+          return member.fullname;
+        });
       },
-      autoHeight: true,
-      cellStyle: { "white-space": "normal" },
+      cellRenderer: "agGroupCellRenderer",
     },
     {
       headerName: "Action",
       field: "action",
       sortable: false,
       filter: false,
+      editable: false,
+      rowGroup: false,
       cellRenderer: (params) => (
         <div>
           <IconButton
@@ -161,8 +168,8 @@ const ProjectList = () => {
   const defaultColDef = useMemo(() => {
     return {
       editable: true,
-      enableRowGroup: true,
       enablePivot: true,
+      enableRowGroup: true,
       enableValue: true,
       sortable: true,
       resizable: true,
@@ -184,8 +191,6 @@ const ProjectList = () => {
           onGridReady={fetchData}
           pagination={true}
           pivotPanelShow={"always"}
-          autoGroupColumnDef={autoGroupColumnDef}
-          rowGroupPanelShow={"always"}
           paginationPageSize={5}
         ></AgGridReact>
       </div>

@@ -26,6 +26,7 @@ const ProjectTable = () => {
 
   const [isProjectTableOpen, setIsProjectTableOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -108,7 +109,6 @@ const ProjectTable = () => {
     });
   };
   const handleOpenTable = (projectId) => {
-    console.log(projectId);
     setIsProjectTableOpen(!isProjectTableOpen);
     setSelectedProjectId(projectId);
   };

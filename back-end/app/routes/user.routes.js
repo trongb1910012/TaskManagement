@@ -6,6 +6,6 @@ module.exports = (app) => {
 
   router.get("/", users.get_all_user);
   router.get("/dsAdmin", users.get_all_admin);
-
+  router.get("/userinfo", users.get_user_info);
   app.use("/api/users", router);
 };

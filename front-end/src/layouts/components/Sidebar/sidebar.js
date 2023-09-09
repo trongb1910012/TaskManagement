@@ -52,15 +52,16 @@ const Sidebar = () => {
       icon: <FontAwesomeIcon icon={faClipboard} />,
     },
     {
-      path: "/tasking/task",
-      name: "Task",
-      icon: <FontAwesomeIcon icon={faList} />,
-    },
-    {
       path: "/tasking/board",
       name: "Board",
       icon: <FontAwesomeIcon icon={faTh} />,
     },
+    {
+      path: "/tasking/task",
+      name: "Task",
+      icon: <FontAwesomeIcon icon={faList} />,
+    },
+
     {
       path: "/tasking",
       name: "Log Out",

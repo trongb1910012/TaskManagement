@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,6 +13,8 @@ import {
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
+import { LicenseManager } from "ag-grid-enterprise";
+LicenseManager.setLicenseKey(`AG-047238`);
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
@@ -168,25 +171,6 @@ const ProjectBoardTable = ({ projectId }) => {
     },
   ];
 
-  const autoGroupColumnDef = useMemo(() => {
-    return {
-      headerName: "Group",
-      minWidth: 170,
-      field: "Title",
-      valueGetter: (params) => {
-        if (params.node.group) {
-          return params.node.key;
-        } else {
-          return params.data[params.colDef.field];
-        }
-      },
-      headerCheckboxSelection: true,
-      cellRenderer: "agGroupCellRenderer",
-      cellRendererParams: {
-        checkbox: true,
-      },
-    };
-  }, []);
   const defaultColDef = useMemo(() => {
     return {
       editable: true,
@@ -202,18 +186,18 @@ const ProjectBoardTable = ({ projectId }) => {
   }, []);
   return (
     <div>
+      <div>{projectId}</div>
       <div
         className="ag-theme-alpine"
-        style={{ height: "350px", width: "100%" }}
+        style={{ height: "400px", width: "50%" }}
       >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={[...projects, newRowData]}
+          rowData={projects}
           defaultColDef={defaultColDef}
           onGridReady={fetchData}
           pagination={true}
           pivotPanelShow={"always"}
-          autoGroupColumnDef={autoGroupColumnDef}
           rowGroupPanelShow={"always"}
           paginationPageSize={5}
         ></AgGridReact>

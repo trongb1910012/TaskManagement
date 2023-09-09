@@ -14,7 +14,7 @@ POST http://localhost:8080/api/auth/signin
 Content-Type: application/json
 
 {
-    "username": "thang111",
+    "username": "thang111", 
     "password":"123123"
 }
 ###Doi quyen cua nguoi dung
@@ -24,6 +24,8 @@ Content-Type: application/json
 {
     "role":"admin"
 }
+### Thong tin nguoi dung
+GET http://localhost:8080/api/users/userinfo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5NDIzNTczNiwiZXhwIjoxNjk0MzIyMTM2fQ.ZQnedTnJtuldrC8FGNBoVBwTm0mONyX53lQkFpTdyEk
 ### Doi mat khau
 PUT http://localhost:8080/api/auth/64b631c31de14e3e3eb41813/password
 Content-Type: application/json
