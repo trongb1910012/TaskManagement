@@ -171,25 +171,25 @@ const ProjectTable = () => {
     },
   ];
 
-  const autoGroupColumnDef = useMemo(() => {
-    return {
-      headerName: "Group",
-      minWidth: 170,
-      field: "Title",
-      valueGetter: (params) => {
-        if (params.node.group) {
-          return params.node.key;
-        } else {
-          return params.data[params.colDef.field];
-        }
-      },
-      headerCheckboxSelection: true,
-      cellRenderer: "agGroupCellRenderer",
-      cellRendererParams: {
-        checkbox: true,
-      },
-    };
-  }, []);
+  // const autoGroupColumnDef = useMemo(() => {
+  //   return {
+  //     headerName: "Group",
+  //     minWidth: 170,
+  //     field: "Title",
+  //     valueGetter: (params) => {
+  //       if (params.node.group) {
+  //         return params.node.key;
+  //       } else {
+  //         return params.data[params.colDef.field];
+  //       }
+  //     },
+  //     headerCheckboxSelection: true,
+  //     cellRenderer: "agGroupCellRenderer",
+  //     cellRendererParams: {
+  //       checkbox: true,
+  //     },
+  //   };
+  // }, []);
   const defaultColDef = useMemo(() => {
     return {
       editable: true,
@@ -211,12 +211,12 @@ const ProjectTable = () => {
       >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={[...projects, newRowData]}
+          rowData={projects}
           defaultColDef={defaultColDef}
           onGridReady={fetchData}
           pagination={true}
           pivotPanelShow={"always"}
-          autoGroupColumnDef={autoGroupColumnDef}
+          // autoGroupColumnDef={autoGroupColumnDef}
           rowGroupPanelShow={"always"}
           paginationPageSize={5}
         ></AgGridReact>

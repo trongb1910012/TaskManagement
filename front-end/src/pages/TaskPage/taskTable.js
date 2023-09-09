@@ -22,7 +22,8 @@ var headerCheckboxSelection = function (params) {
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
-
+  const isValid = projects.every((project) => project.members.length > 0);
+  console.log(isValid);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -72,10 +73,6 @@ const ProjectList = () => {
       }
     });
   };
-  function formatObjectData(object) {
-    // Assuming object has properties 'name' and 'age'
-    return `Name: ${object.fullname}, Id: ${object._id}`;
-  }
   const columnDefs = [
     {
       headerName: "Title",
@@ -146,25 +143,6 @@ const ProjectList = () => {
   // const onFilterTextBoxChanged = (event) => {
   //   gridApi.setQuickFilter(event.target.value);
   // };
-  const autoGroupColumnDef = useMemo(() => {
-    return {
-      headerName: "Group",
-      minWidth: 170,
-      field: "Title",
-      valueGetter: (params) => {
-        if (params.node.group) {
-          return params.node.key;
-        } else {
-          return params.data[params.colDef.field];
-        }
-      },
-      headerCheckboxSelection: true,
-      cellRenderer: "agGroupCellRenderer",
-      cellRendererParams: {
-        checkbox: true,
-      },
-    };
-  }, []);
   const defaultColDef = useMemo(() => {
     return {
       editable: true,

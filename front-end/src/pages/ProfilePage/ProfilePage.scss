@@ -1,0 +1,36 @@
+.main {
+    margin-top: 10px;
+    margin-left: 10%;
+    font-size: 30px;
+    padding: 10px 10px;
+    width: 58%;
+}
+
+.main h2 {
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.main .card {
+    background-color: #fff;
+    border-radius: 18px;
+    box-shadow: 1px 1px 8px 0 grey;
+    height: auto;
+    margin-bottom: 5px;
+    padding: 20px 0 20px 50px;
+}
+
+.main .card table {
+    border: none;
+    font-size: 16px;
+    height: 100px;
+    width: 80%;
+}
+
+.student-profile {
+    border: 1px solid rgb(197, 197, 197);
+    margin: 20px;
+    border-radius: 18px;
+}

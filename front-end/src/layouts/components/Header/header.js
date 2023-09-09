@@ -116,7 +116,7 @@ function Header() {
                   return (
                     <MenuItem key={setting} onClick={handleCloseUserMenu}>
                       <Link
-                        to={`/${setting.toLowerCase()}`}
+                        to={`/tasking/${setting.toLowerCase()}`}
                         style={{ textDecoration: "none", color: "inherit" }}
                       >
                         <Typography textAlign="center">{setting}</Typography>

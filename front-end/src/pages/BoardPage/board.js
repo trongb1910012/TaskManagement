@@ -3,7 +3,7 @@ import ProjectTable from "./BoardTable";
 const ProjectPage = () => {
   return (
     <div>
-      <h1>Project Page</h1>
+      <h1>Board</h1>
       <ProjectTable />
     </div>
   );

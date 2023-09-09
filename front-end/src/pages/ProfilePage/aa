@@ -1,0 +1,80 @@
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  Avatar,
+  Typography,
+  Button,
+  Link,
+} from "@mui/material";
+import axiosClient from "../../api/api";
+import "./ProfilePage.scss";
+import classNames from "classnames/bind";
+import styles from "./ProfilePage.scss";
+const cx = classNames.bind(styles);
+const Profile = () => {
+  const [userinfo, setUserinfo] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axiosClient.get(`/users/userinfo?token=${token}`);
+      setUserinfo(response.data.userinfo);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={6} md={9}>
+        <div class="main">
+          <h2>IDENTITY</h2>
+          <div class="card">
+            <div class="card-body">
+              <i class="fa fa-pen fa-xs edit"></i>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Name</td>
+                    <td>:</td>
+                    <td>{userinfo.fullname}</td>
+                  </tr>
+                  <tr>
+                    <td>Email</td>
+                    <td>:</td>
+                    <td>{userinfo.email}</td>
+                  </tr>
+                  <tr>
+                    <td>Role</td>
+                    <td>:</td>
+                    <td>{userinfo.role}</td>
+                  </tr>
+                  <tr>
+                    <td>Username</td>
+                    <td>:</td>
+                    <td>{userinfo.username}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </Grid>
+      <Grid item xs={12} sm={6} md={3}>
+        <div className={cx("main")}>
+          <h2>IDENTITY</h2>
+          <div className={cx("card")}></div>
+        </div>
+      </Grid>
+    </Grid>
+  );
+};
+
+export default Profile;
