@@ -33,7 +33,10 @@ const StudentProfile = () => {
       <div className="container">
         <div className="row">
           <div className="col-lg-4">
-            <Card sx={{ boxShadow: "none", marginBottom: "1rem" }}>
+            <Card
+              className={cx("card")}
+              sx={{ boxShadow: "none", marginBottom: "1rem" }}
+            >
               <CardHeader
                 sx={{ background: "transparent", textAlign: "center" }}
                 avatar={
@@ -73,32 +76,56 @@ const StudentProfile = () => {
                   </h3>
                 }
               />
-              <CardContent sx={{ paddingTop: 0, border: "10px" }}>
+              <CardContent
+                sx={{
+                  paddingTop: 0,
+                  borderRadius: "18px",
+                  background: "#dfdff5",
+                }}
+              >
                 <Table>
                   <TableRow>
-                    <TableCell width="30%">Roll</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }} width="30%">
+                      Sign up Date
+                    </TableCell>
                     <TableCell width="2%">:</TableCell>
-                    <TableCell>125</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }}>
+                      {userinfo.createdAt}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell width="30%">Academic Year</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }} width="30%">
+                      Task
+                    </TableCell>
                     <TableCell width="2%">:</TableCell>
-                    <TableCell>2020</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }}>
+                      {userinfo.taskCount}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell width="30%">Gender</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }} width="30%">
+                      Project
+                    </TableCell>
                     <TableCell width="2%">:</TableCell>
-                    <TableCell>Male</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }}>
+                      {userinfo.projectCount}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell width="30%">Religion</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }} width="30%">
+                      Board
+                    </TableCell>
                     <TableCell width="2%">:</TableCell>
-                    <TableCell>Group</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }}>
+                      {userinfo.boardCount}
+                    </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell width="30%">Blood</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }} width="30%">
+                      Blood
+                    </TableCell>
                     <TableCell width="2%">:</TableCell>
-                    <TableCell>B+</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }}>B+</TableCell>
                   </TableRow>
                 </Table>
               </CardContent>

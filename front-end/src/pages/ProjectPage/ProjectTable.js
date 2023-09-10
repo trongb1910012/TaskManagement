@@ -129,14 +129,46 @@ const ProjectTable = () => {
     {
       headerName: "Start Date",
       field: "startDate",
+      cellEditor: "agDateCellEditor",
       sortable: true,
       filter: true,
     },
-    { headerName: "End Date", field: "endDate", sortable: true, filter: true },
+    {
+      headerName: "End Date",
+      field: "endDate",
+      cellEditor: "agDateCellEditor",
+      sortable: true,
+      filter: true,
+    },
     {
       headerName: "Status",
       field: "status",
       sortable: true,
+      cellEditor: "agSelectCellEditor",
+      cellEditorParams: {
+        values: ["planned", "in progress", "completed"], // Specify the dropdown options
+      },
+      cellStyle: (params) => {
+        if (params.value === "completed") {
+          //mark police cells as red
+          return {
+            color: "white",
+            backgroundColor: "#92e080",
+            fontWeight: "500",
+          };
+        }
+        if (params.value === "planned") {
+          return { color: "white", backgroundColor: "gray", fontWeight: "500" };
+        }
+        if (params.value === "in progress") {
+          return {
+            color: "white",
+            backgroundColor: "#88a7eb",
+            fontWeight: "500",
+          };
+        }
+        return null;
+      },
       filter: true,
     },
     {
@@ -229,7 +261,7 @@ const ProjectTable = () => {
       >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={[...projects, newRowData]}
+          rowData={[newRowData, ...projects]}
           defaultColDef={defaultColDef}
           onGridReady={fetchData}
           pagination={true}

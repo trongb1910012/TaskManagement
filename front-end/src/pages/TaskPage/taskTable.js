@@ -22,8 +22,6 @@ var headerCheckboxSelection = function (params) {
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
-  const isValid = projects.every((project) => project.members.length > 0);
-  console.log(isValid);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -147,7 +145,6 @@ const ProjectList = () => {
     return {
       editable: true,
       enablePivot: true,
-      enableRowGroup: true,
       enableValue: true,
       sortable: true,
       resizable: true,

@@ -25,7 +25,7 @@ Content-Type: application/json
     "role":"admin"
 }
 ### Thong tin nguoi dung
-GET http://localhost:8080/api/users/userinfo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5NDIzNTczNiwiZXhwIjoxNjk0MzIyMTM2fQ.ZQnedTnJtuldrC8FGNBoVBwTm0mONyX53lQkFpTdyEk
+GET http://localhost:8080/api/users/userinfo?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5NDMxNzIwNiwiZXhwIjoxNjk0NDAzNjA2fQ.uVjRWS04tiO9_Sakol3UCrH7_w4fiOvNzg5kA34jns8
 ### Doi mat khau
 PUT http://localhost:8080/api/auth/64b631c31de14e3e3eb41813/password
 Content-Type: application/json

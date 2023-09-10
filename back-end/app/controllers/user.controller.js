@@ -4,6 +4,9 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const db = require("../models");
 const User = db.User;
+const Project = db.Project;
+const Task = db.Task;
+const Board = db.Board;
 //Lay danh sach user
 exports.get_all_user = async (req, res) => {
   try {
@@ -34,16 +37,23 @@ exports.get_user_info = async (req, res, next) => {
     const decodedToken = jwt.verify(token, config.jwt.secret);
     const memberId = decodedToken.id;
 
-    const user = await User.findOne({
-      _id: memberId,
-    });
+    const user = await User.findOne({ _id: memberId });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    const projectCount = await Project.countDocuments({ owner: memberId });
+    const taskCount = await Task.countDocuments({ members: memberId });
+    const boardCount = await Board.countDocuments({ board_leader: memberId });
+
     const response = {
-      userinfo: user,
+      userinfo: {
+        ...user._doc,
+        projectCount,
+        taskCount,
+        boardCount,
+      },
     };
 
     return res.status(200).json(response);

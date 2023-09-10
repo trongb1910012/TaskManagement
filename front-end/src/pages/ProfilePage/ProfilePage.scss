@@ -4,6 +4,7 @@
     font-size: 30px;
     padding: 10px 10px;
     width: 58%;
+
 }
 
 .main h2 {
@@ -33,4 +34,10 @@
     border: 1px solid rgb(197, 197, 197);
     margin: 20px;
     border-radius: 18px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
+
+    .card {
+        background-color: #dfdff5;
+        border-radius: 18px;
+    }
 }
