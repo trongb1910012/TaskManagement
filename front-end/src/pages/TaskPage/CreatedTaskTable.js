@@ -10,10 +10,11 @@ import {
   faPenToSquare,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
 import AddTasksForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
+
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
@@ -24,7 +25,7 @@ var headerCheckboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0;
 };
 
-const ProjectList = () => {
+const AllTaskTable = () => {
   const [projects, setProjects] = useState([]);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -32,8 +33,7 @@ const ProjectList = () => {
   const [rowDataForForm, setRowDataForForm] = useState(null);
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.get(`/tasks/nv?token=${token}`);
+      const response = await axiosClient.get(`/tasks`);
       setProjects(response.data.tasks);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -63,16 +63,12 @@ const ProjectList = () => {
     });
   };
   const openCreateForm = () => {
-    setIsFormOpen(false);
-    setIsCreateFormOpen(false);
     setIsCreateFormOpen(true);
   };
   const closeCreateForm = () => {
     setIsCreateFormOpen(false);
   };
   const openEditForm = (rowData) => {
-    setIsCreateFormOpen(false);
-    setIsFormOpen(false);
     setIsFormOpen(true);
     setRowDataForForm(rowData);
   };
@@ -203,18 +199,27 @@ const ProjectList = () => {
           paginationPageSize={5}
         ></AgGridReact>
       </div>
-      {isCreateFormOpen && (
-        <AddTasksForm onBoardCreated={fetchData} closeForm={closeCreateForm} />
-      )}
-      {isFormOpen && (
-        <EditTaskForm
-          onBoardCreated={fetchData}
-          rowData={rowDataForForm}
-          closeForm={closeForm}
-        />
-      )}
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          {isCreateFormOpen && (
+            <AddTasksForm
+              onBoardCreated={fetchData}
+              closeForm={closeCreateForm}
+            />
+          )}
+        </Grid>
+        <Grid item xs={6}>
+          {isFormOpen && (
+            <EditTaskForm
+              onBoardCreated={fetchData}
+              rowData={rowDataForForm}
+              closeForm={closeForm}
+            />
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 };
 
-export default ProjectList;
+export default AllTaskTable;

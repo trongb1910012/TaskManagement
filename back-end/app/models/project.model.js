@@ -26,7 +26,6 @@ module.exports = (mongoose) => {
     },
     budget: {
       type: Number,
-      required: true,
       min: 0,
     },
     // Reference to the user who owns the project

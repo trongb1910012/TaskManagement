@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import axiosClient from "../../api/api";
 import cogoToast from "cogo-toast";
 import classNames from "classnames/bind";
-import styles from "./AddTaskForm.module.scss";
+import styles from "./PopupTaskForm.module.scss";
+import { IconButton } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import Select from "react-select";
 const cx = classNames.bind(styles);
 const AddTasksForm = ({ onBoardCreated, closeForm }) => {
   const [formData, setFormData] = useState({
@@ -74,6 +78,13 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
 
   return (
     <div className={cx("popup-form")}>
+      <div className={cx("button-conatiner")}>
+        <IconButton className={cx("close-button")} onClick={closeForm}>
+          <FontAwesomeIcon icon={faXmark} />
+        </IconButton>
+      </div>
+      <div className={cx("form-title")}>ADD TASK</div>
+
       <form onSubmit={handleSubmit}>
         <div>
           <label className={cx("pop-form-label")} htmlFor="board_name">
@@ -132,28 +143,37 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
           </select>
         </div>
         <div>
-          <select
+          <label className={cx("pop-form-label")}>Members:</label>
+          <Select
             className={cx("pop-form-input")}
-            multiple
-            type="text"
+            isMulti
             name="members"
             id="members"
-            value={formData.members}
-            onChange={handleChange}
-          >
-            {userList.map((user) => (
-              <option key={user._id} value={user._id}>
-                {user.fullname}
-              </option>
-            ))}
-          </select>
+            value={formData.members.map((memberId) => ({
+              value: memberId,
+              label:
+                userList.find((user) => user._id === memberId)?.fullname || "",
+            }))}
+            options={userList.map((user) => ({
+              value: user._id,
+              label: user.fullname,
+            }))}
+            onChange={(selectedOptions) => {
+              const selectedUserIds = selectedOptions.map(
+                (option) => option.value
+              );
+              setFormData((prevFormData) => ({
+                ...prevFormData,
+                members: selectedUserIds,
+              }));
+            }}
+          />
         </div>
-        <button className={cx("submit-button")} type="submit">
-          Create Board
-        </button>
-        <button className={cx("submit-button")} onClick={closeForm}>
-          Close
-        </button>
+        <div className={cx("group-button")}>
+          <button className={cx("submit-button")} type="submit">
+            Create Board
+          </button>
+        </div>
       </form>
     </div>
   );
