@@ -111,7 +111,7 @@ Content-Type: application/json
 ### Tự động sửa công việc
 POST http://localhost:8080/api/tasks/updateStatus
 ### Xem cong viec cua nhan vien
-GET http://localhost:8080/api/tasks/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTAzNDg2MSwiZXhwIjoxNjkxMTIxMjYxfQ.uu5gguL-DHaihgi3hz25pyhd7dE_sNrO2X2uCCfjxMc
+GET http://localhost:8080/api/tasks/nv?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5NDQwNTU1MiwiZXhwIjoxNjk0NDkxOTUyfQ.kPFKoAd33Xfdj35S6lq3m-jjVhpHKfSHYBkx7PY6Nks
 
 ### Danh sach nhan vien
 GET http://localhost:8080/api/users/

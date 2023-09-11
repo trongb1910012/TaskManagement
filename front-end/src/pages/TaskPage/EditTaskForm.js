@@ -4,13 +4,14 @@ import cogoToast from "cogo-toast";
 import classNames from "classnames/bind";
 import styles from "./AddTaskForm.module.scss";
 const cx = classNames.bind(styles);
-const AddTasksForm = ({ onBoardCreated, closeForm }) => {
+const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
   const [formData, setFormData] = useState({
-    board_id: "",
-    title: "",
-    description: "",
-    dueDate: "",
-    members: [],
+    board_id: rowData.board.id,
+    board_name: rowData.board.board_name,
+    title: rowData.title,
+    description: rowData.description,
+    dueDate: rowData.dueDate,
+    members: rowData.members,
   });
   const [boardsList, setBoardsList] = useState([]);
   const [userList, setUserList] = useState([]);
@@ -18,12 +19,13 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
     event.preventDefault();
     console.log(formData);
     try {
-      const response = await axiosClient.post(`/tasks`, formData);
+      const response = await axiosClient.put(`/tasks/${rowData._id}`, formData);
       console.log(response);
       cogoToast.success("Thêm nhóm công việc thành công");
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
+      closeForm();
       // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
       setFormData({
         board_id: "",
@@ -123,7 +125,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
             value={formData.board_id}
             onChange={handleChange}
           >
-            <option value="">-- Choose boards --</option>
+            <option value={formData.board_id}>{formData.board_name}</option>
             {boardsList.map((b) => (
               <option key={b._id} value={b._id}>
                 {b.board_name}
@@ -148,8 +150,9 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
             ))}
           </select>
         </div>
+
         <button className={cx("submit-button")} type="submit">
-          Create Board
+          Update task
         </button>
         <button className={cx("submit-button")} onClick={closeForm}>
           Close
@@ -159,4 +162,4 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
   );
 };
 
-export default AddTasksForm;
+export default EditTaskForm;

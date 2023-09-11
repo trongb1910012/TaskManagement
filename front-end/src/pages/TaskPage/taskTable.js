@@ -5,11 +5,16 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import "./TaskTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "@mui/material";
+import {
+  faAdd,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
-import cogoToast from "cogo-toast";
 import AddTasksForm from "./AddTaskForm";
+import EditTaskForm from "./EditTaskForm";
+
 var checkboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
@@ -22,6 +27,10 @@ var headerCheckboxSelection = function (params) {
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
+  const [rowDataForForm, setRowDataForForm] = useState(null);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -35,23 +44,6 @@ const ProjectList = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  const handleEdit = async (rowData) => {
-    console.log(rowData);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.put(
-        `/projects/${rowData._id}?token=${token}`,
-        rowData
-      );
-
-      console.log(response.data); // Xử lý phản hồi theo ý muốn
-      cogoToast.success("Cập nhật dự án thành công");
-      fetchData(); // Cập nhật dữ liệu sau khi chỉnh sửa thành công
-    } catch (error) {
-      console.error(error); // Xử lý lỗi một cách phù hợp
-    }
-  };
-
   const handleDelete = (projectId) => {
     swal({
       title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
@@ -70,6 +62,19 @@ const ProjectList = () => {
         return;
       }
     });
+  };
+  const openCreateForm = () => {
+    setIsCreateFormOpen(true);
+  };
+  const closeCreateForm = () => {
+    setIsCreateFormOpen(false);
+  };
+  const openEditForm = (rowData) => {
+    setIsFormOpen(true);
+    setRowDataForForm(rowData);
+  };
+  const closeForm = () => {
+    setIsFormOpen(false);
   };
   const columnDefs = [
     {
@@ -97,6 +102,27 @@ const ProjectList = () => {
       field: "status",
       sortable: true,
       filter: true,
+      cellStyle: (params) => {
+        if (params.value === "completed") {
+          //mark police cells as red
+          return {
+            color: "white",
+            backgroundColor: "#92e080",
+            fontWeight: "500",
+          };
+        }
+        if (params.value === "not started") {
+          return { color: "white", backgroundColor: "gray", fontWeight: "500" };
+        }
+        if (params.value === "in progress") {
+          return {
+            color: "white",
+            backgroundColor: "#88a7eb",
+            fontWeight: "500",
+          };
+        }
+        return null;
+      },
     },
     {
       headerName: "Members",
@@ -108,7 +134,6 @@ const ProjectList = () => {
           return member.fullname;
         });
       },
-      cellRenderer: "agGroupCellRenderer",
     },
     {
       headerName: "Action",
@@ -120,7 +145,7 @@ const ProjectList = () => {
       cellRenderer: (params) => (
         <div>
           <IconButton
-            onClick={() => handleEdit(params.data)}
+            onClick={() => openEditForm(params.data)}
             variant="outlined"
             color="primary"
           >
@@ -143,7 +168,6 @@ const ProjectList = () => {
   // };
   const defaultColDef = useMemo(() => {
     return {
-      editable: true,
       enablePivot: true,
       enableValue: true,
       sortable: true,
@@ -155,6 +179,13 @@ const ProjectList = () => {
   }, []);
   return (
     <div>
+      <IconButton
+        onClick={() => openCreateForm()}
+        variant="outlined"
+        color="primary"
+      >
+        <FontAwesomeIcon icon={faAdd} />
+      </IconButton>
       <div
         className="ag-theme-alpine"
         style={{ height: "350px", width: "100%" }}
@@ -169,9 +200,25 @@ const ProjectList = () => {
           paginationPageSize={5}
         ></AgGridReact>
       </div>
-      <div>
-        <AddTasksForm onBoardCreated={fetchData} />
-      </div>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          {isCreateFormOpen && (
+            <AddTasksForm
+              onBoardCreated={fetchData}
+              closeForm={closeCreateForm}
+            />
+          )}
+        </Grid>
+        <Grid item xs={6}>
+          {isFormOpen && (
+            <EditTaskForm
+              onBoardCreated={fetchData}
+              rowData={rowDataForForm}
+              closeForm={closeForm}
+            />
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 };

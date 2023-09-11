@@ -215,10 +215,15 @@ exports.get_CongViec_Nv = async (req, res, next) => {
 
     const tasks = await Task.find({
       members: memberId,
-    }).populate({
-      path: "members",
-      select: "fullname",
-    });
+    })
+      .populate({
+        path: "members",
+        select: "fullname",
+      })
+      .populate({
+        path: "board",
+        select: "board_name",
+      });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       return { ...task._doc, dueDate: formattedDate };
