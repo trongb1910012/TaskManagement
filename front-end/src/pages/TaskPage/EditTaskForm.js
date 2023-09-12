@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosClient from "../../api/api";
 import cogoToast from "cogo-toast";
 import classNames from "classnames/bind";
-import styles from "./AddTaskForm.module.scss";
+import styles from "./PopupTaskForm.module.scss";
 const cx = classNames.bind(styles);
 const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
   const [formData, setFormData] = useState({

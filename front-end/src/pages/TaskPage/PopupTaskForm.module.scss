@@ -4,7 +4,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #f2f2f2;
-    border: 1px solid #7171e8;
+    border: 1px solid #30324e;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -24,7 +24,8 @@
 }
 
 .popup-form input,
-.popup-form select {
+.popup-form select,
+.pop-form-input {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
@@ -41,7 +42,7 @@
 
 .popup-form .submit-button {
     width: 30%;
-    background-color: #7171e8;
+    background-color: #30324e;
     color: white;
     padding: 10px 20px;
     margin: 5px 0;
@@ -68,7 +69,7 @@
     font-weight: 700;
     padding: 5px 0px;
     margin-bottom: 10px;
-    border-bottom: 2px solid #7171e8;
+    border-bottom: 2px solid #30324e;
 }
 
 .button-container {
