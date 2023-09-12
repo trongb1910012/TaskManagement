@@ -14,12 +14,13 @@ import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import { LicenseManager } from "ag-grid-enterprise";
+import "./ProjectTable.css";
 LicenseManager.setLicenseKey(`AG-047238`);
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
 };
-const ProjectBoardTable = ({ projectId }) => {
+const ProjectBoardTable = ({ projectId, projectName }) => {
   const [projects, setProjects] = useState([]);
   const [newRowData, setNewRowData] = useState({});
   const fetchData = async () => {
@@ -186,11 +187,11 @@ const ProjectBoardTable = ({ projectId }) => {
   }, []);
   return (
     <div>
-      <div>{projectId}</div>
       <div
         className="ag-theme-alpine"
-        style={{ height: "400px", width: "50%" }}
+        style={{ height: "400px", width: "100%" }}
       >
+        <div className="project-title">Project: {projectName}</div>
         <AgGridReact
           columnDefs={columnDefs}
           rowData={projects}

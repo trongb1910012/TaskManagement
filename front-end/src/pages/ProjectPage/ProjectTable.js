@@ -14,10 +14,6 @@ import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import ProjectBoardTable from "./ProjectBoardTable";
-var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
   const [newRowData, setNewRowData] = useState({
@@ -26,7 +22,7 @@ const ProjectTable = () => {
 
   const [isProjectTableOpen, setIsProjectTableOpen] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
-
+  const [selectedProjectName, setSelectedProjectName] = useState(null);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -108,9 +104,10 @@ const ProjectTable = () => {
       }
     });
   };
-  const handleOpenTable = (projectId) => {
+  const handleOpenTable = (projectId, projectName) => {
     setIsProjectTableOpen(!isProjectTableOpen);
     setSelectedProjectId(projectId);
+    setSelectedProjectName(projectName);
   };
   const columnDefs = [
     {
@@ -118,7 +115,6 @@ const ProjectTable = () => {
       field: "title",
       sortable: true,
       filter: true,
-      headerCheckboxSelection: headerCheckboxSelection,
     },
     {
       headerName: "Description",
@@ -153,17 +149,21 @@ const ProjectTable = () => {
           //mark police cells as red
           return {
             color: "white",
-            backgroundColor: "#92e080",
+            backgroundColor: "#33a47c",
             fontWeight: "500",
           };
         }
         if (params.value === "planned") {
-          return { color: "white", backgroundColor: "gray", fontWeight: "500" };
+          return {
+            color: "white",
+            backgroundColor: "#64687d",
+            fontWeight: "500",
+          };
         }
         if (params.value === "in progress") {
           return {
             color: "white",
-            backgroundColor: "#88a7eb",
+            backgroundColor: "#c1945c",
             fontWeight: "500",
           };
         }
@@ -199,7 +199,9 @@ const ProjectTable = () => {
                 <FontAwesomeIcon icon={faTrash} />
               </IconButton>
               <IconButton
-                onClick={() => handleOpenTable(params.data._id)}
+                onClick={() =>
+                  handleOpenTable(params.data._id, params.data.title)
+                }
                 variant="outlined"
               >
                 <FontAwesomeIcon icon={faEye} />
@@ -274,7 +276,10 @@ const ProjectTable = () => {
       <div>
         {" "}
         {isProjectTableOpen && (
-          <ProjectBoardTable projectId={selectedProjectId} />
+          <ProjectBoardTable
+            projectId={selectedProjectId}
+            projectName={selectedProjectName}
+          />
         )}
       </div>
     </div>
