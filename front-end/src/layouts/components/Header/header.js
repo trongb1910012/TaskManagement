@@ -29,7 +29,7 @@ function Header() {
   };
   return (
     <AppBar
-      style={{ background: "#7171e8" }}
+      style={{ background: "#30324e" }}
       position="relative"
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
