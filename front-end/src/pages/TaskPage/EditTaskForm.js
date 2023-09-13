@@ -3,6 +3,7 @@ import axiosClient from "../../api/api";
 import cogoToast from "cogo-toast";
 import classNames from "classnames/bind";
 import styles from "./PopupTaskForm.module.scss";
+import Select from "react-select";
 const cx = classNames.bind(styles);
 const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
   const [formData, setFormData] = useState({
@@ -17,7 +18,7 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
   const [userList, setUserList] = useState([]);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
+
     try {
       const response = await axiosClient.put(`/tasks/${rowData._id}`, formData);
       console.log(response);
@@ -57,23 +58,11 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === "members") {
-      const selectedOptions = Array.from(e.target.options)
-        .filter((option) => option.selected)
-        .map((option) => option.value);
-
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: selectedOptions,
-      }));
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: value,
-      }));
-    }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
-
   return (
     <div className={cx("popup-form")}>
       <form onSubmit={handleSubmit}>
@@ -125,7 +114,6 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             value={formData.board_id}
             onChange={handleChange}
           >
-            <option value={formData.board_id}>{formData.board_name}</option>
             {boardsList.map((b) => (
               <option key={b._id} value={b._id}>
                 {b.board_name}
@@ -133,7 +121,7 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             ))}
           </select>
         </div>
-        <div>
+        {/* <div>
           <select
             className={cx("pop-form-input")}
             multiple
@@ -149,8 +137,44 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
               </option>
             ))}
           </select>
+        </div> */}
+        <div>
+          <label className={cx("pop-form-label")}>Members:</label>
+          <Select
+            className={cx("pop-form-input")}
+            isMulti
+            name="members"
+            id="members"
+            value={formData.members.map((memberId) => ({
+              value: memberId,
+              label:
+                userList.find((user) => user._id === memberId)?.fullname ||
+                userList.find((user) => user._id === memberId._id)?.fullname,
+            }))}
+            options={userList.map((user) => ({
+              value: user._id,
+              label: user.fullname,
+            }))}
+            // onChange={(selectedOptions) => {
+            //   const selectedUserIds = selectedOptions.map(
+            //     (option) => option.value
+            //   );
+            //   setFormData((prevFormData) => ({
+            //     ...prevFormData,
+            //     members: selectedUserIds,
+            //   }));
+            // }}
+            onChange={(selectedOptions) => {
+              const selectedUserIds = selectedOptions.map(
+                (option) => option.value
+              );
+              setFormData((prevFormData) => ({
+                ...prevFormData,
+                members: selectedUserIds,
+              }));
+            }}
+          />
         </div>
-
         <button className={cx("submit-button")} type="submit">
           Update task
         </button>

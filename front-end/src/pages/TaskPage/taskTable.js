@@ -195,7 +195,7 @@ const ProjectList = () => {
       </IconButton>
       <div
         className="ag-theme-alpine"
-        style={{ height: "350px", width: "100%" }}
+        style={{ height: "350px", width: "100%", borderRadius: "10px" }}
       >
         <AgGridReact
           columnDefs={columnDefs}

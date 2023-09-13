@@ -98,7 +98,7 @@ exports.get_CongViec = async (req, res, next) => {
 
     // Format the dueDate property of each task object in the response
     const formattedTasks = tasks.map((task) => {
-      const formattedDate = new Date(task.dueDate).toLocaleDateString("en-GB");
+      const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       return { ...task._doc, dueDate: formattedDate };
     });
     const response = {
