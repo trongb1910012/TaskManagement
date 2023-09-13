@@ -110,7 +110,7 @@ const ProjectList = () => {
           //mark police cells as red
           return {
             color: "white",
-            backgroundColor: "  ",
+            backgroundColor: "#33a47c",
             fontWeight: "500",
           };
         }

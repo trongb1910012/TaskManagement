@@ -172,12 +172,6 @@ const ProjectTable = () => {
       filter: true,
     },
     {
-      headerName: "Budget",
-      field: "budget",
-      sortable: true,
-      filter: true,
-    },
-    {
       headerName: "Action",
       field: "action",
       cellRenderer: (params) => (

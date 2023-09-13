@@ -3,24 +3,24 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Paper } from "@mui/material";
 import cogoToast from "cogo-toast";
 
 const paperStyle = {
   padding: 20,
-  height: "90vh",
+  height: "600px",
   width: 700,
-  margin: "20px auto",
+  margin: "50px auto",
 };
-
+const backgroundColor = {
+  backgroundColor: "#a2b9bc",
+  padding: "3px",
+};
 function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -55,11 +55,8 @@ function SignUp() {
       console.log("An error occurred:", error);
     }
   };
-
-  const theme = createTheme();
-
   return (
-    <ThemeProvider theme={theme}>
+    <div style={backgroundColor}>
       <Paper elevation={10} style={paperStyle}>
         <CssBaseline />
         <Box
@@ -70,7 +67,7 @@ function SignUp() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: "#878f99" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
@@ -125,23 +122,26 @@ function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
+            </Grid>
+            <Grid container justifyContent="center">
+              <Grid item>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    mt: 3,
+                    mb: 2,
+                    paddingY: 2,
+                    width: "200%",
+                    background: "#30324e",
+                  }}
+                >
+                  Sign Up
+                </Button>
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign Up
-            </Button>
+
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="/tasking" variant="body2">
@@ -152,7 +152,7 @@ function SignUp() {
           </Box>
         </Box>
       </Paper>
-    </ThemeProvider>
+    </div>
   );
 }
 

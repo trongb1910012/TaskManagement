@@ -7,8 +7,6 @@ import {
   Button,
   Typography,
   Link,
-  FormControlLabel,
-  Checkbox,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useState } from "react";
@@ -21,12 +19,20 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const paperStyle = {
     padding: 20,
-    height: "70vh",
-    width: 500,
-    margin: "20px auto",
+    height: "400px",
+    width: 400,
+    margin: "150px auto",
   };
-  const avatarStyle = { backgroundColor: "#1bbd7e" };
-  const btnstyle = { margin: "8px 0" };
+  const backgroundColor = {
+    backgroundColor: "#a2b9bc",
+    padding: "3px",
+  };
+  const avatarStyle = { backgroundColor: "#30324e" };
+  const btnstyle = {
+    margin: "8px 0",
+    padding: "10px 0",
+    backgroundColor: "#30324e",
+  };
   const headingStyle = {
     fontFamily: "Arial, sans-serif",
   };
@@ -44,11 +50,11 @@ const Login = () => {
       localStorage.setItem("fullname", fullname);
       navigate("/tasking/home");
     } catch (error) {
-      cogoToast.error("Failed to sign in");
+      cogoToast.error("Incorrect username or password!!");
     }
   };
   return (
-    <>
+    <div style={backgroundColor}>
       <Grid>
         <Paper elevation={10} style={paperStyle}>
           <Grid align="center">
@@ -78,19 +84,19 @@ const Login = () => {
             fullWidth
             required
           />
-          <FormControlLabel
-            control={<Checkbox name="checkedB" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            onClick={handleLogin}
-            color="primary"
-            variant="contained"
-            style={btnstyle}
-            fullWidth
-          >
-            Sign in
-          </Button>
+          <Grid container justifyContent="center">
+            <Grid item>
+              <Button
+                onClick={handleLogin}
+                color="primary"
+                variant="contained"
+                style={btnstyle}
+                fullWidth
+              >
+                Sign in
+              </Button>
+            </Grid>
+          </Grid>
           <Typography>
             <Link href="#">Forgot password ?</Link>
           </Typography>
@@ -100,7 +106,7 @@ const Login = () => {
           </Typography>
         </Paper>
       </Grid>
-    </>
+    </div>
   );
 };
 
