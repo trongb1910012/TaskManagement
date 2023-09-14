@@ -4,7 +4,6 @@ import {
   Paper,
   Avatar,
   TextField,
-  Button,
   Typography,
   Link,
 } from "@material-ui/core";
@@ -13,6 +12,7 @@ import { useState } from "react";
 import axiosClient from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import cogoToast from "cogo-toast";
+import "./login.css";
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -28,13 +28,9 @@ const Login = () => {
     padding: "3px",
   };
   const avatarStyle = { backgroundColor: "#30324e" };
-  const btnstyle = {
-    margin: "8px 0",
-    padding: "10px 0",
-    backgroundColor: "#30324e",
-  };
   const headingStyle = {
     fontFamily: "Arial, sans-serif",
+    padding: "20px",
   };
   // Hàm xử lý đăng nhập
   const handleLogin = async (e) => {
@@ -61,7 +57,7 @@ const Login = () => {
             <Avatar style={avatarStyle}>
               <LockOutlinedIcon />
             </Avatar>
-            <h2 style={headingStyle}>Sign In</h2>
+            <h2 style={headingStyle}>TASK MANAGEMENT</h2>
           </Grid>
           <TextField
             style={{ marginBottom: "16px" }}
@@ -86,7 +82,7 @@ const Login = () => {
           />
           <Grid container justifyContent="center">
             <Grid item>
-              <Button
+              {/* <Button
                 onClick={handleLogin}
                 color="primary"
                 variant="contained"
@@ -94,7 +90,16 @@ const Login = () => {
                 fullWidth
               >
                 Sign in
-              </Button>
+              </Button> */}
+              <button
+                onClick={handleLogin}
+                color="primary"
+                variant="contained"
+                className="login-btn"
+                fullWidth
+              >
+                Sign in
+              </button>
             </Grid>
           </Grid>
           <Typography>

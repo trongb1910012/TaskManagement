@@ -95,7 +95,7 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const token = localStorage.getItem("token");
-        await axiosClient.delete(`/boards/${projectId._id}?token=${token}`);
+        await axiosClient.delete(`/boards/${projectId.id}?token=${token}`);
         swal(`${projectId.board_name} đã được xóa`, {
           icon: "success",
         });

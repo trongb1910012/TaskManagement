@@ -1,6 +1,5 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
@@ -10,7 +9,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { Paper } from "@mui/material";
 import cogoToast from "cogo-toast";
-
+import "./signup.css";
 const paperStyle = {
   padding: 20,
   height: "600px",
@@ -70,9 +69,7 @@ function SignUp() {
           <Avatar sx={{ m: 1, bgcolor: "#878f99" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign up
-          </Typography>
+          <h2 className="signup-title">TASK MANAGEMENT</h2>
           <Box
             component="form"
             noValidate
@@ -125,20 +122,7 @@ function SignUp() {
             </Grid>
             <Grid container justifyContent="center">
               <Grid item>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                    paddingY: 2,
-                    width: "200%",
-                    background: "#30324e",
-                  }}
-                >
-                  Sign Up
-                </Button>
+                <button className="signup-btn">Sign Up</button>
               </Grid>
             </Grid>
 

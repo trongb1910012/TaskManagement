@@ -1,0 +1,17 @@
+.login-btn{
+    width: 120px;
+    height: 40px;
+    border: 2px solid #30324e;
+    border-radius: 45px;
+    transition: all 0.18s;
+    cursor: pointer;
+    background: white;
+    font-size: 1.2em;
+    font-weight: 400;
+    font-family: 'Montserrat', sans-serif;
+}
+.login-btn:hover {
+    background: #30324e;
+    color: white;
+    font-size: 1.3em;
+}
