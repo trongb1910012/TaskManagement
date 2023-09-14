@@ -28,6 +28,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
+      closeForm();
       // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
       setFormData({
         board_id: "",

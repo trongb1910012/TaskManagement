@@ -30,6 +30,7 @@ const CreateBoardForm = ({ onBoardCreated, onClose }) => {
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
+      onClose();
       // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
       setFormData({ board_name: "", project: "", board_leader: "" });
     } catch (error) {
