@@ -3,8 +3,11 @@ import axiosClient from "../../api/api";
 import cogoToast from "cogo-toast";
 import classNames from "classnames/bind";
 import styles from "./board.module.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IconButton } from "@mui/material";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 const cx = classNames.bind(styles);
-const CreateBoardForm = ({ onBoardCreated }) => {
+const CreateBoardForm = ({ onBoardCreated, onClose }) => {
   const [formData, setFormData] = useState({
     board_name: "",
     project: "",
@@ -59,6 +62,12 @@ const CreateBoardForm = ({ onBoardCreated }) => {
 
   return (
     <div className={cx("popup-form")}>
+      <div className={cx("button-conatiner")}>
+        <IconButton className={cx("close-button")} onClick={onClose}>
+          <FontAwesomeIcon icon={faXmark} />
+        </IconButton>
+      </div>
+      <div className={cx("form-title")}>ADD BOARD</div>
       <form onSubmit={handleSubmit}>
         <div>
           <label className={cx("pop-form-label")} htmlFor="board_name">
@@ -95,6 +104,9 @@ const CreateBoardForm = ({ onBoardCreated }) => {
           </select>
         </div>
         <div>
+          <label className={cx("pop-form-label")} htmlFor="project">
+            Leader:
+          </label>
           <select
             className={cx("pop-form-input")}
             type="text"
@@ -111,9 +123,11 @@ const CreateBoardForm = ({ onBoardCreated }) => {
             ))}
           </select>
         </div>
-        <button className={cx("submit-button")} type="submit">
-          Create Board
-        </button>
+        <div className={cx("group-button")}>
+          <button className={cx("submit-button")} type="submit">
+            Create Board
+          </button>
+        </div>
       </form>
     </div>
   );

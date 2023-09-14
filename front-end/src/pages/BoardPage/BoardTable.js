@@ -5,6 +5,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faAdd,
   faPenToSquare,
   faSave,
   faTrash,
@@ -20,6 +21,7 @@ var headerCheckboxSelection = function (params) {
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
   const [newRowData, setNewRowData] = useState({});
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -68,6 +70,12 @@ const ProjectTable = () => {
 
   //   setProjects([...projects, emptyRow]);
   // };
+  const handleOpenForm = () => {
+    setIsCreateFormOpen(true);
+  };
+  const handleCloseForm = () => {
+    setIsCreateFormOpen(false);
+  };
   const handleEdit = async (rowData) => {
     try {
       const token = localStorage.getItem("token");
@@ -205,6 +213,13 @@ const ProjectTable = () => {
   }, []);
   return (
     <div>
+      <IconButton
+        onClick={() => handleOpenForm()}
+        variant="outlined"
+        color="primary"
+      >
+        <FontAwesomeIcon icon={faAdd} />
+      </IconButton>
       <div
         className="ag-theme-alpine"
         style={{ height: "350px", width: "100%" }}
@@ -221,7 +236,9 @@ const ProjectTable = () => {
           paginationPageSize={5}
         ></AgGridReact>
       </div>
-      <CreateBoardForm onBoardCreated={fetchData} />
+      {isCreateFormOpen && (
+        <CreateBoardForm onBoardCreated={fetchData} onClose={handleCloseForm} />
+      )}
     </div>
   );
 };
