@@ -28,6 +28,10 @@ module.exports = (mongoose) => {
         ref: "Board",
         required: true,
       },
+      creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
       members: [
         {
           type: mongoose.Schema.Types.ObjectId,

@@ -5,42 +5,40 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import "./TaskTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAdd,
-  faPenToSquare,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
 import AddTasksForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
 
-var checkboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
-
-var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
-
-const AllTaskTable = () => {
+const AssignedTaskTable = () => {
   const [projects, setProjects] = useState([]);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [rowDataForForm, setRowDataForForm] = useState(null);
+  const [userinfo, setUserinfo] = useState([]);
   const fetchData = async () => {
     try {
-      const response = await axiosClient.get(`/tasks`);
+      const token = localStorage.getItem("token");
+      const response = await axiosClient.get(`/tasks/nv?token=${token}`);
       setProjects(response.data.tasks);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  const getUserInfo = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axiosClient.get(`/users/userinfo?token=${token}`);
+      setUserinfo(response.data.userinfo);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
+    getUserInfo();
     fetchData();
   }, []);
   const handleDelete = (projectId) => {
@@ -62,9 +60,6 @@ const AllTaskTable = () => {
       }
     });
   };
-  const openCreateForm = () => {
-    setIsCreateFormOpen(true);
-  };
   const closeCreateForm = () => {
     setIsCreateFormOpen(false);
   };
@@ -81,8 +76,6 @@ const AllTaskTable = () => {
       field: "title",
       sortable: true,
       filter: true,
-      checkboxSelection: checkboxSelection,
-      headerCheckboxSelection: headerCheckboxSelection,
     },
     {
       headerName: "Description",
@@ -141,24 +134,30 @@ const AllTaskTable = () => {
       filter: false,
       editable: false,
       rowGroup: false,
-      cellRenderer: (params) => (
-        <div>
-          <IconButton
-            onClick={() => openEditForm(params.data)}
-            variant="outlined"
-            color="primary"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </IconButton>
-          <IconButton
-            onClick={() => handleDelete(params.data)}
-            variant="outlined"
-            color="error"
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </IconButton>
-        </div>
-      ),
+      cellRenderer: (params) => {
+        if (userinfo._id !== params.data.creator._id) {
+          return null; // Trả về null để ẩn cell renderer
+        }
+
+        return (
+          <div>
+            <IconButton
+              onClick={() => openEditForm(params.data)}
+              variant="outlined"
+              color="primary"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </IconButton>
+            <IconButton
+              onClick={() => handleDelete(params.data)}
+              variant="outlined"
+              color="error"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+          </div>
+        );
+      },
     },
   ];
 
@@ -178,13 +177,6 @@ const AllTaskTable = () => {
   }, []);
   return (
     <div>
-      <IconButton
-        onClick={() => openCreateForm()}
-        variant="outlined"
-        color="primary"
-      >
-        <FontAwesomeIcon icon={faAdd} />
-      </IconButton>
       <div
         className="ag-theme-alpine"
         style={{ height: "350px", width: "100%" }}
@@ -222,4 +214,4 @@ const AllTaskTable = () => {
   );
 };
 
-export default AllTaskTable;
+export default AssignedTaskTable;

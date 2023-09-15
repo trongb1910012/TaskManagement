@@ -22,7 +22,11 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
     event.preventDefault();
     console.log(formData);
     try {
-      const response = await axiosClient.post(`/tasks`, formData);
+      const token = localStorage.getItem("token");
+      const response = await axiosClient.post(
+        `/tasks?token=${token}`,
+        formData
+      );
       console.log(response);
       cogoToast.success("Thêm nhóm công việc thành công");
 

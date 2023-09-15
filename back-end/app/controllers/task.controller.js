@@ -35,6 +35,12 @@ exports.them_CongViec1 = async (req, res, next) => {
 
 exports.them_CongViec = async (req, res, next) => {
   try {
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const userId = decodedToken.id;
     // Get the project ID and task data from the request body
     const { board_id, title, description, dueDate } = req.body;
     const members = req.body.members || req.query.members || [];
@@ -60,6 +66,7 @@ exports.them_CongViec = async (req, res, next) => {
       dueDate,
       board: board_id,
       members: [...members],
+      creator: userId,
     });
 
     // Save the task document to the database
@@ -122,7 +129,7 @@ exports.get_CV_KeHoach = async (req, res, next) => {
         path: "members",
         select: "fullname",
       })
-      .populate();
+      .populate({ path: "creator", select: "fullname" });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toLocaleDateString("en-GB");
       return { ...task._doc, dueDate: formattedDate };
@@ -250,6 +257,50 @@ exports.get_CongViec_Nv = async (req, res, next) => {
       .populate({
         path: "board",
         select: "board_name",
+      })
+      .populate({
+        path: "creator",
+        select: "fullname",
+      });
+    const formattedTasks = tasks.map((task) => {
+      const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
+      return { ...task._doc, dueDate: formattedDate };
+    });
+    const response = {
+      tasks: formattedTasks,
+    };
+    return res.status(200).json(response);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while retrieving projects")
+    );
+  }
+};
+// Danh sach cac cong viec da tao
+exports.get_created_tasks = async (req, res, next) => {
+  try {
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const memberId = decodedToken.id;
+
+    const tasks = await Task.find({
+      creator: memberId,
+    })
+      .populate({
+        path: "members",
+        select: "fullname",
+      })
+      .populate({
+        path: "board",
+        select: "board_name",
+      })
+      .populate({
+        path: "creator",
+        select: "fullname",
       });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);

@@ -16,7 +16,6 @@ import AddTasksForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
 import { Grid } from "@mui/material";
 var checkboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
 };
 
@@ -31,10 +30,12 @@ const ProjectList = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [rowDataForForm, setRowDataForForm] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [isAnyCheckboxSelected, setIsAnyCheckboxSelected] = useState(false);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axiosClient.get(`/tasks/nv?token=${token}`);
+      const response = await axiosClient.get(`/tasks/created?token=${token}`);
       setProjects(response.data.tasks);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -64,6 +65,30 @@ const ProjectList = () => {
         return;
       }
     });
+  };
+  const handleDeleteSelectedTasks = () => {
+    swal({
+      title: "Bạn chắc chắn muốn xóa những công việc đã chọn?",
+      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const selectedTaskIds = selectedRows.map((row) => row._id);
+        await axiosClient.delete("/tasks/", {
+          data: { taskIds: selectedTaskIds },
+        });
+        swal("Các công việc đã được xóa thành công!", {
+          icon: "success",
+        });
+        await fetchData();
+      }
+    });
+  };
+  const handleCheckboxChange = (selectedRows) => {
+    setSelectedRows(selectedRows);
+    setIsAnyCheckboxSelected(selectedRows.length > 0);
   };
   const openCreateForm = () => {
     setIsFormOpen(false);
@@ -100,6 +125,12 @@ const ProjectList = () => {
     {
       headerName: "Due Date",
       field: "dueDate",
+      sortable: true,
+      filter: true,
+    },
+    {
+      headerName: "Creator",
+      field: "creator.fullname",
       sortable: true,
       filter: true,
     },
@@ -191,13 +222,21 @@ const ProjectList = () => {
     <div>
       <Grid container justifyContent="flex-end">
         <Grid item>
-          {" "}
-          <IconButton onClick={() => openCreateForm()} variant="outlined">
-            <FontAwesomeIcon icon={faAdd} />
-          </IconButton>
+          {isAnyCheckboxSelected ? (
+            <IconButton
+              sx={{ color: "red" }}
+              onClick={handleDeleteSelectedTasks}
+              variant="outlined"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+          ) : (
+            <IconButton onClick={() => openCreateForm()} variant="outlined">
+              <FontAwesomeIcon icon={faAdd} />
+            </IconButton>
+          )}
         </Grid>
       </Grid>
-
       <div
         className="ag-theme-alpine"
         style={{ height: "350px", width: "100%", borderRadius: "10px" }}
@@ -210,6 +249,11 @@ const ProjectList = () => {
           pagination={true}
           pivotPanelShow={"always"}
           paginationPageSize={5}
+          suppressRowClickSelection={true}
+          rowSelection={"multiple"}
+          onSelectionChanged={(event) =>
+            handleCheckboxChange(event.api.getSelectedRows())
+          }
         ></AgGridReact>
       </div>
       {isCreateFormOpen && (
