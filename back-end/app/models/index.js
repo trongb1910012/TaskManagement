@@ -7,8 +7,8 @@ const createBoardModel = require("./boards.model");
 const createCommentModel = require("./comment.model");
 const createReportModel = require("./reports.model");
 const db = {};
+mongoose.set("strictQuery", false);
 db.mongoose = mongoose;
-
 db.User = createUserModel(mongoose);
 db.Project = createProjectModel(mongoose);
 db.Task = createTaskModel(mongoose);

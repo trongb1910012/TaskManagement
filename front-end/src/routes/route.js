@@ -1,5 +1,5 @@
 import HomePage from "../pages/HomePage/homePage";
-import ProjectPage from "../pages/ProjectPage/ProjectPage";
+import ProjectPage from "../pages/ProjectPage/projectpage";
 import BoardComponent from "../pages/BoardPage/board";
 import taskPage from "../pages/TaskPage/taskPage";
 import Profile from "../pages/ProfilePage/ProfilePage";

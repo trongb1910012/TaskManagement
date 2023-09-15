@@ -4,6 +4,9 @@ import cogoToast from "cogo-toast";
 import classNames from "classnames/bind";
 import styles from "./PopupTaskForm.module.scss";
 import Select from "react-select";
+import { IconButton, Grid } from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 const cx = classNames.bind(styles);
 const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
   const [formData, setFormData] = useState({
@@ -65,6 +68,14 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
   };
   return (
     <div className={cx("popup-form")}>
+      <Grid container justifyContent="flex-end">
+        <Grid item>
+          <IconButton className={cx("close-button")} onClick={closeForm}>
+            <FontAwesomeIcon icon={faXmark} />
+          </IconButton>
+        </Grid>
+      </Grid>
+      <div className={cx("form-title")}>Update Task</div>
       <form onSubmit={handleSubmit}>
         <div>
           <label className={cx("pop-form-label")} htmlFor="board_name">

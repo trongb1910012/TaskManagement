@@ -3,7 +3,7 @@ import axiosClient from "../../api/api";
 import cogoToast from "cogo-toast";
 import classNames from "classnames/bind";
 import styles from "./PopupTaskForm.module.scss";
-import { IconButton } from "@mui/material";
+import { IconButton, Grid } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
@@ -79,13 +79,14 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
 
   return (
     <div className={cx("popup-form")}>
-      <div className={cx("button-conatiner")}>
-        <IconButton className={cx("close-button")} onClick={closeForm}>
-          <FontAwesomeIcon icon={faXmark} />
-        </IconButton>
-      </div>
+      <Grid container justifyContent="flex-end">
+        <Grid item>
+          <IconButton className={cx("close-button")} onClick={closeForm}>
+            <FontAwesomeIcon icon={faXmark} />
+          </IconButton>
+        </Grid>
+      </Grid>
       <div className={cx("form-title")}>ADD TASK</div>
-
       <form onSubmit={handleSubmit}>
         <div>
           <label className={cx("pop-form-label")} htmlFor="board_name">

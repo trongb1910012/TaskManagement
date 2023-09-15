@@ -4,7 +4,7 @@ import cogoToast from "cogo-toast";
 import classNames from "classnames/bind";
 import styles from "./board.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconButton } from "@mui/material";
+import { IconButton, Grid } from "@mui/material";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 const cx = classNames.bind(styles);
 const CreateBoardForm = ({ onBoardCreated, onClose }) => {
@@ -63,11 +63,13 @@ const CreateBoardForm = ({ onBoardCreated, onClose }) => {
 
   return (
     <div className={cx("popup-form")}>
-      <div className={cx("button-conatiner")}>
-        <IconButton className={cx("close-button")} onClick={onClose}>
-          <FontAwesomeIcon icon={faXmark} />
-        </IconButton>
-      </div>
+      <Grid container justifyContent="flex-end">
+        <Grid item>
+          <IconButton className={cx("close-button")} onClick={onClose}>
+            <FontAwesomeIcon icon={faXmark} />
+          </IconButton>
+        </Grid>
+      </Grid>
       <div className={cx("form-title")}>ADD BOARD</div>
       <form onSubmit={handleSubmit}>
         <div>

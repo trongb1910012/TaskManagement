@@ -10,7 +10,7 @@ import {
   faSave,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "@mui/material";
+import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import CreateBoardForm from "./CreateBoardForm";
@@ -213,13 +213,14 @@ const ProjectTable = () => {
   }, []);
   return (
     <div>
-      <IconButton
-        onClick={() => handleOpenForm()}
-        variant="outlined"
-        color="primary"
-      >
-        <FontAwesomeIcon icon={faAdd} />
-      </IconButton>
+      <Grid container justifyContent="flex-end">
+        <Grid item>
+          {" "}
+          <IconButton onClick={() => handleOpenForm()} variant="outlined">
+            <FontAwesomeIcon icon={faAdd} />
+          </IconButton>
+        </Grid>
+      </Grid>
       <div
         className="ag-theme-alpine"
         style={{ height: "350px", width: "100%" }}
