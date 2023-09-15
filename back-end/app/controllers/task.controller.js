@@ -142,7 +142,7 @@ exports.get_CV_KeHoach = async (req, res, next) => {
   }
 };
 // xoa cong viec
-exports.xoa_CongViec = async (req, res) => {
+exports.xoa_CongViec1 = async (req, res) => {
   try {
     const taskId = req.params.id;
 
@@ -160,6 +160,33 @@ exports.xoa_CongViec = async (req, res) => {
       success: true,
       message: "Task deleted successfully",
       data: deletedTask,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+exports.xoa_CongViec = async (req, res) => {
+  try {
+    const taskIds = req.body.taskIds; // Assuming taskIds is an array of task IDs
+
+    // Find the tasks with the specified IDs and remove them
+    const deletedTasks = await Task.deleteMany({ _id: { $in: taskIds } });
+
+    if (deletedTasks.n === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Tasks not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Tasks deleted successfully",
+      data: deletedTasks,
     });
   } catch (error) {
     console.error(error);

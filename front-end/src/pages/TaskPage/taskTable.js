@@ -53,7 +53,9 @@ const ProjectList = () => {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        await axiosClient.delete(`/tasks/${projectId._id}`);
+        await axiosClient.delete(`/tasks/`, {
+          data: { taskIds: projectId._id },
+        });
         swal(`${projectId.title.toUpperCase()} đã được xóa`, {
           icon: "success",
         });
