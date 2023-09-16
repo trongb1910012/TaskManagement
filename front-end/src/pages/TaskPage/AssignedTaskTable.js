@@ -99,17 +99,21 @@ const AssignedTaskTable = () => {
           //mark police cells as red
           return {
             color: "white",
-            backgroundColor: "#92e080",
+            backgroundColor: "#33a47c",
             fontWeight: "500",
           };
         }
         if (params.value === "not started") {
-          return { color: "white", backgroundColor: "gray", fontWeight: "500" };
+          return {
+            color: "white",
+            backgroundColor: "#64687d",
+            fontWeight: "500",
+          };
         }
         if (params.value === "in progress") {
           return {
             color: "white",
-            backgroundColor: "#88a7eb",
+            backgroundColor: "#c1945c",
             fontWeight: "500",
           };
         }

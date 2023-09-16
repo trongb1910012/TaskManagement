@@ -129,9 +129,10 @@ exports.get_CV_KeHoach = async (req, res, next) => {
         path: "members",
         select: "fullname",
       })
-      .populate({ path: "creator", select: "fullname" });
+      .populate({ path: "creator", select: "fullname" })
+      .populate({ path: "board", select: "board_name" });
     const formattedTasks = tasks.map((task) => {
-      const formattedDate = new Date(task.dueDate).toLocaleDateString("en-GB");
+      const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       return { ...task._doc, dueDate: formattedDate };
     });
     const response = {

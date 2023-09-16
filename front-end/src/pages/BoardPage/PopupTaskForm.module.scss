@@ -1,0 +1,83 @@
+.popup-form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f2f2f2;
+    border: 1px solid #30324e;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    width: 50%;
+    height: 650px;
+}
+
+.popup-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-form label {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.popup-form input,
+.popup-form select,
+.pop-form-input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.popup-form .group-button {
+    display: flex;
+    justify-content: space-around;
+}
+
+.popup-form .submit-button {
+    width: 30%;
+    background-color: #30324e;
+    color: white;
+    padding: 10px 20px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.popup-form .submit-button:hover {
+    background-color: #0056b3;
+}
+
+.popup-form .pop-form-input {
+    width: 100%;
+}
+
+.popup-form .pop-form-label {
+    font-weight: bold;
+}
+
+.form-title {
+    font-size: 20px;
+    text-align: left;
+    font-weight: 700;
+    padding: 5px 0px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #30324e;
+}
+
+.button-container {
+    padding-bottom: 10px;
+
+    .close-button {
+        color: #777777;
+        position: absolute;
+        right: 10px;
+    }
+}

@@ -2,38 +2,36 @@ import React, { useState, useEffect, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-enterprise";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faAdd,
-  faEye,
   faPenToSquare,
   faSave,
   faTrash,
+  faAdd,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
-import CreateBoardForm from "./CreateBoardForm";
-import TasksByBoardTable from "./TasksByBoardId";
+import { LicenseManager } from "ag-grid-enterprise";
+import AddTasksForm from "./AddTaskByBoardForm";
+import EditTaskForm from "./EditTaskByBoardForm";
+LicenseManager.setLicenseKey(`AG-047238`);
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
 };
-const ProjectTable = () => {
-  const [projects, setProjects] = useState([]);
+const TasksByBoardTable = ({ boardId, boardName }) => {
+  const [boards, setBoards] = useState([]);
   const [newRowData, setNewRowData] = useState({});
+  const [rowDataForForm, setRowDataForForm] = useState(null);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
-  const [isTaskTableOpen, setIsTaskTableOpen] = useState(false);
-  const [selectedProjectId, setSelectedBoardId] = useState(null);
-  const [selectedProjectName, setSelectedBoardName] = useState(null);
+  const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.get(
-        `/boards/cv_leader?token=${token}`
-      );
-      setProjects(response.data);
+      const response = await axiosClient.get(`/tasks/${boardId}`);
+      setBoards(response.data.tasks);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -41,6 +39,7 @@ const ProjectTable = () => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRowSubmit = async () => {
@@ -75,12 +74,6 @@ const ProjectTable = () => {
 
   //   setProjects([...projects, emptyRow]);
   // };
-  const handleOpenForm = () => {
-    setIsCreateFormOpen(true);
-  };
-  const handleCloseForm = () => {
-    setIsCreateFormOpen(false);
-  };
   const handleEdit = async (rowData) => {
     try {
       const token = localStorage.getItem("token");
@@ -96,19 +89,35 @@ const ProjectTable = () => {
       console.error(error); // Xử lý lỗi một cách phù hợp
     }
   };
-
-  const handleDelete = (projectId) => {
+  const openCreateForm = () => {
+    setIsEditFormOpen(false);
+    setIsCreateFormOpen(true);
+  };
+  const closeCreateForm = () => {
+    setIsCreateFormOpen(false);
+  };
+  const openEditForm = (rowData) => {
+    setIsCreateFormOpen(false);
+    setIsEditFormOpen(false);
+    setIsEditFormOpen(true);
+    setRowDataForForm(rowData);
+  };
+  const closeEditForm = () => {
+    setIsEditFormOpen(false);
+  };
+  const handleDelete = (taskId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.board_name} này`,
+      title: `Bạn chắc chắn muốn xóa công việc ${taskId.title} này`,
       text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
       icon: "warning",
       buttons: true,
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const token = localStorage.getItem("token");
-        await axiosClient.delete(`/boards/${projectId._id}?token=${token}`);
-        swal(`${projectId.board_name} đã được xóa`, {
+        await axiosClient.delete(`/tasks/`, {
+          data: { taskIds: taskId._id },
+        });
+        swal(`Công việc ${taskId.title.toUpperCase()} đã được xóa`, {
           icon: "success",
         });
         await fetchData();
@@ -117,50 +126,83 @@ const ProjectTable = () => {
       }
     });
   };
-  const handleOpenTable = (boardID, boardName) => {
-    setIsTaskTableOpen(!isTaskTableOpen);
-    setSelectedBoardId(boardID);
-    setSelectedBoardName(boardName);
-  };
   const columnDefs = [
     {
-      headerName: "Name",
-      field: "board_name",
+      headerName: "Title",
+      field: "title",
       sortable: true,
       filter: true,
       headerCheckboxSelection: headerCheckboxSelection,
     },
     {
-      headerName: "Project",
-      field: "projectName",
+      headerName: "Description",
+      field: "description",
       sortable: true,
       filter: true,
-      editable: false,
     },
     {
-      headerName: "Create Date",
-      field: "createdAt",
+      headerName: "Due Date",
+      field: "dueDate",
       sortable: true,
       filter: true,
-      editable: false,
     },
     {
-      headerName: "Leader",
-      field: "leaderName",
+      headerName: "Creator",
+      field: "creator.fullname",
       sortable: true,
       filter: true,
-      editable: false,
+    },
+    {
+      headerName: "Status",
+      field: "status",
+      sortable: true,
+      filter: true,
+      cellStyle: (params) => {
+        if (params.value === "completed") {
+          //mark police cells as red
+          return {
+            color: "white",
+            backgroundColor: "#33a47c",
+            fontWeight: "500",
+          };
+        }
+        if (params.value === "not started") {
+          return {
+            color: "white",
+            backgroundColor: "#64687d",
+            fontWeight: "500",
+          };
+        }
+        if (params.value === "in progress") {
+          return {
+            color: "white",
+            backgroundColor: "#c1945c",
+            fontWeight: "500",
+          };
+        }
+        return null;
+      },
+    },
+    {
+      headerName: "Members",
+      field: "members",
+      sortable: true,
+      filter: true,
+      valueGetter: function (params) {
+        return params.data.members.map(function (member) {
+          return member.fullname;
+        });
+      },
     },
     {
       headerName: "Action",
       field: "action",
-      editable: "false",
       cellRenderer: (params) => (
         <div>
           {params.data !== newRowData && (
             <>
               <IconButton
-                onClick={() => handleEdit(params.data)}
+                onClick={() => openEditForm(params.data)}
                 variant="outlined"
                 color="primary"
               >
@@ -172,14 +214,6 @@ const ProjectTable = () => {
                 color="error"
               >
                 <FontAwesomeIcon icon={faTrash} />
-              </IconButton>
-              <IconButton
-                onClick={() =>
-                  handleOpenTable(params.data._id, params.data.board_name)
-                }
-                variant="outlined"
-              >
-                <FontAwesomeIcon icon={faEye} />
               </IconButton>
             </>
           )}
@@ -198,25 +232,6 @@ const ProjectTable = () => {
     },
   ];
 
-  // const autoGroupColumnDef = useMemo(() => {
-  //   return {
-  //     headerName: "Group",
-  //     minWidth: 170,
-  //     field: "Title",
-  //     valueGetter: (params) => {
-  //       if (params.node.group) {
-  //         return params.node.key;
-  //       } else {
-  //         return params.data[params.colDef.field];
-  //       }
-  //     },
-  //     headerCheckboxSelection: true,
-  //     cellRenderer: "agGroupCellRenderer",
-  //     cellRendererParams: {
-  //       checkbox: true,
-  //     },
-  //   };
-  // }, []);
   const defaultColDef = useMemo(() => {
     return {
       editable: true,
@@ -234,42 +249,43 @@ const ProjectTable = () => {
     <div>
       <Grid container justifyContent="flex-end">
         <Grid item>
-          {" "}
-          <IconButton onClick={() => handleOpenForm()} variant="outlined">
+          <IconButton onClick={() => openCreateForm()} variant="outlined">
             <FontAwesomeIcon icon={faAdd} />
           </IconButton>
         </Grid>
       </Grid>
       <div
         className="ag-theme-alpine"
-        style={{ height: "350px", width: "100%" }}
+        style={{ height: "400px", width: "100%" }}
       >
+        <div className="project-title">Board: {boardName}</div>
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={projects}
+          rowData={boards}
           defaultColDef={defaultColDef}
           onGridReady={fetchData}
           pagination={true}
           pivotPanelShow={"always"}
-          // autoGroupColumnDef={autoGroupColumnDef}
           rowGroupPanelShow={"always"}
           paginationPageSize={5}
         ></AgGridReact>
       </div>
       {isCreateFormOpen && (
-        <CreateBoardForm onBoardCreated={fetchData} onClose={handleCloseForm} />
+        <AddTasksForm
+          onBoardCreated={fetchData}
+          closeForm={closeCreateForm}
+          boardId={boardId}
+        />
       )}
-      <div>
-        {" "}
-        {isTaskTableOpen && (
-          <TasksByBoardTable
-            boardId={selectedProjectId}
-            boardName={selectedProjectName}
-          />
-        )}
-      </div>
+      {isEditFormOpen && (
+        <EditTaskForm
+          onBoardCreated={fetchData}
+          rowData={rowDataForForm}
+          closeForm={closeEditForm}
+        />
+      )}
     </div>
   );
 };
 
-export default ProjectTable;
+export default TasksByBoardTable;
