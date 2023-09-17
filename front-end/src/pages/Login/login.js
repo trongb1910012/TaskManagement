@@ -21,11 +21,16 @@ const Login = () => {
     padding: 20,
     height: "400px",
     width: 400,
-    margin: "150px auto",
+    margin: "0 auto", // Thay đổi giá trị margin thành "0 auto"// Thêm thuộc tính display là "flex"
+    justifyContent: "center", // Thêm thuộc tính justifyContent là "center"
+    alignItems: "center",
   };
-  const backgroundColor = {
-    backgroundColor: "#a2b9bc",
-    padding: "3px",
+  const container = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh", // Đảm bảo chiều cao của container bằng chiều cao của viewport
+    backgroundColor: "#eceff8",
   };
   const avatarStyle = { backgroundColor: "#30324e" };
   const headingStyle = {
@@ -50,7 +55,7 @@ const Login = () => {
     }
   };
   return (
-    <div style={backgroundColor}>
+    <div style={container}>
       <Grid>
         <Paper elevation={10} style={paperStyle}>
           <Grid align="center">
@@ -102,10 +107,7 @@ const Login = () => {
               </button>
             </Grid>
           </Grid>
-          <Typography>
-            <Link href="#">Forgot password ?</Link>
-          </Typography>
-          <Typography>
+          <Typography variant="h6">
             {" "}
             Do you have an account ?<Link href="/tasking/signup">Sign Up</Link>
           </Typography>

@@ -84,8 +84,20 @@ const AssignedTaskTable = () => {
       filter: true,
     },
     {
+      headerName: "Board",
+      field: "board.board_name",
+      sortable: true,
+      filter: true,
+    },
+    {
       headerName: "Due Date",
       field: "dueDate",
+      sortable: true,
+      filter: true,
+    },
+    {
+      headerName: "Creator",
+      field: "creator.fullname",
       sortable: true,
       filter: true,
     },

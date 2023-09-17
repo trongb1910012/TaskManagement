@@ -4,8 +4,8 @@ import AssignedTaskTable from "./AssignedTaskTable";
 const taskPage = () => {
   return (
     <div>
-      <TaskTable />
       <AssignedTaskTable />
+      <TaskTable />
     </div>
   );
 };

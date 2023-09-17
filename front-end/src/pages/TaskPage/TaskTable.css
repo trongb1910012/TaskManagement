@@ -1,5 +1,5 @@
 .ag-theme-alpine {
-    --ag-header-height: 50px;
+    --ag-header-height: 40px;
     --ag-header-foreground-color: white;
     --ag-header-background-color: #30324e;
     /* then add back a border between rows */

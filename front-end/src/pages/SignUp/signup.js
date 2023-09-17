@@ -16,8 +16,11 @@ const paperStyle = {
   margin: "50px auto",
 };
 const backgroundColor = {
-  backgroundColor: "#a2b9bc",
-  padding: "3px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "100vh", // Đảm bảo chiều cao của container bằng chiều cao của viewport
+  backgroundColor: "#eceff8",
 };
 function SignUp() {
   const handleSubmit = async (event) => {
@@ -124,10 +127,9 @@ function SignUp() {
                 <button className="signup-btn">Sign Up</button>
               </Grid>
             </Grid>
-
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/tasking" variant="body2">
+                <Link href="/tasking" variant="h6">
                   Already have an account? Sign in
                 </Link>
               </Grid>

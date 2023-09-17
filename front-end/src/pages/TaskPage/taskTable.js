@@ -128,12 +128,7 @@ const ProjectList = () => {
       sortable: true,
       filter: true,
     },
-    {
-      headerName: "Creator",
-      field: "creator.fullname",
-      sortable: true,
-      filter: true,
-    },
+
     {
       headerName: "Status",
       field: "status",
