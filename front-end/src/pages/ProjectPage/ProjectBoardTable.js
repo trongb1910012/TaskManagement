@@ -10,7 +10,7 @@ import {
   faSave,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "@mui/material";
+import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import { LicenseManager } from "ag-grid-enterprise";
@@ -114,20 +114,6 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
       headerCheckboxSelection: headerCheckboxSelection,
     },
     {
-      headerName: "Project",
-      field: "project.title",
-      sortable: true,
-      filter: true,
-      editable: false,
-    },
-    {
-      headerName: "Create Date",
-      field: "createdAt",
-      sortable: true,
-      filter: true,
-      editable: false,
-    },
-    {
       headerName: "Leader",
       field: "board_leader.fullname",
       sortable: true,
@@ -191,7 +177,12 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
         className="ag-theme-alpine"
         style={{ height: "400px", width: "100%" }}
       >
-        <div className="project-title">Project: {projectName}</div>
+        <Grid container justifyContent={"flex-start"}>
+          <Grid item>
+            {" "}
+            <div className="project-title">Project: {projectName}</div>
+          </Grid>
+        </Grid>
         <AgGridReact
           columnDefs={columnDefs}
           rowData={projects}

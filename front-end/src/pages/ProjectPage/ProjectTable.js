@@ -10,7 +10,7 @@ import {
   faSave,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import ProjectBoardTable from "./ProjectBoardTable";
@@ -251,6 +251,12 @@ const ProjectTable = () => {
   }, []);
   return (
     <div>
+      <Grid container justifyContent={"flex-start"}>
+        <Grid item>
+          {" "}
+          <h1>PROJECTS</h1>
+        </Grid>
+      </Grid>
       <div
         className="ag-theme-alpine"
         style={{ height: "350px", width: "100%" }}

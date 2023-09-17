@@ -232,7 +232,10 @@ const ProjectTable = () => {
   }, []);
   return (
     <div>
-      <Grid container justifyContent="flex-end">
+      <Grid container justifyContent="space-between">
+        <Grid item>
+          <h1>BOARDS</h1>
+        </Grid>
         <Grid item>
           {" "}
           <IconButton onClick={() => handleOpenForm()} variant="outlined">

@@ -74,21 +74,6 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
 
   //   setProjects([...projects, emptyRow]);
   // };
-  const handleEdit = async (rowData) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.put(
-        `/boards/${rowData._id}?token=${token}`,
-        rowData
-      );
-
-      console.log(response.data); // Xử lý phản hồi theo ý muốn
-      cogoToast.success("Cập nhật dự án thành công");
-      fetchData(); // Cập nhật dữ liệu sau khi chỉnh sửa thành công
-    } catch (error) {
-      console.error(error); // Xử lý lỗi một cách phù hợp
-    }
-  };
   const openCreateForm = () => {
     setIsEditFormOpen(false);
     setIsCreateFormOpen(true);
@@ -247,18 +232,21 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
   }, []);
   return (
     <div>
-      <Grid container justifyContent="flex-end">
-        <Grid item>
-          <IconButton onClick={() => openCreateForm()} variant="outlined">
-            <FontAwesomeIcon icon={faAdd} />
-          </IconButton>
-        </Grid>
-      </Grid>
       <div
         className="ag-theme-alpine"
         style={{ height: "400px", width: "100%" }}
       >
-        <div className="project-title">Board: {boardName}</div>
+        <Grid container justifyContent="space-between">
+          <Grid item>
+            <div className="project-title">Board: {boardName}</div>
+          </Grid>
+          <Grid item>
+            <IconButton onClick={() => openCreateForm()} variant="outlined">
+              <FontAwesomeIcon icon={faAdd} />
+            </IconButton>
+          </Grid>
+        </Grid>
+
         <AgGridReact
           columnDefs={columnDefs}
           rowData={boards}

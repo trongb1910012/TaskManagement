@@ -220,7 +220,10 @@ const ProjectList = () => {
   }, []);
   return (
     <div>
-      <Grid container justifyContent="flex-end">
+      <Grid container justifyContent="space-between">
+        <Grid item>
+          <h1>CREATED TASKS</h1>{" "}
+        </Grid>
         <Grid item>
           {isAnyCheckboxSelected ? (
             <IconButton

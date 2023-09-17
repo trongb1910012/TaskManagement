@@ -181,6 +181,11 @@ const AssignedTaskTable = () => {
   }, []);
   return (
     <div>
+      <Grid container justifyContent="flex-start">
+        <Grid item>
+          <h1>ASSIGNED TASKS</h1>
+        </Grid>
+      </Grid>
       <div
         className="ag-theme-alpine"
         style={{ height: "350px", width: "100%" }}
