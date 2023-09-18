@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import "ag-grid-enterprise";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,10 +13,8 @@ import {
 import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
-import { LicenseManager } from "ag-grid-enterprise";
 import AddTasksForm from "./AddTaskByBoardForm";
 import EditTaskForm from "./EditTaskByBoardForm";
-LicenseManager.setLicenseKey(`AG-047238`);
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
@@ -232,21 +229,20 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
   }, []);
   return (
     <div>
+      <Grid container justifyContent="space-between">
+        <Grid item>
+          <div className="project-title">Board: {boardName}</div>
+        </Grid>
+        <Grid item>
+          <IconButton onClick={() => openCreateForm()} variant="outlined">
+            <FontAwesomeIcon icon={faAdd} />
+          </IconButton>
+        </Grid>
+      </Grid>
       <div
         className="ag-theme-alpine"
-        style={{ height: "400px", width: "100%" }}
+        style={{ height: "300px", width: "100%" }}
       >
-        <Grid container justifyContent="space-between">
-          <Grid item>
-            <div className="project-title">Board: {boardName}</div>
-          </Grid>
-          <Grid item>
-            <IconButton onClick={() => openCreateForm()} variant="outlined">
-              <FontAwesomeIcon icon={faAdd} />
-            </IconButton>
-          </Grid>
-        </Grid>
-
         <AgGridReact
           columnDefs={columnDefs}
           rowData={boards}

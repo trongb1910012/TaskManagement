@@ -273,15 +273,16 @@ const ProjectTable = () => {
           paginationPageSize={5}
         ></AgGridReact>
       </div>
-      <div>
-        {" "}
-        {isProjectTableOpen && (
-          <ProjectBoardTable
-            projectId={selectedProjectId}
-            projectName={selectedProjectName}
-          />
-        )}
-      </div>
+      <Grid container spacing={0}>
+        <Grid item xs={12} xl={4}>
+          {isProjectTableOpen && (
+            <ProjectBoardTable
+              projectId={selectedProjectId}
+              projectName={selectedProjectName}
+            />
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 };

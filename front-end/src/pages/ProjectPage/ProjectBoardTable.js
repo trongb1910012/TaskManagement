@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import "ag-grid-enterprise";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,9 +12,7 @@ import {
 import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
-import { LicenseManager } from "ag-grid-enterprise";
 import "./ProjectTable.css";
-LicenseManager.setLicenseKey(`AG-047238`);
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
@@ -23,6 +20,7 @@ var headerCheckboxSelection = function (params) {
 const ProjectBoardTable = ({ projectId, projectName }) => {
   const [projects, setProjects] = useState([]);
   const [newRowData, setNewRowData] = useState({});
+
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(`/boards/${projectId}`);
@@ -73,7 +71,7 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.put(
-        `/boards/${rowData._id}?token=${token}`,
+        `/boards/${rowData.id}?token=${token}`,
         rowData
       );
 
@@ -173,16 +171,16 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
   }, []);
   return (
     <div>
+      <Grid container justifyContent={"flex-start"}>
+        <Grid item>
+          {" "}
+          <div className="project-title">Project: {projectName}</div>
+        </Grid>
+      </Grid>
       <div
         className="ag-theme-alpine"
-        style={{ height: "400px", width: "100%" }}
+        style={{ height: "300px", width: "100%" }}
       >
-        <Grid container justifyContent={"flex-start"}>
-          <Grid item>
-            {" "}
-            <div className="project-title">Project: {projectName}</div>
-          </Grid>
-        </Grid>
         <AgGridReact
           columnDefs={columnDefs}
           rowData={projects}
