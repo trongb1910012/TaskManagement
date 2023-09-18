@@ -263,7 +263,7 @@ const ProjectTable = () => {
       >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={[newRowData, ...projects]}
+          rowData={[...projects, newRowData]}
           defaultColDef={defaultColDef}
           onGridReady={fetchData}
           pagination={true}
@@ -274,7 +274,7 @@ const ProjectTable = () => {
         ></AgGridReact>
       </div>
       <Grid container spacing={0}>
-        <Grid item xs={12} xl={4}>
+        <Grid item xs={12} xl={6}>
           {isProjectTableOpen && (
             <ProjectBoardTable
               projectId={selectedProjectId}

@@ -46,13 +46,14 @@ exports.get_user_info = async (req, res, next) => {
     const projectCount = await Project.countDocuments({ owner: memberId });
     const taskCount = await Task.countDocuments({ members: memberId });
     const boardCount = await Board.countDocuments({ board_leader: memberId });
-
+    const createdTaskCount = await Task.countDocuments({ creator: memberId });
     const response = {
       userinfo: {
         ...user._doc,
         projectCount,
         taskCount,
         boardCount,
+        createdTaskCount,
       },
     };
 

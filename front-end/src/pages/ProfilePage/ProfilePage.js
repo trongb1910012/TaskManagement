@@ -122,10 +122,12 @@ const StudentProfile = () => {
                   </TableRow>
                   <TableRow>
                     <TableCell sx={{ fontSize: "20px" }} width="30%">
-                      Blood
+                      Created Tasks
                     </TableCell>
                     <TableCell width="2%">:</TableCell>
-                    <TableCell sx={{ fontSize: "20px" }}>B+</TableCell>
+                    <TableCell sx={{ fontSize: "20px" }}>
+                      {userinfo.createdTaskCount}
+                    </TableCell>
                   </TableRow>
                 </Table>
               </CardContent>
