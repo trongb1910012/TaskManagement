@@ -68,3 +68,27 @@ exports.get_user_info = async (req, res, next) => {
     );
   }
 };
+//sua thong tin nguoi dung
+exports.update_user = async (req, res, next) => {
+  const userId = req.params.id;
+  const updates = req.body;
+
+  try {
+    const user = await User.findOne({ _id: userId });
+    if (!user) {
+      return next(new BadRequestError(404, "User not found"));
+    }
+    // Update the project fields with the new values
+    Object.keys(updates).forEach((key) => {
+      user[key] = updates[key];
+    });
+
+    const updatedUser = await user.save();
+    return res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while updating the project")
+    );
+  }
+};
