@@ -15,6 +15,10 @@ import swal from "sweetalert";
 import AddTasksForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
 import { Grid } from "@mui/material";
+import "ag-grid-enterprise";
+import { LicenseManager } from "ag-grid-enterprise";
+
+LicenseManager.setLicenseKey("AG-047238");
 var checkboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0;
 };

@@ -19,12 +19,17 @@ var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
 };
+var checkboxSelection = function (params) {
+  return params.columnApi.getRowGroupColumns().length === 0;
+};
 const TasksByBoardTable = ({ boardId, boardName }) => {
   const [boards, setBoards] = useState([]);
   const [newRowData, setNewRowData] = useState({});
   const [rowDataForForm, setRowDataForForm] = useState(null);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [isAnyCheckboxSelected, setIsAnyCheckboxSelected] = useState(false);
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(`/tasks/${boardId}`);
@@ -108,12 +113,37 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
       }
     });
   };
+  const handleDeleteSelectedTasks = () => {
+    swal({
+      title: "Bạn chắc chắn muốn xóa những công việc đã chọn?",
+      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        const selectedTaskIds = selectedRows.map((row) => row._id);
+        await axiosClient.delete("/tasks/", {
+          data: { taskIds: selectedTaskIds },
+        });
+        swal("Các công việc đã được xóa thành công!", {
+          icon: "success",
+        });
+        await fetchData();
+      }
+    });
+  };
+  const handleCheckboxChange = (selectedRows) => {
+    setSelectedRows(selectedRows);
+    setIsAnyCheckboxSelected(selectedRows.length > 0);
+  };
   const columnDefs = [
     {
       headerName: "Title",
       field: "title",
       sortable: true,
       filter: true,
+      checkboxSelection: checkboxSelection,
       headerCheckboxSelection: headerCheckboxSelection,
     },
     {
@@ -141,7 +171,6 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
       filter: true,
       cellStyle: (params) => {
         if (params.value === "completed") {
-          //mark police cells as red
           return {
             color: "white",
             backgroundColor: "#33a47c",
@@ -234,9 +263,19 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
           <div className="project-title">Board: {boardName}</div>
         </Grid>
         <Grid item>
-          <IconButton onClick={() => openCreateForm()} variant="outlined">
-            <FontAwesomeIcon icon={faAdd} />
-          </IconButton>
+          {isAnyCheckboxSelected ? (
+            <IconButton
+              sx={{ color: "red" }}
+              onClick={handleDeleteSelectedTasks}
+              variant="outlined"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+          ) : (
+            <IconButton onClick={() => openCreateForm()} variant="outlined">
+              <FontAwesomeIcon icon={faAdd} />
+            </IconButton>
+          )}
         </Grid>
       </Grid>
       <div
@@ -252,6 +291,11 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
           pivotPanelShow={"always"}
           rowGroupPanelShow={"always"}
           paginationPageSize={5}
+          suppressRowClickSelection={true}
+          rowSelection={"multiple"}
+          onSelectionChanged={(event) =>
+            handleCheckboxChange(event.api.getSelectedRows())
+          }
         ></AgGridReact>
       </div>
       {isCreateFormOpen && (

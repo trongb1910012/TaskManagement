@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
   faClipboard,
-  faHome,
+  faHouse,
   faList,
   faPowerOff,
   faTh,
@@ -39,7 +39,7 @@ const Sidebar = () => {
     {
       path: "/tasking/home",
       name: "Home",
-      icon: <FontAwesomeIcon icon={faHome} />,
+      icon: <FontAwesomeIcon icon={faHouse} />,
     },
     {
       path: "/tasking/employee",
@@ -73,12 +73,12 @@ const Sidebar = () => {
     <div className={cx("wrapper")}>
       <div
         className={cx("container")}
-        style={{ width: isOpen ? "230px" : "70px" }}
+        style={{ width: isOpen ? "250px" : "70px" }}
       >
         <div className={cx("top_section")}>
           <div
             className={cx("bars")}
-            style={{ marginLeft: isOpen ? "50px" : "0px" }}
+            style={{ marginLeft: isOpen ? "0px" : "0px" }}
           >
             <FontAwesomeIcon icon={faBars} onClick={toggle} />
           </div>
