@@ -66,7 +66,7 @@ export const AccountProfileDetails = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card>
+      <Card sx={{ border: "1px solid #30324e", borderRadius: "18px" }}>
         <CardHeader subheader="The information can be edited" title="Profile" />
         <CardContent sx={{ pt: 0 }}>
           {userData ? (
@@ -107,6 +107,9 @@ export const AccountProfileDetails = () => {
                     fullWidth
                     label="Role"
                     name="role"
+                    InputProps={{
+                      readOnly: true,
+                    }}
                     onChange={handleChange}
                     required
                     value={values.role}

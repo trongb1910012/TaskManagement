@@ -10,7 +10,7 @@ const Page = () => (
         py: 1,
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Stack spacing={3}>
           <div>
             <Grid container spacing={3}>

@@ -26,7 +26,12 @@ export const AccountProfile = () => {
   }, []);
 
   return (
-    <Card>
+    <Card
+      sx={{
+        border: "1px solid #30324e",
+        borderRadius: "18px",
+      }}
+    >
       <CardContent>
         {userData ? (
           <Box
@@ -45,10 +50,10 @@ export const AccountProfile = () => {
                 width: 80,
               }}
             />
-            <Typography gutterBottom variant="h5">
+            <Typography gutterBottom variant="h3">
               {userData.fullname}
             </Typography>
-            <Typography color="text.secondary" variant="h6">
+            <Typography color="text.secondary" variant="h5">
               {userData.role}
             </Typography>
             <Typography color="text.secondary" variant="h6">
