@@ -22,6 +22,8 @@ export const AccountProfileDetails = () => {
     fullname: "",
     email: "",
     role: "",
+    phoneNumber: "",
+    birthDay: "",
   });
 
   const fetchData = async () => {
@@ -35,6 +37,8 @@ export const AccountProfileDetails = () => {
         fullname: response.data.userinfo.fullname,
         email: response.data.userinfo.email,
         role: response.data.userinfo.role,
+        phoneNumber: response.data.userinfo.phoneNumber,
+        birthDay: response.data.userinfo.birthdate,
       });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -113,6 +117,27 @@ export const AccountProfileDetails = () => {
                     onChange={handleChange}
                     required
                     value={values.role}
+                  />
+                </Grid>
+                <Grid xs={12} md={6}>
+                  <TextField
+                    type="date"
+                    fullWidth
+                    label="Birth"
+                    name="birthDay"
+                    onChange={handleChange}
+                    required
+                    value={values.birthDay}
+                  />
+                </Grid>
+                <Grid xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Phone"
+                    name="phoneNumber"
+                    onChange={handleChange}
+                    required
+                    value={values.phoneNumber}
                   />
                 </Grid>
               </Grid>

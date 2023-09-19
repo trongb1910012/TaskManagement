@@ -47,9 +47,14 @@ exports.get_user_info = async (req, res, next) => {
     const taskCount = await Task.countDocuments({ members: memberId });
     const boardCount = await Board.countDocuments({ board_leader: memberId });
     const createdTaskCount = await Task.countDocuments({ creator: memberId });
+    if (user.birthDay) {
+      // Format the birthdate to 'yyyy-mm-dd'
+      birthdate = user.birthDay.toISOString().split("T")[0];
+    }
     const response = {
       userinfo: {
         ...user._doc,
+        birthdate,
         projectCount,
         taskCount,
         boardCount,

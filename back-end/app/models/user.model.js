@@ -22,6 +22,12 @@ module.exports = (mongoose) => {
         enum: ["admin", "user"],
         default: "user",
       },
+      phoneNumber: {
+        type: String,
+      },
+      birthDay: {
+        type: Date,
+      },
     },
     { timestamps: true }
   );
