@@ -109,6 +109,53 @@ const ProjectTable = () => {
     setSelectedProjectId(projectId);
     setSelectedProjectName(projectName);
   };
+  const actionCellRenderer = (params) => {
+    if (params.columnApi.getRowGroupColumns().length > 0) {
+      return null;
+    }
+
+    return (
+      <div>
+        {params.data !== newRowData && (
+          <>
+            <IconButton
+              onClick={() => handleEdit(params.data)}
+              variant="outlined"
+              color="primary"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </IconButton>
+            <IconButton
+              onClick={() => handleDelete(params.data)}
+              variant="outlined"
+              color="error"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+            <IconButton
+              onClick={() =>
+                handleOpenTable(params.data._id, params.data.title)
+              }
+              variant="outlined"
+            >
+              <FontAwesomeIcon icon={faEye} />
+            </IconButton>
+          </>
+        )}
+
+        {params.data === newRowData && (
+          <IconButton
+            onClick={handleRowSubmit}
+            variant="outlined"
+            color="primary"
+          >
+            <FontAwesomeIcon icon={faSave} />
+          </IconButton>
+        )}
+      </div>
+    );
+  };
+
   const columnDefs = [
     {
       headerName: "Title",
@@ -174,46 +221,7 @@ const ProjectTable = () => {
     {
       headerName: "Action",
       field: "action",
-      cellRenderer: (params) => (
-        <div>
-          {params.data !== newRowData && (
-            <>
-              <IconButton
-                onClick={() => handleEdit(params.data)}
-                variant="outlined"
-                color="primary"
-              >
-                <FontAwesomeIcon icon={faPenToSquare} />
-              </IconButton>
-              <IconButton
-                onClick={() => handleDelete(params.data)}
-                variant="outlined"
-                color="error"
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </IconButton>
-              <IconButton
-                onClick={() =>
-                  handleOpenTable(params.data._id, params.data.title)
-                }
-                variant="outlined"
-              >
-                <FontAwesomeIcon icon={faEye} />
-              </IconButton>
-            </>
-          )}
-
-          {params.data === newRowData && (
-            <IconButton
-              onClick={handleRowSubmit}
-              variant="outlined"
-              color="primary"
-            >
-              <FontAwesomeIcon icon={faSave} />
-            </IconButton>
-          )}
-        </div>
-      ),
+      cellRenderer: actionCellRenderer,
     },
   ];
 

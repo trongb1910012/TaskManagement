@@ -137,6 +137,44 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
     setSelectedRows(selectedRows);
     setIsAnyCheckboxSelected(selectedRows.length > 0);
   };
+  const actionCellRenderer = (params) => {
+    if (params.columnApi.getRowGroupColumns().length > 0) {
+      return null;
+    }
+
+    return (
+      <div>
+        {params.data !== newRowData && (
+          <>
+            <IconButton
+              onClick={() => openEditForm(params.data)}
+              variant="outlined"
+              color="primary"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </IconButton>
+            <IconButton
+              onClick={() => handleDelete(params.data)}
+              variant="outlined"
+              color="error"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+          </>
+        )}
+
+        {params.data === newRowData && (
+          <IconButton
+            onClick={handleRowSubmit}
+            variant="outlined"
+            color="primary"
+          >
+            <FontAwesomeIcon icon={faSave} />
+          </IconButton>
+        )}
+      </div>
+    );
+  };
   const columnDefs = [
     {
       headerName: "Title",
@@ -200,46 +238,16 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
       sortable: true,
       filter: true,
       valueGetter: function (params) {
-        return params.data.members.map(function (member) {
-          return member.fullname;
-        });
+        if (params.data && params.data.members) {
+          return params.data.members.map((member) => member.fullname);
+        }
+        return "";
       },
     },
     {
       headerName: "Action",
       field: "action",
-      cellRenderer: (params) => (
-        <div>
-          {params.data !== newRowData && (
-            <>
-              <IconButton
-                onClick={() => openEditForm(params.data)}
-                variant="outlined"
-                color="primary"
-              >
-                <FontAwesomeIcon icon={faPenToSquare} />
-              </IconButton>
-              <IconButton
-                onClick={() => handleDelete(params.data)}
-                variant="outlined"
-                color="error"
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </IconButton>
-            </>
-          )}
-
-          {params.data === newRowData && (
-            <IconButton
-              onClick={handleRowSubmit}
-              variant="outlined"
-              color="primary"
-            >
-              <FontAwesomeIcon icon={faSave} />
-            </IconButton>
-          )}
-        </div>
-      ),
+      cellRenderer: actionCellRenderer,
     },
   ];
 

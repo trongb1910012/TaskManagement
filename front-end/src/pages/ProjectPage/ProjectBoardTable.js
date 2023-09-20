@@ -4,11 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPenToSquare,
-  faSave,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
@@ -19,7 +15,6 @@ var headerCheckboxSelection = function (params) {
 };
 const ProjectBoardTable = ({ projectId, projectName }) => {
   const [projects, setProjects] = useState([]);
-  const [newRowData, setNewRowData] = useState({});
 
   const fetchData = async () => {
     try {
@@ -35,23 +30,6 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleRowSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.post(
-        `/boards?token=${token}`,
-        newRowData
-      );
-
-      console.log(response.data);
-      cogoToast.success("Tạo hàng mới thành công");
-
-      fetchData();
-      setNewRowData({}); // Đặt lại dữ liệu hàng mới về trạng thái ban đầu
-    } catch (error) {
-      console.error(error);
-    }
-  };
   // const handleAddRow = () => {
   //   const emptyRow = {
   //     title: "",
@@ -103,6 +81,32 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
       }
     });
   };
+  const actionCellRenderer = (params) => {
+    if (params.columnApi.getRowGroupColumns().length > 0) {
+      return null;
+    }
+
+    return (
+      <div>
+        <>
+          <IconButton
+            onClick={() => handleEdit(params.data)}
+            variant="outlined"
+            color="primary"
+          >
+            <FontAwesomeIcon icon={faPenToSquare} />
+          </IconButton>
+          <IconButton
+            onClick={() => handleDelete(params.data)}
+            variant="outlined"
+            color="error"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </IconButton>
+        </>
+      </div>
+    );
+  };
   const columnDefs = [
     {
       headerName: "Name",
@@ -121,38 +125,7 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
     {
       headerName: "Action",
       field: "action",
-      cellRenderer: (params) => (
-        <div>
-          {params.data !== newRowData && (
-            <>
-              <IconButton
-                onClick={() => handleEdit(params.data)}
-                variant="outlined"
-                color="primary"
-              >
-                <FontAwesomeIcon icon={faPenToSquare} />
-              </IconButton>
-              <IconButton
-                onClick={() => handleDelete(params.data)}
-                variant="outlined"
-                color="error"
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </IconButton>
-            </>
-          )}
-
-          {params.data === newRowData && (
-            <IconButton
-              onClick={handleRowSubmit}
-              variant="outlined"
-              color="primary"
-            >
-              <FontAwesomeIcon icon={faSave} />
-            </IconButton>
-          )}
-        </div>
-      ),
+      cellRenderer: actionCellRenderer,
     },
   ];
 

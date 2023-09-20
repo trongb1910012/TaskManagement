@@ -50,7 +50,9 @@ const AssignedTaskTable = () => {
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        await axiosClient.delete(`/tasks/${projectId._id}`);
+        await axiosClient.delete(`/tasks/`, {
+          data: { taskIds: projectId._id },
+        });
         swal(`${projectId.title.toUpperCase()} đã được xóa`, {
           icon: "success",
         });
@@ -138,9 +140,10 @@ const AssignedTaskTable = () => {
       sortable: true,
       filter: true,
       valueGetter: function (params) {
-        return params.data.members.map(function (member) {
-          return member.fullname;
-        });
+        if (params.data && params.data.members) {
+          return params.data.members.map((member) => member.fullname);
+        }
+        return "";
       },
     },
     {
@@ -182,6 +185,7 @@ const AssignedTaskTable = () => {
   // };
   const defaultColDef = useMemo(() => {
     return {
+      enableRowGroup: true,
       enablePivot: true,
       enableValue: true,
       sortable: true,
@@ -209,6 +213,7 @@ const AssignedTaskTable = () => {
           onGridReady={fetchData}
           pagination={true}
           pivotPanelShow={"always"}
+          rowGroupPanelShow={"always"}
           paginationPageSize={5}
         ></AgGridReact>
       </div>

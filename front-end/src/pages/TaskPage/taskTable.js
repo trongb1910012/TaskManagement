@@ -111,6 +111,30 @@ const ProjectList = () => {
   const closeForm = () => {
     setIsFormOpen(false);
   };
+  const actionCellRenderer = (params) => {
+    if (params.columnApi.getRowGroupColumns().length > 0) {
+      return null;
+    }
+
+    return (
+      <div>
+        <IconButton
+          onClick={() => openEditForm(params.data)}
+          variant="outlined"
+          color="primary"
+        >
+          <FontAwesomeIcon icon={faPenToSquare} />
+        </IconButton>
+        <IconButton
+          onClick={() => handleDelete(params.data)}
+          variant="outlined"
+          color="error"
+        >
+          <FontAwesomeIcon icon={faTrash} />
+        </IconButton>
+      </div>
+    );
+  };
   const columnDefs = [
     {
       headerName: "Title",
@@ -170,9 +194,10 @@ const ProjectList = () => {
       sortable: true,
       filter: true,
       valueGetter: function (params) {
-        return params.data.members.map(function (member) {
-          return member.fullname;
-        });
+        if (params.data && params.data.members) {
+          return params.data.members.map((member) => member.fullname);
+        }
+        return "";
       },
     },
     {
@@ -182,24 +207,7 @@ const ProjectList = () => {
       filter: false,
       editable: false,
       rowGroup: false,
-      cellRenderer: (params) => (
-        <div>
-          <IconButton
-            onClick={() => openEditForm(params.data)}
-            variant="outlined"
-            color="primary"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </IconButton>
-          <IconButton
-            onClick={() => handleDelete(params.data)}
-            variant="outlined"
-            color="error"
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </IconButton>
-        </div>
-      ),
+      cellRenderer: actionCellRenderer,
     },
   ];
 
@@ -210,6 +218,7 @@ const ProjectList = () => {
     return {
       enablePivot: true,
       enableValue: true,
+      enableRowGroup: true,
       sortable: true,
       resizable: true,
       filter: true,
@@ -251,6 +260,7 @@ const ProjectList = () => {
           pagination={true}
           pivotPanelShow={"always"}
           paginationPageSize={5}
+          rowGroupPanelShow={"always"}
           suppressRowClickSelection={true}
           rowSelection={"multiple"}
           onSelectionChanged={(event) =>
