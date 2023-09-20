@@ -30,7 +30,6 @@ var headerCheckboxSelection = function (params) {
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
-
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [rowDataForForm, setRowDataForForm] = useState(null);

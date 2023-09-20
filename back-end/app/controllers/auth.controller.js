@@ -63,6 +63,7 @@ exports.signin = async (req, res, next) => {
     email: user.email,
     fullname: user.fullname,
     accessToken: token,
+    role: user.role,
   });
 };
 

@@ -33,41 +33,71 @@ const SidebarLink = ({ to, name, icon, isOpen }) => {
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const role = localStorage.getItem("role");
   const toggle = () => setIsOpen(!isOpen);
-  const menuItem = [
-    {
-      path: "/tasking/home",
-      name: "Home",
-      icon: <FontAwesomeIcon icon={faHouse} />,
-    },
-    {
-      path: "/tasking/employee",
-      name: "Employee",
-      icon: <FontAwesomeIcon icon={faUserGroup} />,
-    },
-    {
-      path: "/tasking/project",
-      name: "Project",
-      icon: <FontAwesomeIcon icon={faClipboard} />,
-    },
-    {
-      path: "/tasking/board",
-      name: "Board",
-      icon: <FontAwesomeIcon icon={faTh} />,
-    },
-    {
-      path: "/tasking/task",
-      name: "Task",
-      icon: <FontAwesomeIcon icon={faList} />,
-    },
+  const menuItem =
+    role === "admin"
+      ? [
+          {
+            path: "/tasking/home",
+            name: "Home",
+            icon: <FontAwesomeIcon icon={faHouse} />,
+          },
+          {
+            path: "/tasking/employee",
+            name: "Employee",
+            icon: <FontAwesomeIcon icon={faUserGroup} />,
+          },
+          {
+            path: "/tasking/project",
+            name: "Project",
+            icon: <FontAwesomeIcon icon={faClipboard} />,
+          },
+          {
+            path: "/tasking/board",
+            name: "Board",
+            icon: <FontAwesomeIcon icon={faTh} />,
+          },
+          {
+            path: "/tasking/task",
+            name: "Task",
+            icon: <FontAwesomeIcon icon={faList} />,
+          },
 
-    {
-      path: "/tasking",
-      name: "Log Out",
-      icon: <FontAwesomeIcon icon={faPowerOff} />,
-    },
-  ];
+          {
+            path: "/tasking",
+            name: "Log Out",
+            icon: <FontAwesomeIcon icon={faPowerOff} />,
+          },
+        ]
+      : [
+          {
+            path: "/tasking/home",
+            name: "Home",
+            icon: <FontAwesomeIcon icon={faHouse} />,
+          },
+          {
+            path: "/tasking/project",
+            name: "Project",
+            icon: <FontAwesomeIcon icon={faClipboard} />,
+          },
+          {
+            path: "/tasking/board",
+            name: "Board",
+            icon: <FontAwesomeIcon icon={faTh} />,
+          },
+          {
+            path: "/tasking/task",
+            name: "Task",
+            icon: <FontAwesomeIcon icon={faList} />,
+          },
+
+          {
+            path: "/tasking",
+            name: "Log Out",
+            icon: <FontAwesomeIcon icon={faPowerOff} />,
+          },
+        ];
 
   return (
     <div className={cx("wrapper")}>
