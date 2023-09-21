@@ -4,18 +4,23 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAdd,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import "./ProjectTable.css";
+import AddBoardByProject from "./AddBoardByProject";
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
 };
 const ProjectBoardTable = ({ projectId, projectName }) => {
   const [projects, setProjects] = useState([]);
-
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(`/boards/${projectId}`);
@@ -81,6 +86,12 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
       }
     });
   };
+  const openCreateForm = () => {
+    setIsCreateFormOpen(true);
+  };
+  const closeCreateForm = () => {
+    setIsCreateFormOpen(false);
+  };
   const actionCellRenderer = (params) => {
     if (params.columnApi.getRowGroupColumns().length > 0) {
       return null;
@@ -144,10 +155,15 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
   }, []);
   return (
     <div>
-      <Grid container justifyContent={"flex-start"}>
+      <Grid container justifyContent={"space-between"}>
         <Grid item>
           {" "}
           <div className="project-title">Project: {projectName}</div>
+        </Grid>
+        <Grid item>
+          <IconButton onClick={() => openCreateForm()} variant="outlined">
+            <FontAwesomeIcon icon={faAdd} />
+          </IconButton>
         </Grid>
       </Grid>
       <div
@@ -165,6 +181,13 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
           paginationPageSize={5}
         ></AgGridReact>
       </div>
+      {isCreateFormOpen && (
+        <AddBoardByProject
+          onBoardCreated={fetchData}
+          closeForm={closeCreateForm}
+          projectId={projectId}
+        />
+      )}
     </div>
   );
 };

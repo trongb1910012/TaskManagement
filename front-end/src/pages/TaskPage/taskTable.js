@@ -35,6 +35,9 @@ const ProjectList = () => {
   const [rowDataForForm, setRowDataForForm] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAnyCheckboxSelected, setIsAnyCheckboxSelected] = useState(false);
+  const updateTasksStatus = async () => {
+    await axiosClient.put(`/tasks`);
+  };
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -46,6 +49,7 @@ const ProjectList = () => {
   };
 
   useEffect(() => {
+    updateTasksStatus();
     fetchData();
   }, []);
   const handleDelete = (projectId) => {

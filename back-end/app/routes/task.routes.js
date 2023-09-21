@@ -10,6 +10,7 @@ module.exports = (app) => {
   router.get("/:id", tasks.get_CV_KeHoach);
   router.post("/", tasks.them_CongViec);
   router.post("/updateStatus", tasks.updateTaskStatus);
+  router.put("/", tasks.updateTaskStatus);
   router.put("/:id", tasks.sua_CongViec);
   // router.delete("/:id", tasks.xoa_CongViec);
   router.delete("/", tasks.xoa_CongViec);

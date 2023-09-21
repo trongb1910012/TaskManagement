@@ -18,6 +18,9 @@ const AssignedTaskTable = () => {
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [rowDataForForm, setRowDataForForm] = useState(null);
   const [userinfo, setUserinfo] = useState([]);
+  const updateTasksStatus = async () => {
+    await axiosClient.put(`/tasks`);
+  };
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -39,6 +42,7 @@ const AssignedTaskTable = () => {
   };
   useEffect(() => {
     getUserInfo();
+    updateTasksStatus();
     fetchData();
   }, []);
   const handleDelete = (projectId) => {

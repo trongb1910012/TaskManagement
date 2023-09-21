@@ -56,39 +56,43 @@ const Login = () => {
     }
   };
   return (
-    <div style={container}>
-      <Grid>
-        <Paper elevation={10} style={paperStyle}>
-          <Grid align="center">
-            <Avatar style={avatarStyle}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <h2 style={headingStyle}>TASK MANAGEMENT</h2>
-          </Grid>
-          <TextField
-            style={{ marginBottom: "16px" }}
-            label="Username"
-            placeholder="Enter username"
-            variant="outlined"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            fullWidth
-            required
-          />
-          <TextField
-            style={{ marginBottom: "16px" }}
-            label="Password"
-            placeholder="Enter password"
-            type="password"
-            variant="outlined"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            fullWidth
-            required
-          />
-          <Grid container justifyContent="center">
-            <Grid item>
-              {/* <Button
+    <form>
+      <div style={container}>
+        <Grid>
+          <Paper elevation={10} style={paperStyle}>
+            <Grid align="center">
+              <Avatar style={avatarStyle}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <h2 style={headingStyle}>TASK MANAGEMENT</h2>
+            </Grid>
+            <form>
+              <TextField
+                style={{ marginBottom: "16px" }}
+                label="Username"
+                placeholder="Enter username"
+                variant="outlined"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                fullWidth
+                required
+                autocomplete="username"
+              />
+              <TextField
+                style={{ marginBottom: "16px" }}
+                label="Password"
+                placeholder="Enter password"
+                type="password"
+                variant="outlined"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                fullWidth
+                required
+                autocomplete="current-password"
+              />
+              <Grid container justifyContent="center">
+                <Grid item>
+                  {/* <Button
                 onClick={handleLogin}
                 color="primary"
                 variant="contained"
@@ -97,24 +101,27 @@ const Login = () => {
               >
                 Sign in
               </Button> */}
-              <button
-                onClick={handleLogin}
-                color="primary"
-                variant="contained"
-                className="login-btn"
-                fullWidth
-              >
-                Sign in
-              </button>
-            </Grid>
-          </Grid>
-          <Typography variant="h6">
-            {" "}
-            Do you have an account ?<Link href="/tasking/signup">Sign Up</Link>
-          </Typography>
-        </Paper>
-      </Grid>
-    </div>
+                  <button
+                    onClick={handleLogin}
+                    color="primary"
+                    variant="contained"
+                    className="login-btn"
+                  >
+                    Sign in
+                  </button>
+                </Grid>
+              </Grid>
+            </form>
+
+            <Typography variant="h6">
+              {" "}
+              Do you have an account ?
+              <Link href="/tasking/signup">Sign Up</Link>
+            </Typography>
+          </Paper>
+        </Grid>
+      </div>
+    </form>
   );
 };
 
