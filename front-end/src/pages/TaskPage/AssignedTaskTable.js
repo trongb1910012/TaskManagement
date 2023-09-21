@@ -26,6 +26,7 @@ const AssignedTaskTable = () => {
       const token = localStorage.getItem("token");
       const response = await axiosClient.get(`/tasks/nv?token=${token}`);
       setProjects(response.data.tasks);
+      console.log(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -76,6 +77,33 @@ const AssignedTaskTable = () => {
   const closeForm = () => {
     setIsFormOpen(false);
   };
+  const actionCellRenderer = (params) => {
+    if (params.columnApi.getRowGroupColumns().length > 0) {
+      return null;
+    }
+    // Kiểm tra id người dùng và id creator
+    if (userinfo._id !== params.data.creator._id) {
+      return null;
+    }
+    return (
+      <div>
+        <IconButton
+          onClick={() => openEditForm(params.data)}
+          variant="outlined"
+          color="primary"
+        >
+          <FontAwesomeIcon icon={faPenToSquare} />
+        </IconButton>
+        <IconButton
+          onClick={() => handleDelete(params.data)}
+          variant="outlined"
+          color="error"
+        >
+          <FontAwesomeIcon icon={faTrash} />
+        </IconButton>
+      </div>
+    );
+  };
   const columnDefs = [
     {
       headerName: "Title",
@@ -106,6 +134,12 @@ const AssignedTaskTable = () => {
       field: "creator.fullname",
       sortable: true,
       filter: true,
+      valueGetter: function (params) {
+        if (params.data && params.data.creator) {
+          return params.data.creator.fullname;
+        }
+        return "";
+      },
     },
     {
       headerName: "Status",
@@ -156,31 +190,7 @@ const AssignedTaskTable = () => {
       sortable: false,
       filter: false,
       editable: false,
-      rowGroup: false,
-      cellRenderer: (params) => {
-        if (userinfo._id !== params.data.creator._id) {
-          return null; // Trả về null để ẩn cell renderer
-        }
-
-        return (
-          <div>
-            <IconButton
-              onClick={() => openEditForm(params.data)}
-              variant="outlined"
-              color="primary"
-            >
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </IconButton>
-            <IconButton
-              onClick={() => handleDelete(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-          </div>
-        );
-      },
+      cellRenderer: actionCellRenderer,
     },
   ];
 
