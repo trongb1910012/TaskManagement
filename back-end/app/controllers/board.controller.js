@@ -162,10 +162,7 @@ exports.deleteBoard = async (req, res) => {
     }
 
     // Find all tasks in the board
-    const tasks = await Task.find({ boardId });
-
-    // Delete all tasks
-    await Task.deleteMany({ boardId });
+    await Task.deleteMany({ board: boardId });
 
     // Delete the board
     await Board.findByIdAndDelete(boardId);

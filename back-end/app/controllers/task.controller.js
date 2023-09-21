@@ -58,7 +58,16 @@ exports.them_CongViec = async (req, res, next) => {
     if (!board) {
       return next(new BadRequestError(404, "Project not found"));
     }
-
+    const project = await Project.findById(board.project);
+    // Check if project.endDate is less than dueDate
+    if (project.endDate && project.endDate < dueDate) {
+      return next(
+        new BadRequestError(
+          400,
+          "Due date cannot be after the project end date"
+        )
+      );
+    }
     // Create a new task document with the task data
     const task = new Task({
       title,
@@ -101,12 +110,27 @@ exports.get_CongViec = async (req, res, next) => {
       .populate({
         path: "board",
         select: "board_name",
+        populate: {
+          path: "project",
+          select: ["startDate", "endDate"],
+        },
       });
 
     // Format the dueDate property of each task object in the response
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
-      return { ...task._doc, dueDate: formattedDate };
+      const formattedStartDate = new Date(task.board.project.startDate)
+        .toISOString()
+        .substr(0, 10);
+      const formattedEndDate = new Date(task.board.project.endDate)
+        .toISOString()
+        .substr(0, 10);
+      return {
+        ...task._doc,
+        dueDate: formattedDate,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      };
     });
     const response = {
       tasks: formattedTasks,

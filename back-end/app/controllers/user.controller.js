@@ -10,7 +10,7 @@ const Board = db.Board;
 //Lay danh sach user
 exports.get_all_user = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find({ role: "user" }).select("-password");
     res.status(200).json(users);
   } catch (err) {
     console.error(err);
