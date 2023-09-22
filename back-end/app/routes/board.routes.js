@@ -3,8 +3,8 @@ const boards = require("../controllers/board.controller");
 
 module.exports = (app) => {
   const router = express.Router();
-  router.get("/", boards.get_AllBoards);
-  router.get("/cv_leader", boards.get_Boards_byToken);
+  router.get("/", boards.get_AllBoards2);
+  router.get("/cv_leader", boards.get_Boards_byToken2);
   router.get("/:id", boards.getBoardsByProjectId);
   router.get("/leader/:u_id", boards.getBoardsByUserId);
   router.post("/", boards.createBoard);

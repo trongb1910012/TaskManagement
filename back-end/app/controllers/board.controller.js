@@ -82,6 +82,51 @@ exports.get_AllBoards = async (req, res, next) => {
     );
   }
 };
+exports.get_AllBoards2 = async (req, res, next) => {
+  try {
+    const condition = {};
+    const board_name = req.query.board_name;
+    if (board_name) {
+      condition.board_name = { $regex: new RegExp(board_name), $options: "i" };
+    }
+
+    const boards = await Board.find(condition)
+      .populate({
+        path: "project",
+        select: "title",
+      })
+      .populate({
+        path: "board_leader",
+        select: "fullname",
+      });
+
+    const formattedBoards = await Promise.all(
+      boards.map(async (board) => {
+        const tasks = await Task.find({ board: board._id }).select(
+          "title description dueDate status"
+        );
+        return {
+          ...board._doc,
+          createdAt: board.createdAt.toISOString().split("T")[0],
+          tasks: tasks.map((task) => ({
+            title: task.title,
+            description: task.description,
+            dueDate: task.dueDate,
+            status: task.status,
+            // Thêm các trường thông tin khác của task mà bạn muốn trả về
+          })),
+        };
+      })
+    );
+
+    return res.status(200).json(formattedBoards);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while retrieving projects")
+    );
+  }
+};
 //cap nhat bang cong viec
 exports.updateBoard = async (req, res) => {
   const boardId = req.params.id;
@@ -272,3 +317,78 @@ async function getProjectsOwnedByUser(userId) {
   const projects = await Project.find({ owner: userId });
   return projects.map((project) => project._id);
 }
+exports.get_Boards_byToken2 = async (req, res, next) => {
+  try {
+    const condition = {};
+    const board_name = req.query.board_name;
+    if (board_name) {
+      condition.board_name = { $regex: new RegExp(board_name), $options: "i" };
+    }
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const userId = decodedToken.id;
+
+    // Find all boards where the logged-in user is either the owner of the project or the leader
+    const boards = await Board.find({
+      $or: [
+        { board_leader: userId }, // Logged-in user is the leader of the board
+        { project: { $in: await getProjectsOwnedByUser(userId) } }, // Logged-in user is the owner of the associated project
+      ],
+      ...condition,
+    });
+
+    const projectIds = [];
+    const userIds = [];
+    const formattedBoards = boards.map((board) => {
+      projectIds.push(board.project._id);
+      userIds.push(board.board_leader._id);
+      return {
+        ...board._doc,
+        createdAt: board.createdAt.toISOString().split("T")[0],
+      };
+    });
+
+    const projects = await Project.find({ _id: { $in: projectIds } });
+    const projectMap = {};
+    projects.forEach((project) => {
+      projectMap[project._id.toString()] = project.title;
+    });
+
+    const users = await User.find({ _id: { $in: userIds } });
+    const userMap = {};
+    users.forEach((user) => {
+      userMap[user._id.toString()] = user.fullname;
+    });
+
+    formattedBoards.forEach((board) => {
+      const projectId = board.project._id.toString();
+      board.projectName = projectMap[projectId];
+      board.leaderName = userMap[board.board_leader._id.toString()];
+    });
+
+    // Fetch tasks for each board
+    const taskPromises = boards.map((board) =>
+      Task.find({ board: board._id })
+        .populate({
+          path: "members",
+          select: "fullname",
+        })
+        .select("-board -createdAt -updatedAt -creator")
+    );
+    const tasksByBoard = await Promise.all(taskPromises);
+
+    tasksByBoard.forEach((tasks, index) => {
+      formattedBoards[index].tasks = tasks;
+    });
+
+    return res.status(200).json(formattedBoards);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while retrieving projects")
+    );
+  }
+};
