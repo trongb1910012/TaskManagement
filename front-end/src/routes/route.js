@@ -3,9 +3,11 @@ import ProjectPage from "../pages/ProjectPage/projectpage";
 import BoardComponent from "../pages/BoardPage/board";
 import taskPage from "../pages/TaskPage/taskPage";
 import Profile from "../pages/ProfilePage/ProfilePage";
+import DetailProjectPage from "../pages/ProjectDetailPage/ProjectDetailPage";
 const publicRoutes = [
   { path: "home", component: HomePage },
   { path: "project", component: ProjectPage },
+  { path: "project/:id", component: DetailProjectPage },
   { path: "board", component: BoardComponent },
   { path: "task", component: taskPage },
   { path: "profile", component: Profile },
