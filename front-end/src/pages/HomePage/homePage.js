@@ -3,6 +3,7 @@ import classNames from "classnames/bind";
 import styles from "./homepage.module.scss";
 import axiosClient from "../../api/api";
 import { Grid } from "@mui/material";
+import TableComponent from "../GanttTask/GanttTask";
 const cx = classNames.bind(styles);
 function HomePage() {
   const [dSKeHoach, setDSKeHoach] = useState([]);
@@ -20,7 +21,6 @@ function HomePage() {
   useEffect(() => {
     getListProduct();
   }, []);
-
   // const handleSubmit = async (event) => {
   //   event.preventDefault();
 
@@ -79,6 +79,9 @@ function HomePage() {
   return (
     <div className={cx("wrapper")}>
       <div className={cx("kaban")}>
+        <Grid item xl={6}>
+          <TableComponent></TableComponent>
+        </Grid>
         <Grid container>
           {dSKeHoach.map((board) => (
             <Grid xs={4} md={3} xl={12}>

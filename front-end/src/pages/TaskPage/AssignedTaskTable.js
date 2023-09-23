@@ -26,7 +26,6 @@ const AssignedTaskTable = () => {
       const token = localStorage.getItem("token");
       const response = await axiosClient.get(`/tasks/nv?token=${token}`);
       setProjects(response.data.tasks);
-      console.log(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
