@@ -286,10 +286,29 @@ exports.get_CongViec_Nv = async (req, res, next) => {
       .populate({
         path: "creator",
         select: "fullname",
+      })
+      .populate({
+        path: "board",
+        select: "board_name",
+        populate: {
+          path: "project",
+          select: ["startDate", "endDate"],
+        },
       });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
-      return { ...task._doc, dueDate: formattedDate };
+      const formattedStartDate = new Date(task.board.project.startDate)
+        .toISOString()
+        .substr(0, 10);
+      const formattedEndDate = new Date(task.board.project.endDate)
+        .toISOString()
+        .substr(0, 10);
+      return {
+        ...task._doc,
+        dueDate: formattedDate,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      };
     });
     const response = {
       tasks: formattedTasks,
