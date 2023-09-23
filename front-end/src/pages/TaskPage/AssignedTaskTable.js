@@ -5,7 +5,11 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import "./TaskTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPenToSquare,
+  faTasks,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
 import AddTasksForm from "./AddTaskForm";
@@ -82,7 +86,11 @@ const AssignedTaskTable = () => {
     }
     // Kiểm tra id người dùng và id creator
     if (userinfo._id !== params.data.creator._id) {
-      return null;
+      return (
+        <IconButton variant="outlined" color="primary">
+          <FontAwesomeIcon icon={faTasks} />
+        </IconButton>
+      );
     }
     return (
       <div>

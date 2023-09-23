@@ -43,16 +43,16 @@ const TableComponent = () => {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axiosClient.get(`/tasks/nv?token=${token}`);
-      setData(response.data.tasks);
+      const response = await axiosClient.get(`/projects/nv?token=${token}`);
+      setData(response.data.projects);
 
       // Create tasks array from the API response
-      const tasksData = response.data.tasks.map((task) => ({
-        start: new Date(task.startDate),
-        end: new Date(task.dueDate),
-        name: task.title,
-        id: task._id,
-        type: "task",
+      const tasksData = response.data.projects.map((project) => ({
+        start: new Date(project.startDate),
+        end: new Date(project.endDate),
+        name: project.title,
+        id: project._id,
+        type: "project",
         isDisabled: false, // Assuming all tasks are enabled
         styles: {
           progressColor: "#7171e8",

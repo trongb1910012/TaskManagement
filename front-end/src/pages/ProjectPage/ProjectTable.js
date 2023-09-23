@@ -5,6 +5,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faChessBoard,
   faEye,
   faPenToSquare,
   faSave,
@@ -14,6 +15,7 @@ import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import ProjectBoardTable from "./ProjectBoardTable";
+import { Link } from "react-router-dom";
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
   const [newRowData, setNewRowData] = useState({
@@ -48,7 +50,7 @@ const ProjectTable = () => {
       cogoToast.success("Tạo hàng mới thành công");
 
       fetchData();
-      setNewRowData({}); // Đặt lại dữ liệu hàng mới về trạng thái ban đầu
+      setNewRowData({ startDate: new Date().toISOString().substring(0, 10) }); // Đặt lại dữ liệu hàng mới về trạng thái ban đầu
     } catch (error) {
       console.error(error);
     }
@@ -138,8 +140,18 @@ const ProjectTable = () => {
               }
               variant="outlined"
             >
-              <FontAwesomeIcon icon={faEye} />
+              <FontAwesomeIcon icon={faChessBoard} />
             </IconButton>
+            <Link to={`${params.data._id}`}>
+              <IconButton
+                onClick={() =>
+                  handleOpenTable(params.data._id, params.data.title)
+                }
+                variant="outlined"
+              >
+                <FontAwesomeIcon icon={faEye} />
+              </IconButton>
+            </Link>
           </>
         )}
 
@@ -271,7 +283,7 @@ const ProjectTable = () => {
       >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={[...projects, newRowData]}
+          rowData={[newRowData, ...projects]}
           defaultColDef={defaultColDef}
           onGridReady={fetchData}
           pagination={true}
