@@ -84,13 +84,13 @@ function HomePage() {
         </Grid>
         <Grid container>
           {dSKeHoach.map((board) => (
-            <Grid xs={4} md={3} xl={12}>
-              <div key={board.id} className={cx("board")}>
+            <Grid item xs={4} md={3} xl={12}>
+              <div key={board._id} className={cx("board")}>
                 <h2 className={cx("board_name")}>{board.board_name}</h2>
 
                 {/* Hiển thị các task thuộc board */}
                 {board.tasks.map((task) => (
-                  <div key={task.id} className={cx("task")}>
+                  <div key={task._id} className={cx("task")}>
                     <h3>Task: {task.title}</h3>
                     <p>Description: {task.description}</p>
                     <p>Status: {task.status}</p>
