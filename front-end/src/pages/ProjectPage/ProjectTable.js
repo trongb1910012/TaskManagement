@@ -5,24 +5,25 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChessBoard,
+  faAdd,
   faEye,
+  faFile,
   faPenToSquare,
-  faSave,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
-import cogoToast from "cogo-toast";
 import ProjectBoardTable from "./ProjectBoardTable";
 import { Link } from "react-router-dom";
+import AddProjectForm from "./AddProjectForm";
+import EditProjectForm from "./EditProjectForm";
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
-  const [newRowData, setNewRowData] = useState({
-    startDate: new Date().toISOString().substring(0, 10),
-  });
 
   const [isProjectTableOpen, setIsProjectTableOpen] = useState(false);
+  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
+  const [isEditFormOpen, setIsEditFormOpen] = useState(false);
+  const [rowDataForForm, setRowDataForForm] = useState(null);
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedProjectName, setSelectedProjectName] = useState(null);
   const fetchData = async () => {
@@ -38,49 +39,20 @@ const ProjectTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  const handleRowSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.post(
-        `/projects?token=${token}`,
-        newRowData
-      );
 
-      console.log(response.data);
-      cogoToast.success("Tạo hàng mới thành công");
-
-      fetchData();
-      setNewRowData({ startDate: new Date().toISOString().substring(0, 10) }); // Đặt lại dữ liệu hàng mới về trạng thái ban đầu
-    } catch (error) {
-      console.error(error);
-    }
+  const handleOpenForm = () => {
+    setIsCreateFormOpen(true);
   };
-  // const handleAddRow = () => {
-  //   const emptyRow = {
-  //     title: "",
-  //     description: "",
-  //     startDate: "",
-  //     endDate: "",
-  //     status: "",
-  //     budget: "",
-  //     owner: {
-  //       fullname: "",
-  //     },
-  //   };
-
-  //   setProjects([...projects, emptyRow]);
-  // };
-  const handleEdit = async (rowData) => {
-    try {
-      const token = localStorage.getItem("token");
-      await axiosClient.put(`/projects/${rowData._id}?token=${token}`, rowData);
-      cogoToast.success("Cập nhật dự án thành công");
-      fetchData(); // Cập nhật dữ liệu sau khi chỉnh sửa thành công
-    } catch (error) {
-      console.error(error); // Xử lý lỗi một cách phù hợp
-    }
+  const handleCloseForm = () => {
+    setIsCreateFormOpen(false);
+    setIsEditFormOpen(false);
   };
-
+  const openEditForm = (rowData) => {
+    setIsCreateFormOpen(false);
+    setIsEditFormOpen(false);
+    setIsEditFormOpen(true);
+    setRowDataForForm(rowData);
+  };
   const handleDelete = (projectId) => {
     swal({
       title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
@@ -113,52 +85,33 @@ const ProjectTable = () => {
 
     return (
       <div>
-        {params.data !== newRowData && (
-          <>
-            <IconButton
-              onClick={() => handleEdit(params.data)}
-              variant="outlined"
-              color="primary"
-            >
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </IconButton>
-            <IconButton
-              onClick={() => handleDelete(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-            <IconButton
-              onClick={() =>
-                handleOpenTable(params.data._id, params.data.title)
-              }
-              variant="outlined"
-            >
-              <FontAwesomeIcon icon={faChessBoard} />
-            </IconButton>
-            <Link to={`${params.data._id}`}>
-              <IconButton
-                onClick={() =>
-                  handleOpenTable(params.data._id, params.data.title)
-                }
-                variant="outlined"
-              >
-                <FontAwesomeIcon icon={faEye} />
-              </IconButton>
-            </Link>
-          </>
-        )}
-
-        {params.data === newRowData && (
+        <>
           <IconButton
-            onClick={handleRowSubmit}
+            onClick={() => openEditForm(params.data)}
             variant="outlined"
             color="primary"
           >
-            <FontAwesomeIcon icon={faSave} />
+            <FontAwesomeIcon icon={faPenToSquare} />
           </IconButton>
-        )}
+          <IconButton
+            onClick={() => handleDelete(params.data)}
+            variant="outlined"
+            color="error"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </IconButton>
+          <IconButton
+            onClick={() => handleOpenTable(params.data._id, params.data.title)}
+            variant="outlined"
+          >
+            <FontAwesomeIcon icon={faFile} style={{ color: "#657795" }} />
+          </IconButton>
+          <Link to={`${params.data._id}`}>
+            <IconButton variant="outlined">
+              <FontAwesomeIcon icon={faEye} />
+            </IconButton>
+          </Link>
+        </>
       </div>
     );
   };
@@ -179,14 +132,12 @@ const ProjectTable = () => {
     {
       headerName: "Start Date",
       field: "startDate",
-      cellEditor: "agDateCellEditor",
       sortable: true,
       filter: true,
     },
     {
       headerName: "End Date",
       field: "endDate",
-      cellEditor: "agDateCellEditor",
       sortable: true,
       filter: true,
     },
@@ -194,10 +145,6 @@ const ProjectTable = () => {
       headerName: "Status",
       field: "status",
       sortable: true,
-      cellEditor: "agSelectCellEditor",
-      cellEditorParams: {
-        values: ["planned", "in progress", "completed"], // Specify the dropdown options
-      },
       cellStyle: (params) => {
         if (params.value === "completed") {
           //mark police cells as red
@@ -241,7 +188,7 @@ const ProjectTable = () => {
         if (params.node.group) {
           return params.node.key;
         } else {
-          return params.data[params.colDef.field];
+          return params.data[params.colDef.title];
         }
       },
       headerCheckboxSelection: true,
@@ -253,7 +200,6 @@ const ProjectTable = () => {
   }, []);
   const defaultColDef = useMemo(() => {
     return {
-      editable: true,
       enableRowGroup: true,
       enablePivot: true,
       enableValue: true,
@@ -266,10 +212,15 @@ const ProjectTable = () => {
   }, []);
   return (
     <div>
-      <Grid container justifyContent={"flex-start"}>
+      <Grid container justifyContent="space-between">
+        <Grid item>
+          <h1>PROJECT</h1>
+        </Grid>
         <Grid item>
           {" "}
-          <h1>PROJECTS</h1>
+          <IconButton onClick={() => handleOpenForm()} variant="outlined">
+            <FontAwesomeIcon icon={faAdd} />
+          </IconButton>
         </Grid>
       </Grid>
       <div
@@ -278,7 +229,7 @@ const ProjectTable = () => {
       >
         <AgGridReact
           columnDefs={columnDefs}
-          rowData={[newRowData, ...projects]}
+          rowData={projects}
           defaultColDef={defaultColDef}
           onGridReady={fetchData}
           pagination={true}
@@ -288,6 +239,19 @@ const ProjectTable = () => {
           paginationPageSize={5}
         ></AgGridReact>
       </div>
+      {isCreateFormOpen && (
+        <AddProjectForm
+          onBoardCreated={fetchData}
+          closeForm={handleCloseForm}
+        />
+      )}
+      {isEditFormOpen && (
+        <EditProjectForm
+          onBoardCreated={fetchData}
+          rowData={rowDataForForm}
+          closeForm={handleCloseForm}
+        />
+      )}
       <Grid container spacing={0}>
         <Grid item xs={12} xl={6}>
           {isProjectTableOpen && (
