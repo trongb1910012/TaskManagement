@@ -19,8 +19,8 @@ const TableComponent = () => {
         end: new Date(project.endDate),
         name: project.title,
         id: project._id,
-        type: "project",
-        progress: 0,
+        type: "task",
+        progress: 100,
         isDisabled: false, // Assuming all tasks are enabled
         styles: {
           progressColor: "#7171e8",

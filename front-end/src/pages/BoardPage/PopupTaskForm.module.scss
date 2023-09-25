@@ -35,6 +35,26 @@
     box-sizing: border-box;
 }
 
+.popup-form select option {
+    font-size: 15px;
+    font-weight: 700;
+    padding: auto;
+    width: 50%;
+
+}
+
+option[value="planned"] {
+    color: #64687d;
+}
+
+option[value="in progress"] {
+    color: #c1945c;
+}
+
+option[value="completed"] {
+    color: #33a47c;
+}
+
 .popup-form .group-button {
     display: flex;
     justify-content: space-around;

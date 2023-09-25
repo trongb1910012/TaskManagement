@@ -13,7 +13,6 @@ const CreateBoardForm = ({ project, onBoardCreated, onClose }) => {
     project: project,
     board_leader: "",
   });
-  const [dSKeHoach, setDSKeHoach] = useState([]);
   const [userList, setUserList] = useState([]);
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -43,15 +42,6 @@ const CreateBoardForm = ({ project, onBoardCreated, onClose }) => {
       setUserList(res.data);
     };
     getListUser();
-  }, []);
-  useEffect(() => {
-    const getListKeHoach = async () => {
-      const resKH = await axiosClient.get(
-        `/projects/nv?token=${localStorage.getItem("token")}`
-      );
-      setDSKeHoach(resKH.data.projects);
-    };
-    getListKeHoach();
   }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -85,26 +75,6 @@ const CreateBoardForm = ({ project, onBoardCreated, onClose }) => {
             onChange={handleChange}
             required
           />
-        </div>
-        <div>
-          <label className={cx("pop-form-label")} htmlFor="project">
-            Project:
-          </label>
-          <select
-            className={cx("pop-form-input")}
-            type="text"
-            name="project"
-            id="project"
-            value={formData.project}
-            onChange={handleChange}
-          >
-            <option value="">-- Choose project --</option>
-            {dSKeHoach.map((kh) => (
-              <option key={kh._id} value={kh._id}>
-                {kh.title}
-              </option>
-            ))}
-          </select>
         </div>
         <div>
           <label className={cx("pop-form-label")} htmlFor="project">

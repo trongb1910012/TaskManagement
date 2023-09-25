@@ -38,6 +38,7 @@ const DetailTable = (project) => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRowSubmit = async () => {
@@ -231,7 +232,7 @@ const DetailTable = (project) => {
     <div>
       <Grid container justifyContent="space-between">
         <Grid item>
-          <h1>BOARDS</h1>
+          <h1>PROJECT: {project.id}</h1>
         </Grid>
         <Grid item>
           {" "}

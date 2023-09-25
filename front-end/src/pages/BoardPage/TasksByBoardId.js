@@ -253,7 +253,6 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
 
   const defaultColDef = useMemo(() => {
     return {
-      editable: true,
       enableRowGroup: true,
       enablePivot: true,
       enableValue: true,
