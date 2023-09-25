@@ -229,7 +229,25 @@ exports.getBoardsByProjectId = async (req, res) => {
     })
       .populate({ path: "project", select: "title" })
       .populate({ path: "board_leader", select: "fullname" });
-    res.status(200).json(boards);
+    const formattedBoards = await Promise.all(
+      boards.map(async (board) => {
+        const tasks = await Task.find({ board: board._id }).select(
+          "title description dueDate status"
+        );
+        return {
+          ...board._doc,
+          createdAt: board.createdAt.toISOString().split("T")[0],
+          tasks: tasks.map((task) => ({
+            title: task.title,
+            description: task.description,
+            dueDate: task.dueDate.toISOString().split("T")[0],
+            status: task.status,
+            // Thêm các trường thông tin khác của task mà bạn muốn trả về
+          })),
+        };
+      })
+    );
+    res.status(200).json(formattedBoards);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
