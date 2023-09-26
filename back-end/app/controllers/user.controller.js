@@ -11,7 +11,13 @@ const Board = db.Board;
 exports.get_all_user = async (req, res) => {
   try {
     const users = await User.find({ role: "user" }).select("-password");
-    res.status(200).json(users);
+    const response = users.map((user) => {
+      return {
+        ...user._doc,
+        birthDay: user.birthDay.toISOString().split("T")[0],
+      };
+    });
+    res.status(200).json(response);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
