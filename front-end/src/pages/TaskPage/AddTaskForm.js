@@ -157,12 +157,11 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
             id="members"
             value={formData.members.map((memberId) => ({
               value: memberId,
-              label:
-                userList.find((user) => user._id === memberId)?.fullname || "",
+              label: userList.find((user) => user._id === memberId)?.fullname,
             }))}
             options={userList.map((user) => ({
               value: user._id,
-              label: user.fullname,
+              label: `${user.fullname}(${user.username})`,
             }))}
             onChange={(selectedOptions) => {
               const selectedUserIds = selectedOptions.map(

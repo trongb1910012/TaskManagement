@@ -132,23 +132,7 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             ))}
           </select>
         </div>
-        {/* <div>
-          <select
-            className={cx("pop-form-input")}
-            multiple
-            type="text"
-            name="members"
-            id="members"
-            value={formData.members}
-            onChange={handleChange}
-          >
-            {userList.map((user) => (
-              <option key={user._id} value={user._id}>
-                {user.fullname}
-              </option>
-            ))}
-          </select>
-        </div> */}
+
         <div>
           <label className={cx("pop-form-label")}>Members:</label>
           <Select
@@ -164,17 +148,8 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             }))}
             options={userList.map((user) => ({
               value: user._id,
-              label: user.fullname,
+              label: `${user.fullname}(${user.username})`,
             }))}
-            // onChange={(selectedOptions) => {
-            //   const selectedUserIds = selectedOptions.map(
-            //     (option) => option.value
-            //   );
-            //   setFormData((prevFormData) => ({
-            //     ...prevFormData,
-            //     members: selectedUserIds,
-            //   }));
-            // }}
             onChange={(selectedOptions) => {
               const selectedUserIds = selectedOptions.map(
                 (option) => option.value
