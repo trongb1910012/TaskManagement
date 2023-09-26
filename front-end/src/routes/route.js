@@ -4,6 +4,7 @@ import BoardComponent from "../pages/BoardPage/board";
 import taskPage from "../pages/TaskPage/taskPage";
 import Profile from "../pages/ProfilePage/ProfilePage";
 import DetailProjectPage from "../pages/ProjectDetailPage/ProjectDetailPage";
+import UserListPage from "../pages/UserListPage/UserListPage";
 const publicRoutes = [
   { path: "home", component: HomePage },
   { path: "project", component: ProjectPage },
@@ -12,5 +13,5 @@ const publicRoutes = [
   { path: "task", component: taskPage },
   { path: "profile", component: Profile },
 ];
-const privateRoutes = [];
+const privateRoutes = [{ path: "users", component: UserListPage }];
 export { publicRoutes, privateRoutes };

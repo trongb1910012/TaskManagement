@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { publicRoutes } from "./routes";
+import { privateRoutes, publicRoutes } from "./routes";
 import DefaultLayout from "./layouts/defaultLayout/DefaultLayout";
 import Login from "./pages/Login/login";
 import SignUp from "./pages/SignUp/signup";
@@ -29,6 +29,28 @@ function App() {
               <Route
                 key={index}
                 path={`/tasking/${route.path}`}
+                element={
+                  <Layout>
+                    <Page />
+                  </Layout>
+                }
+              />
+            );
+          })}
+          {privateRoutes.map((route, index) => {
+            const Page = route.component;
+            let Layout = DefaultLayout;
+
+            if (route.layout) {
+              Layout = route.layout;
+            } else if (route.layout === null) {
+              Layout = Fragment;
+            }
+
+            return (
+              <Route
+                key={index}
+                path={`/tasking/admin/${route.path}`}
                 element={
                   <Layout>
                     <Page />
