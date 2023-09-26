@@ -13,6 +13,7 @@ import {
 import axiosClient from "../../api/api";
 import classNames from "classnames/bind";
 import styles from "./ProfilePage.scss";
+import cogoToast from "cogo-toast";
 const cx = classNames.bind(styles);
 export const AccountProfileDetails = () => {
   const [userData, setUserData] = useState(null);
@@ -62,9 +63,9 @@ export const AccountProfileDetails = () => {
       const response = await axiosClient.put(`/users/${values.id}`, values);
       console.log(response);
       localStorage.setItem("fullname", values.fullname);
-      alert("Thêm cập nhật thông tin thành công");
+      cogoToast.success("Information update successful !!!");
     } catch (error) {
-      alert("Cần điền các thông tin trống"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Information update failed !!!"); // Xử lý lỗi một cách phù hợp
     }
   };
 

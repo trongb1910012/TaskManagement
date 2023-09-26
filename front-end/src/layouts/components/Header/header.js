@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import WorkIcon from "@mui/icons-material/Work";
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Profile", "Logout"];
 
 function Header() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);

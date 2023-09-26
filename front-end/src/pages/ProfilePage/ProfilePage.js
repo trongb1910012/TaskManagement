@@ -1,6 +1,7 @@
 import { Box, Container, Stack, Unstable_Grid2 as Grid } from "@mui/material";
 import { AccountProfile } from "./AccountProfile";
 import { AccountProfileDetails } from "./DetailProfile";
+import { ChangePassword } from "./ChangePassword";
 const Page = () => (
   <>
     <Box
@@ -19,6 +20,9 @@ const Page = () => (
               </Grid>
               <Grid xs={12} md={12} lg={12}>
                 <AccountProfileDetails />
+              </Grid>
+              <Grid xs={12} md={12} lg={12}>
+                <ChangePassword />
               </Grid>
             </Grid>
           </div>
