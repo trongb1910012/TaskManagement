@@ -107,9 +107,11 @@ const EditUserForm = ({ onBoardCreated, rowData, closeForm }) => {
             <option value="admin">Admin</option>
           </select>
         </div>
-        <button className={cx("submit-button")} type="submit">
-          Save
-        </button>
+        <div className={cx("group-button")}>
+          <button className={cx("submit-button")} type="submit">
+            Save
+          </button>
+        </div>
       </form>
     </div>
   );

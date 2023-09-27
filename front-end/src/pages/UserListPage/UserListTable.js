@@ -15,9 +15,9 @@ import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
 // import ProjectBoardTable from "./ProjectBoardTable";
 import { Link } from "react-router-dom";
-// import AddProjectForm from "./AddProjectForm";
+import AddUserForm from "./UserAddForm";
 import EditUserForm from "./UserEditForm";
-const UserListTable = () => {
+const UserListTable = (role) => {
   const [projects, setProjects] = useState([]);
 
   const [isUserListTableOpen, setIsUserListTableOpen] = useState(false);
@@ -118,24 +118,6 @@ const UserListTable = () => {
       headerName: "Role",
       field: "role",
       sortable: true,
-      cellStyle: (params) => {
-        if (params.value === "user") {
-          //mark police cells as red
-          return {
-            color: "white",
-            backgroundColor: "#33a47c",
-            fontWeight: "500",
-          };
-        }
-        if (params.value === "admin") {
-          return {
-            color: "white",
-            backgroundColor: "#64687d",
-            fontWeight: "500",
-          };
-        }
-        return null;
-      },
       filter: true,
     },
     {
@@ -205,12 +187,9 @@ const UserListTable = () => {
           paginationPageSize={10}
         ></AgGridReact>
       </div>
-      {/* {isCreateFormOpen && (
-        <AddProjectForm
-          onBoardCreated={fetchData}
-          closeForm={handleCloseForm}
-        />
-      )}*/}
+      {isCreateFormOpen && (
+        <AddUserForm onBoardCreated={fetchData} closeForm={handleCloseForm} />
+      )}
       {isEditFormOpen && (
         <EditUserForm
           onBoardCreated={fetchData}

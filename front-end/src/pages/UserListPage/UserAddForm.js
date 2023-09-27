@@ -6,45 +6,42 @@ import styles from "../BoardPage/PopupTaskForm.module.scss";
 import { IconButton, Grid } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+
 const cx = classNames.bind(styles);
-const EditProjectForm = ({ onBoardCreated, rowData, closeForm }) => {
+const AddUserForm = ({ onBoardCreated, closeForm }) => {
   const [formData, setFormData] = useState({
-    title: rowData.title,
-    description: rowData.description,
-    startDate: rowData.startDate,
-    endDate: rowData.endDate,
-    status: rowData.status,
+    fullname: "",
+    username: "",
+    birthDay: new Date().toISOString().substring(0, 10),
+    email: "",
+    password: "123123",
   });
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
-      const token = localStorage.getItem("token");
-      await axiosClient.put(
-        `/projects/${rowData._id}?token=${token}`,
-        formData
-      );
-      cogoToast.success("Thêm dự thành công");
+      await axiosClient.post(`/auth/signup `, formData);
+
+      cogoToast.success("Add user successfully !!");
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
       closeForm();
       // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
       setFormData({
-        title: "",
-        description: "",
-        startDate: "",
-        endDate: "",
-        status: "",
+        fullname: "",
+        username: "",
+        birthDay: new Date().toISOString().substring(0, 10),
+        email: "",
+        password: "123123",
       });
     } catch (error) {
-      cogoToast.error("Cần điền các thông tin trống"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Add user failed !!"); // Xử lý lỗi một cách phù hợp
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -60,75 +57,59 @@ const EditProjectForm = ({ onBoardCreated, rowData, closeForm }) => {
           </IconButton>
         </Grid>
       </Grid>
-      <div className={cx("form-title")}>EDIT PROJECT</div>
+      <div className={cx("form-title")}>ADD USER</div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label className={cx("pop-form-label")} htmlFor="board_name">
-            Project title:
-          </label>
+          <label className={cx("pop-form-label")}>User name:</label>
           <input
             className={cx("pop-form-input")}
             type="text"
-            id="title"
-            name="title"
-            value={formData.title}
+            id="username"
+            name="username"
+            value={formData.username}
             onChange={handleChange}
             required
           />
         </div>
         <div>
-          <label className={cx("pop-form-label")}>Description:</label>
+          <label className={cx("pop-form-label")}>Full name:</label>
           <input
             className={cx("pop-form-input")}
             type="text"
-            id="description"
-            name="description"
-            value={formData.description}
+            id="fullname"
+            name="fullname"
+            value={formData.fullname}
             onChange={handleChange}
             required
           />
         </div>
         <div>
-          <label className={cx("pop-form-label")}>Start:</label>
+          <label className={cx("pop-form-label")}>Birth date:</label>
           <input
             className={cx("pop-form-input")}
             type="date"
-            id="startDate"
-            name="startDate"
-            value={formData.startDate}
+            id="birthDay"
+            name="birthDay"
+            value={formData.birthDay}
             onChange={handleChange}
             required
           />
         </div>
         <div>
-          <label className={cx("pop-form-label")}>End:</label>
+          <label className={cx("pop-form-label")}>Email:</label>
           <input
             className={cx("pop-form-input")}
-            type="date"
-            id="endDate"
-            name="endDate"
-            value={formData.endDate}
+            type="text"
+            id="email"
+            name="email"
+            value={formData.email}
             onChange={handleChange}
             required
           />
-        </div>
-        <div>
-          <label className={cx("pop-form-label")}>Status:</label>
-          <select
-            className={cx("pop-form-input")}
-            id="status"
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-          >
-            <option value="planned">Planned</option>
-            <option value="in progress">In progress</option>
-            <option value="completed">Completed</option>
-          </select>
         </div>
         <div className={cx("group-button")}>
           <button className={cx("submit-button")} type="submit">
-            Save
+            Add user
           </button>
         </div>
       </form>
@@ -136,4 +117,4 @@ const EditProjectForm = ({ onBoardCreated, rowData, closeForm }) => {
   );
 };
 
-export default EditProjectForm;
+export default AddUserForm;
