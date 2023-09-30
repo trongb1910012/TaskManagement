@@ -4,6 +4,9 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const db = require("../models");
 const Report = db.Report;
+const Board = db.Board;
+const Task = db.Task;
+const Project = db.Project;
 // Lấy báo cáo của nhân viên
 exports.get_BaoCao_Nv = async (req, res, next) => {
   try {
@@ -41,8 +44,34 @@ exports.get_BaoCao_Nv = async (req, res, next) => {
 exports.getReport_ByTaskId = async (req, res) => {
   try {
     const taskId = req.params.task_id;
-    const reports = await Report.find({ task_id: taskId });
-    res.status(200).json(reports);
+
+    const reports = await Report.find({ task: taskId })
+      .populate({
+        path: "author",
+        select: "fullname",
+      })
+      .populate({
+        path: "task",
+        select: "title",
+      })
+      .populate({
+        path: "project",
+        select: "title",
+      })
+      .sort({ createdAt: -1 }) // sort by createdAt descending
+      .exec();
+
+    const formattedReports = reports.map((report) => {
+      const formattedDate = new Date(report.createdAt)
+        .toISOString()
+        .substr(0, 10);
+      return {
+        ...report._doc,
+        createdAt: formattedDate,
+      };
+    });
+
+    res.status(200).json(formattedReports);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
@@ -52,7 +81,7 @@ exports.getReport_ByTaskId = async (req, res) => {
 // Controller để thêm báo cáo
 exports.addReport = async (req, res) => {
   try {
-    const { title, description, project, task } = req.body;
+    const { title, description, taskId } = req.body;
     const token = req.query.token;
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -60,13 +89,25 @@ exports.addReport = async (req, res) => {
     const decodedToken = jwt.verify(token, config.jwt.secret);
     const author = decodedToken.id;
 
+    // Truy vấn task dựa trên taskId
+    const task = await Task.findOne({ _id: taskId }).populate("board");
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
+    // Truy vấn project dựa trên board.project
+    const project = await Project.findById(task.board.project);
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
     // Tạo mới một báo cáo
     const report = new Report({
       title,
       description,
       author,
       project,
-      task,
+      task: taskId, // Assign taskId to the task field
     });
 
     // Lưu báo cáo vào cơ sở dữ liệu
@@ -82,16 +123,15 @@ exports.addReport = async (req, res) => {
 // Xóa báo cáo bằng ID
 exports.deleteReportById = async (req, res) => {
   try {
-    const reportId = req.params.id;
+    const { id } = req.body; // Lấy id từ req.body
 
     // Kiểm tra xem báo cáo có tồn tại không
-    const report = await Report.findById(reportId);
+    const report = await Report.findById(id);
     if (!report) {
       return res.status(404).json({ message: "Báo cáo không tồn tại" });
     }
 
     // Kiểm tra quyền truy cập và xác thực người dùng
-    // (Thêm mã logic xác thực người dùng theo yêu cầu của ứng dụng)
 
     // Xóa báo cáo từ cơ sở dữ liệu
     await report.remove();

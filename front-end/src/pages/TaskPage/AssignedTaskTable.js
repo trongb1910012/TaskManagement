@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -87,9 +88,11 @@ const AssignedTaskTable = () => {
     // Kiểm tra id người dùng và id creator
     if (userinfo._id !== params.data.creator._id) {
       return (
-        <IconButton variant="outlined" color="primary">
-          <FontAwesomeIcon icon={faTasks} />
-        </IconButton>
+        <Link to={`/tasking/report/${params.data._id}`}>
+          <IconButton variant="outlined" color="primary">
+            <FontAwesomeIcon icon={faTasks} />
+          </IconButton>
+        </Link>
       );
     }
     return (
@@ -108,6 +111,11 @@ const AssignedTaskTable = () => {
         >
           <FontAwesomeIcon icon={faTrash} />
         </IconButton>
+        <Link to={`/tasking/report/${params.data._id}`}>
+          <IconButton variant="outlined" color="primary">
+            <FontAwesomeIcon icon={faTasks} />
+          </IconButton>
+        </Link>
       </div>
     );
   };
