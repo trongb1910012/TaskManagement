@@ -5,15 +5,12 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router-dom";
-import {
-  faAdd,
-  faPenToSquare,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import { Grid } from "@mui/material";
 import { AddReportForm } from "./ReportAddForm";
+import { TaskInfo } from "./TaskInfo";
 import classNames from "classnames/bind";
 import styles from "./ReportPage.module.scss";
 const cx = classNames.bind(styles);
@@ -146,15 +143,14 @@ export const ReportsList = () => {
       sortable: true,
       filter: true,
       cellStyle: (params) => {
-        if (params.value === "open") {
-          //mark police cells as red
+        if (params.value === "solved") {
           return {
             color: "white",
             backgroundColor: "#33a47c",
             fontWeight: "500",
           };
         }
-        if (params.value === "solved") {
+        if (params.value === "open") {
           return {
             color: "white",
             backgroundColor: "#64687d",
@@ -192,6 +188,7 @@ export const ReportsList = () => {
   }, []);
   return (
     <div className={cx("wrapper")}>
+      <TaskInfo />
       <AddReportForm fetch={fetchData} />
       <Grid container justifyContent="space-between">
         <Grid item>

@@ -17,7 +17,6 @@ export const AddReportForm = ({ fetch }) => {
   });
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
     try {
       const token = localStorage.getItem("token");
       await axiosClient.post(`/reports?token=${token}`, formData);
