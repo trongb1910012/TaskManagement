@@ -58,7 +58,7 @@ exports.getReport_ByTaskId = async (req, res) => {
         path: "project",
         select: "title",
       })
-      .sort({ createdAt: -1 }) // sort by createdAt descending
+      .sort({ status: 1, createdAt: -1 }) // sort by createdAt descending
       .exec();
 
     const formattedReports = reports.map((report) => {

@@ -294,7 +294,8 @@ exports.get_CongViec_Nv = async (req, res, next) => {
           path: "project",
           select: ["startDate", "endDate"],
         },
-      });
+      })
+      .sort({ status: -1, dueDate: 1 });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       const formattedStartDate = new Date(task.board.project.startDate)
@@ -346,6 +347,7 @@ exports.get_created_tasks = async (req, res, next) => {
         path: "creator",
         select: "fullname",
       });
+
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       return { ...task._doc, dueDate: formattedDate };
@@ -382,5 +384,44 @@ exports.updateTaskStatus = async (req, res) => {
     res.status(500).json({
       error: "Đã xảy ra lỗi trong quá trình cập nhật trạng thái công việc",
     });
+  }
+};
+//Thông tin task theo id
+exports.getTaskById = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    const task = await Task.findById(id)
+      .populate({
+        path: "creator",
+        select: "fullname",
+      })
+      .populate({
+        path: "members",
+        select: "fullname",
+      })
+      .populate({
+        path: "board",
+        select: "board_name",
+        populate: {
+          path: "project", // populate project từ model Board
+          select: "title",
+        },
+      });
+
+    if (!task) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+    const board = await Board.findById(task.board._id);
+    const project = await Project.findById(board.project._id);
+
+    // Trả về kết quả
+    return res.json({
+      task,
+      boardName: board.board_name,
+      projectName: project.title,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
