@@ -27,6 +27,7 @@ export const ReportsList = () => {
   const [projects, setProjects] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAnyCheckboxSelected, setIsAnyCheckboxSelected] = useState(false);
+  const [taskData, setTaskData] = useState([]);
   const { id } = useParams();
   const updateTasksStatus = async () => {
     await axiosClient.put(`/tasks`);
@@ -40,12 +41,32 @@ export const ReportsList = () => {
       console.error("Error fetching data:", error);
     }
   };
+  const fetchTaskInfo = async () => {
+    try {
+      const response = await axiosClient.get(`/tasks/taskinfo?id=${id}`);
+      setTaskData(response.data.task);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
+    fetchTaskInfo();
     updateTasksStatus();
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const shouldShowAddReportForm = useMemo(() => {
+    const nameFromLocalStorage = localStorage.getItem("fullname");
+    return (
+      taskData &&
+      taskData.members &&
+      taskData.members.some(
+        (member) => member.fullname === nameFromLocalStorage
+      )
+    );
+  }, [taskData]);
+  console.log(taskData.members);
   const handleDelete = (projectId) => {
     swal({
       title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
@@ -137,7 +158,12 @@ export const ReportsList = () => {
       sortable: true,
       filter: true,
     },
-
+    {
+      headerName: "Author",
+      field: "author.fullname",
+      sortable: true,
+      filter: true,
+    },
     {
       headerName: "Status",
       field: "status",
@@ -190,7 +216,7 @@ export const ReportsList = () => {
   return (
     <div className={cx("wrapper")}>
       <TaskInfo />
-      <AddReportForm fetch={fetchData} />
+      {shouldShowAddReportForm && <AddReportForm fetch={fetchData} />}
       <Grid container justifyContent="space-between">
         <Grid item>
           <h1>REPORTS</h1>{" "}

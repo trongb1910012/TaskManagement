@@ -78,7 +78,7 @@ const EditProjectForm = ({ onBoardCreated, rowData, closeForm }) => {
         </div>
         <div>
           <label className={cx("pop-form-label")}>Description:</label>
-          <input
+          <textarea
             className={cx("pop-form-input")}
             type="text"
             id="description"
