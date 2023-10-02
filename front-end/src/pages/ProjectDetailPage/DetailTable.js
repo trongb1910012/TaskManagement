@@ -38,7 +38,7 @@ const DetailTable = (project) => {
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, []);
 
   const handleRowSubmit = async () => {
@@ -58,21 +58,7 @@ const DetailTable = (project) => {
       console.error(error);
     }
   };
-  // const handleAddRow = () => {
-  //   const emptyRow = {
-  //     title: "",
-  //     description: "",
-  //     startDate: "",
-  //     endDate: "",
-  //     status: "",
-  //     budget: "",
-  //     owner: {
-  //       fullname: "",
-  //     },
-  //   };
 
-  //   setProjects([...projects, emptyRow]);
-  // };
   const handleOpenForm = () => {
     setIsCreateFormOpen(true);
   };
@@ -82,9 +68,12 @@ const DetailTable = (project) => {
   const handleEdit = async (rowData) => {
     try {
       const token = localStorage.getItem("token");
+      const { board_name } = rowData; // Lấy thuộc tính "name" từ "rowData"
+      const updatedData = { board_name }; // Tạo đối tượng mới chỉ chứa thuộc tính "name"
+
       const response = await axiosClient.put(
-        `/boards/${rowData.id}?token=${token}`,
-        rowData
+        `/boards/${rowData._id}?token=${token}`,
+        updatedData
       );
 
       console.log(response.data); // Xử lý phản hồi theo ý muốn
@@ -105,7 +94,7 @@ const DetailTable = (project) => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const token = localStorage.getItem("token");
-        await axiosClient.delete(`/boards/${projectId.id}?token=${token}`);
+        await axiosClient.delete(`/boards/${projectId._id}?token=${token}`);
         swal(`${projectId.board_name} đã được xóa`, {
           icon: "success",
         });
@@ -145,7 +134,7 @@ const DetailTable = (project) => {
             </IconButton>
             <IconButton
               onClick={() =>
-                handleOpenTable(params.data.id, params.data.board_name)
+                handleOpenTable(params.data._id, params.data.board_name)
               }
               variant="outlined"
             >
