@@ -44,6 +44,7 @@ export const ReportsList = () => {
   useEffect(() => {
     updateTasksStatus();
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const handleDelete = (projectId) => {
     swal({
