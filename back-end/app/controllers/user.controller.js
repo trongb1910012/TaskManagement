@@ -10,7 +10,60 @@ const Board = db.Board;
 //Lay danh sach user
 exports.get_all_user = async (req, res) => {
   try {
-    const users = await User.find({ role: "user" }).select("-password");
+    const users = await User.find({
+      role: ["user", "project manager", "board manager"],
+    }).select("-password");
+    const response = users.map((user) => {
+      return {
+        ...user._doc,
+        birthDay: user.birthDay.toISOString().split("T")[0],
+      };
+    });
+    res.status(200).json(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+exports.get_all_project_manager = async (req, res) => {
+  try {
+    const users = await User.find({
+      role: "project manager",
+    }).select("-password");
+    const response = users.map((user) => {
+      return {
+        ...user._doc,
+        birthDay: user.birthDay.toISOString().split("T")[0],
+      };
+    });
+    res.status(200).json(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+exports.get_all_board_mananger = async (req, res) => {
+  try {
+    const users = await User.find({
+      role: "board manager",
+    }).select("-password");
+    const response = users.map((user) => {
+      return {
+        ...user._doc,
+        birthDay: user.birthDay.toISOString().split("T")[0],
+      };
+    });
+    res.status(200).json(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+exports.get_only_user = async (req, res) => {
+  try {
+    const users = await User.find({
+      role: "user",
+    }).select("-password");
     const response = users.map((user) => {
       return {
         ...user._doc,

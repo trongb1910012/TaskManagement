@@ -39,7 +39,7 @@ const CreateBoardForm = ({ onBoardCreated, onClose }) => {
   };
   useEffect(() => {
     const getListUser = async () => {
-      const res = await axiosClient.get(`/users`);
+      const res = await axiosClient.get(`/users/dsBM`);
       setUserList(res.data);
     };
     getListUser();

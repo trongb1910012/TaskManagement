@@ -19,7 +19,7 @@ module.exports = (mongoose) => {
       },
       role: {
         type: String,
-        enum: ["admin", "user"],
+        enum: ["admin", "user", "project manager", "board manager"],
         default: "user",
       },
       phoneNumber: {

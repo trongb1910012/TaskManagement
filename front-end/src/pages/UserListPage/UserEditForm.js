@@ -105,6 +105,8 @@ const EditUserForm = ({ onBoardCreated, rowData, closeForm }) => {
           >
             <option value="user">User</option>
             <option value="admin">Admin</option>
+            <option value="project manager">Project manager</option>
+            <option value="board manager">Board manager</option>
           </select>
         </div>
         <div className={cx("group-button")}>

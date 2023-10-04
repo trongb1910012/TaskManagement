@@ -381,12 +381,6 @@ exports.get_Boards_byToken2 = async (req, res, next) => {
       userMap[user._id.toString()] = user.fullname;
     });
 
-    formattedBoards.forEach((board) => {
-      const projectId = board.project._id.toString();
-      board.projectName = projectMap[projectId];
-      board.leaderName = userMap[board.board_leader._id.toString()];
-    });
-
     // Fetch tasks for each board
     const taskPromises = boards.map((board) =>
       Task.find({ board: board._id })
@@ -397,11 +391,22 @@ exports.get_Boards_byToken2 = async (req, res, next) => {
         .select("-board -createdAt -updatedAt -creator")
     );
     const tasksByBoard = await Promise.all(taskPromises);
-
+    const taskCountsByBoard = {};
     tasksByBoard.forEach((tasks, index) => {
       formattedBoards[index].tasks = tasks;
+      taskCountsByBoard[boards[index]._id] = 0;
     });
+    tasksByBoard.forEach((tasks, index) => {
+      taskCountsByBoard[boards[index]._id] = tasks.length;
 
+      formattedBoards[index].tasks = tasks;
+    });
+    formattedBoards.forEach((board) => {
+      const projectId = board.project._id.toString();
+      board.projectName = projectMap[projectId];
+      board.leaderName = userMap[board.board_leader._id.toString()];
+      board.taskCount = taskCountsByBoard[board._id];
+    });
     return res.status(200).json(formattedBoards);
   } catch (err) {
     console.error(err);

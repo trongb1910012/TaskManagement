@@ -13,14 +13,15 @@
 
 .board {
     border: 1px solid #000;
-    margin: 10px;
+    margin-inline: 10px;
+    margin-top: 10px;
     padding: 10px;
     height: auto;
     border-radius: 18px;
 
 
     .board_name {
-        text-align: center;
+        text-align: left;
     }
 
     .task {
@@ -31,4 +32,24 @@
         border-radius: 18px;
         height: auto;
     }
+}
+
+.board-btn {
+    width: 90px;
+    margin-left: 20px;
+    height: 40px;
+    border: 2px solid #30324e;
+    border-radius: 15px;
+    transition: all 0.18s;
+    cursor: pointer;
+    background: white;
+    font-size: 20px;
+    font-weight: 400;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.board-btn:hover {
+    background: #30324e;
+    color: white;
+    font-size: 21px;
 }

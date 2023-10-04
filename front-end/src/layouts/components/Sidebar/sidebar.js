@@ -30,74 +30,122 @@ const SidebarLink = ({ to, name, icon, isOpen }) => {
     </NavLink>
   );
 };
+const menuConfig = {
+  admin: [
+    {
+      path: "/tasking/home",
+      name: "Home",
+      icon: <FontAwesomeIcon icon={faHouse} />,
+    },
+    {
+      path: "/tasking/admin/users",
+      name: "Employee",
+      icon: <FontAwesomeIcon icon={faUserGroup} />,
+    },
+    {
+      path: "/tasking/project",
+      name: "Project",
+      icon: <FontAwesomeIcon icon={faClipboard} />,
+    },
+    {
+      path: "/tasking/board",
+      name: "Board",
+      icon: <FontAwesomeIcon icon={faTh} />,
+    },
+    {
+      path: "/tasking/task",
+      name: "Task",
+      icon: <FontAwesomeIcon icon={faList} />,
+    },
 
+    {
+      path: "/tasking",
+      name: "Log Out",
+      icon: <FontAwesomeIcon icon={faPowerOff} />,
+    },
+  ],
+
+  "project manager": [
+    {
+      path: "/tasking/home",
+      name: "Home",
+      icon: <FontAwesomeIcon icon={faHouse} />,
+    },
+    {
+      path: "/tasking/project",
+      name: "Project",
+      icon: <FontAwesomeIcon icon={faClipboard} />,
+    },
+    {
+      path: "/tasking/board",
+      name: "Board",
+      icon: <FontAwesomeIcon icon={faTh} />,
+    },
+    {
+      path: "/tasking",
+      name: "Log Out",
+      icon: <FontAwesomeIcon icon={faPowerOff} />,
+    },
+  ],
+
+  "board manager": [
+    {
+      path: "/tasking/home",
+      name: "Home",
+      icon: <FontAwesomeIcon icon={faHouse} />,
+    },
+    {
+      path: "/tasking/board",
+      name: "Board",
+      icon: <FontAwesomeIcon icon={faTh} />,
+    },
+    {
+      path: "/tasking/task",
+      name: "Task",
+      icon: <FontAwesomeIcon icon={faList} />,
+    },
+
+    {
+      path: "/tasking",
+      name: "Log Out",
+      icon: <FontAwesomeIcon icon={faPowerOff} />,
+    },
+  ],
+
+  user: [
+    {
+      path: "/tasking/home",
+      name: "Home",
+      icon: <FontAwesomeIcon icon={faHouse} />,
+    },
+
+    {
+      path: "/tasking/task",
+      name: "Task",
+      icon: <FontAwesomeIcon icon={faList} />,
+    },
+
+    {
+      path: "/tasking",
+      name: "Log Out",
+      icon: <FontAwesomeIcon icon={faPowerOff} />,
+    },
+  ],
+};
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const role = localStorage.getItem("role");
   const toggle = () => setIsOpen(!isOpen);
-  const menuItem =
-    role === "admin"
-      ? [
-          {
-            path: "/tasking/home",
-            name: "Home",
-            icon: <FontAwesomeIcon icon={faHouse} />,
-          },
-          {
-            path: "/tasking/admin/users",
-            name: "Employee",
-            icon: <FontAwesomeIcon icon={faUserGroup} />,
-          },
-          {
-            path: "/tasking/project",
-            name: "Project",
-            icon: <FontAwesomeIcon icon={faClipboard} />,
-          },
-          {
-            path: "/tasking/board",
-            name: "Board",
-            icon: <FontAwesomeIcon icon={faTh} />,
-          },
-          {
-            path: "/tasking/task",
-            name: "Task",
-            icon: <FontAwesomeIcon icon={faList} />,
-          },
 
-          {
-            path: "/tasking",
-            name: "Log Out",
-            icon: <FontAwesomeIcon icon={faPowerOff} />,
-          },
-        ]
-      : [
-          {
-            path: "/tasking/home",
-            name: "Home",
-            icon: <FontAwesomeIcon icon={faHouse} />,
-          },
-          {
-            path: "/tasking/project",
-            name: "Project",
-            icon: <FontAwesomeIcon icon={faClipboard} />,
-          },
-          {
-            path: "/tasking/board",
-            name: "Board",
-            icon: <FontAwesomeIcon icon={faTh} />,
-          },
-          {
-            path: "/tasking/task",
-            name: "Task",
-            icon: <FontAwesomeIcon icon={faList} />,
-          },
+  // Khởi tạo biến menu
+  let menuItem;
 
-          {
-            path: "/tasking",
-            name: "Log Out",
-            icon: <FontAwesomeIcon icon={faPowerOff} />,
-          },
-        ];
+  // Xử lý để lấy ra menu phù hợp với từng role
+  if (menuConfig[role]) {
+    menuItem = menuConfig[role];
+  } else {
+    menuItem = [];
+  }
 
   return (
     <div className={cx("wrapper")}>

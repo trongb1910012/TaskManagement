@@ -47,7 +47,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
   };
   useEffect(() => {
     const getListUser = async () => {
-      const res = await axiosClient.get(`/users`);
+      const res = await axiosClient.get(`/users/dsUser`);
       setUserList(res.data);
     };
     getListUser();
@@ -108,7 +108,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
         </div>
         <div>
           <label className={cx("pop-form-label")}>Description:</label>
-          <input
+          <textarea
             className={cx("pop-form-input")}
             type="text"
             id="description"
