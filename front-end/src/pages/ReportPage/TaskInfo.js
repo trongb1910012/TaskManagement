@@ -35,12 +35,17 @@ export const TaskInfo = () => {
               flexDirection: "column",
             }}
           >
-            <Typography variant="h3">
+            <Typography variant="h3" gutterBottom>
+              Task: {taskData.task.title}
+            </Typography>
+            <Typography variant="h4" gutterBottom>
               Project: {taskData.projectName}
             </Typography>
-            <Typography variant="h4">Board: {taskData.boardName}</Typography>
-            <Typography variant="h5">Task: {taskData.task.title}</Typography>
-            <Typography color="text.secondary" variant="h5">
+            <Typography variant="h4" gutterBottom>
+              Board: {taskData.boardName}
+            </Typography>
+
+            <Typography color="text.secondary" variant="h5" gutterBottom>
               Description: {taskData.task.description}
             </Typography>
             <p>

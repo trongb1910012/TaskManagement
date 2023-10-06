@@ -422,7 +422,18 @@ exports.get_Boards_byToken2 = async (req, res, next) => {
       board.completedTaskCount = completedTaskCountsByBoard[board._id];
       // Round to 2 decimal places
     });
+    formattedBoards.sort((board1, board2) => {
+      const projectName1 = board1.projectName.toLowerCase();
+      const projectName2 = board2.projectName.toLowerCase();
 
+      if (projectName1 < projectName2) {
+        return -1;
+      }
+      if (projectName1 > projectName2) {
+        return 1;
+      }
+      return 0;
+    });
     return res.status(200).json(formattedBoards);
   } catch (err) {
     console.error(err);

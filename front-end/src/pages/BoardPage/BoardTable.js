@@ -26,7 +26,8 @@ const ProjectTable = () => {
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isTaskTableOpen, setIsTaskTableOpen] = useState(false);
   const [selectedProjectId, setSelectedBoardId] = useState(null);
-  const [selectedProjectName, setSelectedBoardName] = useState(null);
+  const [selectedBoardName, setSelectedBoardName] = useState(null);
+  const [selectedProjectName, setSelectedProjectName] = useState(null);
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -117,10 +118,11 @@ const ProjectTable = () => {
       }
     });
   };
-  const handleOpenTable = (boardID, boardName) => {
+  const handleOpenTable = (boardID, boardName, PName) => {
     setIsTaskTableOpen(!isTaskTableOpen);
     setSelectedBoardId(boardID);
     setSelectedBoardName(boardName);
+    setSelectedProjectName(PName);
   };
   const actionCellRenderer = (params) => {
     if (params.columnApi.getRowGroupColumns().length > 0) {
@@ -147,7 +149,11 @@ const ProjectTable = () => {
             </IconButton>
             <IconButton
               onClick={() =>
-                handleOpenTable(params.data._id, params.data.board_name)
+                handleOpenTable(
+                  params.data._id,
+                  params.data.board_name,
+                  params.data.projectName
+                )
               }
               variant="outlined"
             >
@@ -288,7 +294,8 @@ const ProjectTable = () => {
         {isTaskTableOpen && (
           <TasksByBoardTable
             boardId={selectedProjectId}
-            boardName={selectedProjectName}
+            boardName={selectedBoardName}
+            projectName={selectedProjectName}
           />
         )}
       </div>

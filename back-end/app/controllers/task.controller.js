@@ -343,15 +343,32 @@ exports.get_created_tasks = async (req, res, next) => {
       .populate({
         path: "board",
         select: "board_name",
+        populate: {
+          path: "project",
+          select: ["startDate", "endDate", "title"],
+        },
       })
       .populate({
         path: "creator",
         select: "fullname",
-      });
+      })
+      .sort({ status: -1, dueDate: 1 });
 
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       return { ...task._doc, dueDate: formattedDate };
+    });
+    formattedTasks.sort((task1, task2) => {
+      const projectTitle1 = task1.board.project.title.toLowerCase();
+      const projectTitle2 = task2.board.project.title.toLowerCase();
+
+      if (projectTitle1 < projectTitle2) {
+        return -1;
+      }
+      if (projectTitle1 > projectTitle2) {
+        return 1;
+      }
+      return 0;
     });
     const response = {
       tasks: formattedTasks,

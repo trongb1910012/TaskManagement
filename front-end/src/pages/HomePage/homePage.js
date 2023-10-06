@@ -4,6 +4,7 @@ import styles from "./homepage.module.scss";
 import axiosClient from "../../api/api";
 import { Grid } from "@mui/material";
 import AssignedTaskTable from "../TaskPage/AssignedTaskTable";
+import ProjectList from "../TaskPage/taskTable";
 // import TableComponent from "../GanttTask/GanttTask";
 // import MyCalendar from "../Calendar/Calendar";
 const cx = classNames.bind(styles);
@@ -79,6 +80,11 @@ function HomePage() {
           {role === "user" && (
             <Grid item xs={12} md={12} xl={12}>
               <AssignedTaskTable />
+            </Grid>
+          )}
+          {role !== "user" && role !== "board manager" && (
+            <Grid item xs={12} md={12} xl={12}>
+              <ProjectList />
             </Grid>
           )}
         </Grid>

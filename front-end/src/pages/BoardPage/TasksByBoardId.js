@@ -24,7 +24,7 @@ var headerCheckboxSelection = function (params) {
 var checkboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0;
 };
-const TasksByBoardTable = ({ boardId, boardName }) => {
+const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
   const [boards, setBoards] = useState([]);
   const [newRowData, setNewRowData] = useState({});
   const [rowDataForForm, setRowDataForForm] = useState(null);
@@ -276,6 +276,7 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
         <Grid item>
           <div className="project-title">Board: {boardName}</div>
         </Grid>
+
         <Grid item>
           {isAnyCheckboxSelected ? (
             <IconButton
@@ -291,6 +292,13 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
             </IconButton>
           )}
         </Grid>
+      </Grid>
+      <Grid container justifyContent="space-between">
+        <Grid item>
+          <div className="project-title">Project: {projectName}</div>
+        </Grid>
+
+        <Grid item></Grid>
       </Grid>
       <div
         className="ag-theme-alpine"

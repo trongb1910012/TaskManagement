@@ -161,6 +161,19 @@ const ProjectList = () => {
       filter: true,
     },
     {
+      headerName: "Project",
+      field: "board.project.title",
+      sortable: true,
+      filter: true,
+    },
+    {
+      headerName: "Board",
+      field: "board.board_name",
+      sortable: true,
+      filter: true,
+    },
+
+    {
       headerName: "Due Date",
       field: "dueDate",
       sortable: true,
