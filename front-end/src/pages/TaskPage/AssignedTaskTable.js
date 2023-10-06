@@ -7,6 +7,7 @@ import axiosClient from "../../api/api";
 import "./TaskTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faClipboardCheck,
   faPenToSquare,
   faTasks,
   faTrash,
@@ -71,6 +72,25 @@ const AssignedTaskTable = () => {
       }
     });
   };
+  const handleAcceptTask = (task) => {
+    swal({
+      title: `Bạn sẽ nhận công việc ${task.title} này`,
+      text: "Sau khi nhận, bạn sẽ không thể khôi phục công việc này!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willAccept) => {
+      if (willAccept) {
+        await axiosClient.patch(`/tasks/start/${task._id}`);
+        swal(`${task.title.toUpperCase()} đã được nhận`, {
+          icon: "success",
+        });
+        await fetchData();
+      } else {
+        return;
+      }
+    });
+  };
   const closeCreateForm = () => {
     setIsCreateFormOpen(false);
   };
@@ -88,11 +108,26 @@ const AssignedTaskTable = () => {
     // Kiểm tra id người dùng và id creator
     if (userinfo._id !== params.data.creator._id) {
       return (
-        <Link to={`/tasking/report/${params.data._id}`}>
-          <IconButton variant="outlined" color="primary">
-            <FontAwesomeIcon icon={faTasks} />
+        <>
+          {params.data.status === "not started" ? null : (
+            <Link to={`/tasking/report/${params.data._id}`}>
+              <IconButton variant="outlined" color="primary">
+                <FontAwesomeIcon icon={faTasks} />
+              </IconButton>
+            </Link>
+          )}
+
+          <IconButton
+            style={
+              params.data.status !== "not started" ? { display: "none" } : {}
+            }
+            variant="outlined"
+            color="primary"
+            onClick={() => handleAcceptTask(params.data)}
+          >
+            <FontAwesomeIcon icon={faClipboardCheck} />
           </IconButton>
-        </Link>
+        </>
       );
     }
     return (
@@ -135,6 +170,12 @@ const AssignedTaskTable = () => {
     {
       headerName: "Board",
       field: "board.board_name",
+      sortable: true,
+      filter: true,
+    },
+    {
+      headerName: "Project",
+      field: "board.project.title",
       sortable: true,
       filter: true,
     },
@@ -187,18 +228,18 @@ const AssignedTaskTable = () => {
         return null;
       },
     },
-    {
-      headerName: "Members",
-      field: "members",
-      sortable: true,
-      filter: true,
-      valueGetter: function (params) {
-        if (params.data && params.data.members) {
-          return params.data.members.map((member) => member.fullname);
-        }
-        return "";
-      },
-    },
+    // {
+    //   headerName: "Members",
+    //   field: "members",
+    //   sortable: true,
+    //   filter: true,
+    //   valueGetter: function (params) {
+    //     if (params.data && params.data.members) {
+    //       return params.data.members.map((member) => member.fullname);
+    //     }
+    //     return "";
+    //   },
+    // },
     {
       headerName: "Action",
       field: "action",

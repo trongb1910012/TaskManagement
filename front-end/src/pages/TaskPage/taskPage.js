@@ -4,11 +4,14 @@ import AssignedTaskTable from "./AssignedTaskTable";
 import classNames from "classnames/bind";
 import styles from "./AddTaskForm.module.scss";
 const cx = classNames.bind(styles);
+
 const taskPage = () => {
+  // Đọc giá trị "role" từ localStorage
+  const role = localStorage.getItem("role");
+
   return (
     <div className={cx("wrapper")}>
-      <AssignedTaskTable />
-      <TaskTable />
+      {role === "user" ? <AssignedTaskTable /> : <TaskTable />}
     </div>
   );
 };

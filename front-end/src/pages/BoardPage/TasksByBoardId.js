@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -9,6 +10,7 @@ import {
   faSave,
   faTrash,
   faAdd,
+  faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
@@ -160,6 +162,11 @@ const TasksByBoardTable = ({ boardId, boardName }) => {
             >
               <FontAwesomeIcon icon={faTrash} />
             </IconButton>
+            <Link to={`/tasking/report/${params.data._id}`}>
+              <IconButton variant="outlined" color="primary">
+                <FontAwesomeIcon icon={faTasks} />
+              </IconButton>
+            </Link>
           </>
         )}
 

@@ -10,6 +10,7 @@ const cx = classNames.bind(styles);
 function HomePage() {
   const [dSKeHoach, setDSKeHoach] = useState([]);
   const [isCardOpen, setCardOpen] = useState({});
+  const [role, setRole] = useState("");
   const getListProduct = async () => {
     const token = localStorage.getItem("token");
     const response = await axiosClient.get(`/boards/cv_leader?token=${token}`);
@@ -17,6 +18,8 @@ function HomePage() {
   };
   useEffect(() => {
     getListProduct();
+    const userRole = localStorage.getItem("role");
+    setRole(userRole);
   }, []);
   const handleCardToggle = (boardId) => {
     setCardOpen((prevState) => ({
@@ -73,9 +76,11 @@ function HomePage() {
               </div>
             </Grid>
           ))}
-          <Grid item xs={12} md={12} xl={12}>
-            <AssignedTaskTable />
-          </Grid>
+          {role === "user" && (
+            <Grid item xs={12} md={12} xl={12}>
+              <AssignedTaskTable />
+            </Grid>
+          )}
         </Grid>
       </div>
     </div>

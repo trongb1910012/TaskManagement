@@ -3,6 +3,7 @@ import classNames from "classnames/bind";
 import styles from "./DetailProjectPage.module.scss";
 import { useParams } from "react-router-dom";
 import DetailTable from "./DetailTable";
+import { ProjectInfo } from "./DetailInfoProject";
 const cx = classNames.bind(styles);
 const DetailProjectPage = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const DetailProjectPage = () => {
   }, [id]);
   return (
     <div className={cx("wrapper")}>
-      Project Detail:{chiTietKeHoach.id}
+      <ProjectInfo></ProjectInfo>
       <DetailTable id={chiTietKeHoach.id}></DetailTable>
     </div>
   );

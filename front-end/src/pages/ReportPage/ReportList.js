@@ -5,7 +5,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useParams } from "react-router-dom";
-import { faAdd, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import { Grid } from "@mui/material";
@@ -231,9 +231,7 @@ export const ReportsList = () => {
               <FontAwesomeIcon icon={faTrash} />
             </IconButton>
           ) : (
-            <IconButton variant="outlined">
-              <FontAwesomeIcon icon={faAdd} />
-            </IconButton>
+            <></>
           )}
         </Grid>
       </Grid>

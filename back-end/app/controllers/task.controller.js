@@ -154,7 +154,8 @@ exports.get_CV_KeHoach = async (req, res, next) => {
         select: "fullname",
       })
       .populate({ path: "creator", select: "fullname" })
-      .populate({ path: "board", select: "board_name" });
+      .populate({ path: "board", select: "board_name" })
+      .sort({ status: -1, dueDate: 1 });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       return { ...task._doc, dueDate: formattedDate };
@@ -292,10 +293,10 @@ exports.get_CongViec_Nv = async (req, res, next) => {
         select: "board_name",
         populate: {
           path: "project",
-          select: ["startDate", "endDate"],
+          select: ["startDate", "endDate", "title"],
         },
       })
-      .sort({ status: -1, dueDate: 1 });
+      .sort({ "board.project._id": 1, status: -1, dueDate: 1 });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       const formattedStartDate = new Date(task.board.project.startDate)
@@ -423,5 +424,37 @@ exports.getTaskById = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+//Nhận công việc
+exports.AcceptTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    // Validate taskId
+    if (!taskId) {
+      return res.status(400).send({
+        message: "Task id is required",
+      });
+    }
+
+    // Find task and update status
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).send({
+        message: "Task not found",
+      });
+    }
+
+    task.status = "in progress";
+    await task.save();
+
+    res.send({
+      message: "Task started successfully",
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
   }
 };

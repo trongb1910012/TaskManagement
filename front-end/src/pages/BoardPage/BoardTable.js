@@ -198,6 +198,20 @@ const ProjectTable = () => {
       editable: false,
     },
     {
+      headerName: "Completed tasks",
+      field: "completedTaskCount",
+      sortable: true,
+      filter: true,
+      editable: false,
+    },
+    {
+      headerName: "Total tasks",
+      field: "taskCount",
+      sortable: true,
+      filter: true,
+      editable: false,
+    },
+    {
       headerName: "Action",
       field: "action",
       editable: "false",

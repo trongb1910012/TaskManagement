@@ -9,6 +9,7 @@ import {
   faAdd,
   faPenToSquare,
   faTrash,
+  faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
@@ -17,8 +18,9 @@ import EditTaskForm from "./EditTaskForm";
 import { Grid } from "@mui/material";
 import "ag-grid-enterprise";
 import { LicenseManager } from "ag-grid-enterprise";
-
+import { Link } from "react-router-dom";
 LicenseManager.setLicenseKey("AG-047238");
+
 var checkboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0;
 };
@@ -135,6 +137,11 @@ const ProjectList = () => {
         >
           <FontAwesomeIcon icon={faTrash} />
         </IconButton>
+        <Link to={`/tasking/report/${params.data._id}`}>
+          <IconButton variant="outlined" color="primary">
+            <FontAwesomeIcon icon={faTasks} />
+          </IconButton>
+        </Link>
       </div>
     );
   };

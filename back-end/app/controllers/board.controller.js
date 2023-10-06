@@ -392,21 +392,37 @@ exports.get_Boards_byToken2 = async (req, res, next) => {
     );
     const tasksByBoard = await Promise.all(taskPromises);
     const taskCountsByBoard = {};
+    const completedTaskCountsByBoard = {}; // Track completed task counts per board
+
     tasksByBoard.forEach((tasks, index) => {
       formattedBoards[index].tasks = tasks;
       taskCountsByBoard[boards[index]._id] = 0;
+      completedTaskCountsByBoard[boards[index]._id] = 0; // Initialize completed task count to 0
     });
+
     tasksByBoard.forEach((tasks, index) => {
       taskCountsByBoard[boards[index]._id] = tasks.length;
-
       formattedBoards[index].tasks = tasks;
+
+      // Count completed tasks
+      tasks.forEach((task) => {
+        if (task.status === "completed") {
+          completedTaskCountsByBoard[boards[index]._id]++;
+        }
+      });
     });
+
     formattedBoards.forEach((board) => {
       const projectId = board.project._id.toString();
       board.projectName = projectMap[projectId];
       board.leaderName = userMap[board.board_leader._id.toString()];
       board.taskCount = taskCountsByBoard[board._id];
+
+      // Calculate percentage of completed tasks
+      board.completedTaskCount = completedTaskCountsByBoard[board._id];
+      // Round to 2 decimal places
     });
+
     return res.status(200).json(formattedBoards);
   } catch (err) {
     console.error(err);

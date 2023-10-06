@@ -219,10 +219,7 @@ const DetailTable = (project) => {
   }, []);
   return (
     <div>
-      <Grid container justifyContent="space-between">
-        <Grid item>
-          <h1>PROJECT: {project.id}</h1>
-        </Grid>
+      <Grid container justifyContent="flex-end">
         <Grid item>
           {" "}
           <IconButton onClick={() => handleOpenForm()} variant="outlined">

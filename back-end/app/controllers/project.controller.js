@@ -173,10 +173,12 @@ exports.get_KeHoach_Nv = async (req, res, next) => {
     const projectsPromise = Project.find({
       ...condition,
       owner: memberId,
-    }).populate({
-      path: "owner",
-      select: "fullname",
-    });
+    })
+      .populate({
+        path: "owner",
+        select: "fullname",
+      })
+      .sort({ status: -1, createAt: -1 });
     const countPromise = Project.countDocuments({
       ...condition,
       owner: memberId,
@@ -212,5 +214,37 @@ exports.get_KeHoach_Nv = async (req, res, next) => {
     return next(
       new BadRequestError(500, "An error occurred while retrieving projects")
     );
+  }
+};
+exports.getProjectbyId = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    const project = await Project.findById(id).populate({
+      path: "owner",
+      select: "fullname",
+    });
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+    const formattedStartDate = new Date(project.startDate)
+      .toISOString()
+      .substr(0, 10);
+    const formattedEndDate = new Date(project.endDate)
+      .toISOString()
+      .substr(0, 10);
+    const formattedProject = {
+      ...project._doc,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+    };
+    const response = {
+      projects: formattedProject,
+    };
+    // Trả về kết quả
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
