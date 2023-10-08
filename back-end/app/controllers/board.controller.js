@@ -234,15 +234,20 @@ exports.getBoardsByProjectId = async (req, res) => {
         const tasks = await Task.find({ board: board._id }).select(
           "title description dueDate status"
         );
+        const countTasks = tasks.length;
+        const countCompletedTasks = tasks.filter(
+          (task) => task.status === "completed"
+        ).length;
         return {
           ...board._doc,
           createdAt: board.createdAt.toISOString().split("T")[0],
+          countTasks,
+          countCompletedTasks,
           tasks: tasks.map((task) => ({
             title: task.title,
             description: task.description,
             dueDate: task.dueDate.toISOString().split("T")[0],
             status: task.status,
-            // Thêm các trường thông tin khác của task mà bạn muốn trả về
           })),
         };
       })

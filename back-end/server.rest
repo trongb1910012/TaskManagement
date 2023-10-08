@@ -130,7 +130,7 @@ Content-Type: application/json
 GET  http://localhost:8080/api/boards/
 
 ###Danh sach bang cong viec cua 1 project
-GET  http://localhost:8080/api/boards/64c3aff8f5cc276bb4360e6d
+GET  http://localhost:8080/api/boards/651d2fc97cbcf5ecba9e2838
 
 ###Danh sach bang cong viec cua 1 leader
 GET  http://localhost:8080/api/boards/bb?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MzQ4OTUxOCwiZXhwIjoxNjkzNTc1OTE4fQ.LenMmpdw9RrJgzjxXmd4msvtEY9qKQsFPVnv0BGyAOI

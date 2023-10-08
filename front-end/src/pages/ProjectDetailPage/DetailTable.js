@@ -8,7 +8,6 @@ import {
   faAdd,
   faEye,
   faPenToSquare,
-  faSave,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconButton, Grid } from "@mui/material";
@@ -22,7 +21,6 @@ var headerCheckboxSelection = function (params) {
 };
 const DetailTable = (project) => {
   const [projects, setProjects] = useState([]);
-  const [newRowData, setNewRowData] = useState({});
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isTaskTableOpen, setIsTaskTableOpen] = useState(false);
   const [selectedProjectId, setSelectedBoardId] = useState(null);
@@ -40,24 +38,6 @@ const DetailTable = (project) => {
     fetchData();
     // eslint-disable-next-line
   }, []);
-
-  const handleRowSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.post(
-        `/boards?token=${token}`,
-        newRowData
-      );
-
-      console.log(response.data);
-      cogoToast.success("Tạo hàng mới thành công");
-
-      fetchData();
-      setNewRowData({}); // Đặt lại dữ liệu hàng mới về trạng thái ban đầu
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleOpenForm = () => {
     setIsCreateFormOpen(true);
@@ -116,42 +96,31 @@ const DetailTable = (project) => {
 
     return (
       <div>
-        {params.data !== newRowData && (
-          <>
-            <IconButton
-              onClick={() => handleEdit(params.data)}
-              variant="outlined"
-              color="primary"
-            >
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </IconButton>
-            <IconButton
-              onClick={() => handleDelete(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-            <IconButton
-              onClick={() =>
-                handleOpenTable(params.data._id, params.data.board_name)
-              }
-              variant="outlined"
-            >
-              <FontAwesomeIcon icon={faEye} />
-            </IconButton>
-          </>
-        )}
-
-        {params.data === newRowData && (
+        <>
           <IconButton
-            onClick={handleRowSubmit}
+            onClick={() => handleEdit(params.data)}
             variant="outlined"
             color="primary"
           >
-            <FontAwesomeIcon icon={faSave} />
+            <FontAwesomeIcon icon={faPenToSquare} />
           </IconButton>
-        )}
+          <IconButton
+            disabled={params.data.countCompletedTasks > 0}
+            onClick={() => handleDelete(params.data)}
+            variant="outlined"
+            color="error"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </IconButton>
+          <IconButton
+            onClick={() =>
+              handleOpenTable(params.data._id, params.data.board_name)
+            }
+            variant="outlined"
+          >
+            <FontAwesomeIcon icon={faEye} />
+          </IconButton>
+        </>
       </div>
     );
   };
@@ -178,6 +147,20 @@ const DetailTable = (project) => {
       editable: false,
     },
     {
+      headerName: "Complete",
+      field: "countCompletedTasks",
+      sortable: true,
+      filter: true,
+      editable: false,
+    },
+    {
+      headerName: "Total",
+      field: "countTasks",
+      sortable: true,
+      filter: true,
+      editable: false,
+    },
+    {
       headerName: "Action",
       field: "action",
       editable: "false",
@@ -185,25 +168,6 @@ const DetailTable = (project) => {
     },
   ];
 
-  // const autoGroupColumnDef = useMemo(() => {
-  //   return {
-  //     headerName: "Group",
-  //     minWidth: 170,
-  //     field: "Title",
-  //     valueGetter: (params) => {
-  //       if (params.node.group) {
-  //         return params.node.key;
-  //       } else {
-  //         return params.data[params.colDef.field];
-  //       }
-  //     },
-  //     headerCheckboxSelection: true,
-  //     cellRenderer: "agGroupCellRenderer",
-  //     cellRendererParams: {
-  //       checkbox: true,
-  //     },
-  //   };
-  // }, []);
   const defaultColDef = useMemo(() => {
     return {
       editable: true,

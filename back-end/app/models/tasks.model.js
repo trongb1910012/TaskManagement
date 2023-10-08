@@ -19,7 +19,7 @@ module.exports = (mongoose) => {
       },
       status: {
         type: String,
-        enum: ["not started", "in progress", "completed"],
+        enum: ["not started", "in progress", "completed", "missed"],
         default: "not started",
       },
       // Reference to the project this task belongs to
@@ -38,6 +38,10 @@ module.exports = (mongoose) => {
           ref: "User",
         },
       ],
+      previousTask: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+      },
     },
     { timestamps: true }
   );

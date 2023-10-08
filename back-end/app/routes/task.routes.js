@@ -12,7 +12,8 @@ module.exports = (app) => {
   router.post("/", tasks.them_CongViec);
   router.post("/updateStatus", tasks.updateTaskStatus);
   router.put("/", tasks.updateTaskStatus);
-  router.patch("/start/:taskId", tasks.AcceptTask);
+  router.patch("/start/:taskId", tasks.AcceptTask1);
+  router.patch("/complete/:taskId", tasks.ConfirmCompletedTask);
   router.put("/:id", tasks.sua_CongViec);
   // router.delete("/:id", tasks.xoa_CongViec);
   router.delete("/", tasks.xoa_CongViec);

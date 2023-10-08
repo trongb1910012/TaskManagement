@@ -8,7 +8,6 @@ import {
   faAdd,
   faEye,
   faPenToSquare,
-  faSave,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconButton, Grid } from "@mui/material";
@@ -22,7 +21,6 @@ var headerCheckboxSelection = function (params) {
 };
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
-  const [newRowData, setNewRowData] = useState({});
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isTaskTableOpen, setIsTaskTableOpen] = useState(false);
   const [selectedProjectId, setSelectedBoardId] = useState(null);
@@ -44,23 +42,6 @@ const ProjectTable = () => {
     fetchData();
   }, []);
 
-  const handleRowSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.post(
-        `/boards?token=${token}`,
-        newRowData
-      );
-
-      console.log(response.data);
-      cogoToast.success("Tạo hàng mới thành công");
-
-      fetchData();
-      setNewRowData({}); // Đặt lại dữ liệu hàng mới về trạng thái ban đầu
-    } catch (error) {
-      console.error(error);
-    }
-  };
   // const handleAddRow = () => {
   //   const emptyRow = {
   //     title: "",
@@ -131,46 +112,35 @@ const ProjectTable = () => {
 
     return (
       <div>
-        {params.data !== newRowData && (
-          <>
-            <IconButton
-              onClick={() => handleEdit(params.data)}
-              variant="outlined"
-              color="primary"
-            >
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </IconButton>
-            <IconButton
-              onClick={() => handleDelete(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-            <IconButton
-              onClick={() =>
-                handleOpenTable(
-                  params.data._id,
-                  params.data.board_name,
-                  params.data.projectName
-                )
-              }
-              variant="outlined"
-            >
-              <FontAwesomeIcon icon={faEye} />
-            </IconButton>
-          </>
-        )}
-
-        {params.data === newRowData && (
+        <>
           <IconButton
-            onClick={handleRowSubmit}
+            onClick={() => handleEdit(params.data)}
             variant="outlined"
             color="primary"
           >
-            <FontAwesomeIcon icon={faSave} />
+            <FontAwesomeIcon icon={faPenToSquare} />
           </IconButton>
-        )}
+          <IconButton
+            onClick={() => handleDelete(params.data)}
+            variant="outlined"
+            color="error"
+            disabled={params.data.completedTaskCount > 0}
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </IconButton>
+          <IconButton
+            onClick={() =>
+              handleOpenTable(
+                params.data._id,
+                params.data.board_name,
+                params.data.projectName
+              )
+            }
+            variant="outlined"
+          >
+            <FontAwesomeIcon icon={faEye} />
+          </IconButton>
+        </>
       </div>
     );
   };

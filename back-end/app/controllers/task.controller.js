@@ -112,9 +112,10 @@ exports.get_CongViec = async (req, res, next) => {
         select: "board_name",
         populate: {
           path: "project",
-          select: ["startDate", "endDate"],
+          select: ["startDate", "endDate", "title"],
         },
-      });
+      })
+      .sort({ dueDate: 1 });
 
     // Format the dueDate property of each task object in the response
     const formattedTasks = tasks.map((task) => {
@@ -131,6 +132,18 @@ exports.get_CongViec = async (req, res, next) => {
         startDate: formattedStartDate,
         endDate: formattedEndDate,
       };
+    });
+    formattedTasks.sort((task1, task2) => {
+      const projectTitle1 = task1.status;
+      const projectTitle2 = task2.status;
+
+      if (projectTitle1 < projectTitle2) {
+        return 1;
+      }
+      if (projectTitle1 > projectTitle2) {
+        return -1;
+      }
+      return 0;
     });
     const response = {
       tasks: formattedTasks,
@@ -312,6 +325,7 @@ exports.get_CongViec_Nv = async (req, res, next) => {
         endDate: formattedEndDate,
       };
     });
+
     const response = {
       tasks: formattedTasks,
     };
@@ -387,11 +401,12 @@ exports.updateTaskStatus = async (req, res) => {
     // Tìm tất cả các công việc có dueDate ít hơn thời gian hiện tại
     const tasks = await Task.find({
       dueDate: { $lt: new Date() },
+      status: { $ne: "completed" },
     });
 
     // Cập nhật trạng thái của từng công việc thành "completed"
     tasks.forEach(async (task) => {
-      task.status = "completed";
+      task.status = "missed";
       await task.save();
     });
 
@@ -464,6 +479,76 @@ exports.AcceptTask = async (req, res) => {
     }
 
     task.status = "in progress";
+    await task.save();
+
+    res.send({
+      message: "Task started successfully",
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message,
+    });
+  }
+};
+exports.AcceptTask1 = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    // Validate
+    if (!taskId) {
+      return res.status(400).send({ message: "Task id is required" });
+    }
+
+    // Find task
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).send({ message: "Task not found" });
+    }
+
+    // Find project
+    const board = await Board.findById(task.board);
+    if (!board) {
+      return res.status(404).send({ message: "Project not found" });
+    }
+    const project = await Project.findById(board.project);
+    if (!project) {
+      return res.status(404).send({ message: "Project not found" });
+    }
+
+    // Update task status
+    task.status = "in progress";
+    await task.save();
+
+    // Update project status
+    project.status = "in progress";
+    await project.save();
+
+    res.send({ message: "Task started successfully" });
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+//Xác nhận công việc hoàn thành
+exports.ConfirmCompletedTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    // Validate taskId
+    if (!taskId) {
+      return res.status(400).send({
+        message: "Task id is required",
+      });
+    }
+
+    // Find task and update status
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).send({
+        message: "Task not found",
+      });
+    }
+
+    task.status = "completed";
     await task.save();
 
     res.send({

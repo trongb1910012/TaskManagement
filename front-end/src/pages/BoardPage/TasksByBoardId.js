@@ -7,14 +7,13 @@ import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPenToSquare,
-  faSave,
   faTrash,
   faAdd,
   faTasks,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
-import cogoToast from "cogo-toast";
 import AddTasksForm from "./AddTaskByBoardForm";
 import EditTaskForm from "./EditTaskByBoardForm";
 var headerCheckboxSelection = function (params) {
@@ -26,7 +25,6 @@ var checkboxSelection = function (params) {
 };
 const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
   const [boards, setBoards] = useState([]);
-  const [newRowData, setNewRowData] = useState({});
   const [rowDataForForm, setRowDataForForm] = useState(null);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
@@ -46,23 +44,6 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleRowSubmit = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axiosClient.post(
-        `/boards?token=${token}`,
-        newRowData
-      );
-
-      console.log(response.data);
-      cogoToast.success("Tạo hàng mới thành công");
-
-      fetchData();
-      setNewRowData({}); // Đặt lại dữ liệu hàng mới về trạng thái ban đầu
-    } catch (error) {
-      console.error(error);
-    }
-  };
   // const handleAddRow = () => {
   //   const emptyRow = {
   //     title: "",
@@ -135,6 +116,25 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
       }
     });
   };
+  const handleCompletedTask = (task) => {
+    swal({
+      title: `Confirm the task ${task.title} is completed`,
+      text: "Once confirmed, you will not be able to restore this status",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willAccept) => {
+      if (willAccept) {
+        await axiosClient.patch(`/tasks/complete/${task._id}`);
+        swal(`${task.title.toUpperCase()} has been confirmed as completed`, {
+          icon: "success",
+        });
+        await fetchData();
+      } else {
+        return;
+      }
+    });
+  };
   const handleCheckboxChange = (selectedRows) => {
     setSelectedRows(selectedRows);
     setIsAnyCheckboxSelected(selectedRows.length > 0);
@@ -146,39 +146,38 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
 
     return (
       <div>
-        {params.data !== newRowData && (
-          <>
-            <IconButton
-              onClick={() => openEditForm(params.data)}
-              variant="outlined"
-              color="primary"
-            >
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </IconButton>
-            <IconButton
-              onClick={() => handleDelete(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-            <Link to={`/tasking/report/${params.data._id}`}>
-              <IconButton variant="outlined" color="primary">
-                <FontAwesomeIcon icon={faTasks} />
-              </IconButton>
-            </Link>
-          </>
-        )}
-
-        {params.data === newRowData && (
+        <>
           <IconButton
-            onClick={handleRowSubmit}
+            onClick={() => openEditForm(params.data)}
             variant="outlined"
             color="primary"
           >
-            <FontAwesomeIcon icon={faSave} />
+            <FontAwesomeIcon icon={faPenToSquare} />
           </IconButton>
-        )}
+          <IconButton
+            disabled={params.data.status !== "not started"}
+            onClick={() => handleDelete(params.data)}
+            variant="outlined"
+            color="error"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </IconButton>
+          <Link to={`/tasking/report/${params.data._id}`}>
+            <IconButton variant="outlined" color="primary">
+              <FontAwesomeIcon icon={faTasks} />
+            </IconButton>
+          </Link>
+          <IconButton
+            style={
+              params.data.status !== "in progress" ? { display: "none" } : {}
+            }
+            variant="outlined"
+            color="primary"
+            onClick={() => handleCompletedTask(params.data)}
+          >
+            <FontAwesomeIcon icon={faCheck} />
+          </IconButton>
+        </>
       </div>
     );
   };
@@ -233,6 +232,13 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
           return {
             color: "white",
             backgroundColor: "#c1945c",
+            fontWeight: "500",
+          };
+        }
+        if (params.value === "missed") {
+          return {
+            color: "white",
+            backgroundColor: "#C70039",
             fontWeight: "500",
           };
         }

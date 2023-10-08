@@ -161,12 +161,11 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             }}
           />
         </div>
-        <button className={cx("submit-button")} type="submit">
-          Update task
-        </button>
-        <button className={cx("submit-button")} onClick={closeForm}>
-          Close
-        </button>
+        <div className={cx("group-button")}>
+          <button className={cx("submit-button")} type="submit">
+            Update Task
+          </button>
+        </div>
       </form>
     </div>
   );

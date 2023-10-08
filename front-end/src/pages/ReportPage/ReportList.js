@@ -57,16 +57,15 @@ export const ReportsList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const shouldShowAddReportForm = useMemo(() => {
-    const nameFromLocalStorage = localStorage.getItem("fullname");
+    const name = localStorage.getItem("fullname");
+
     return (
       taskData &&
-      taskData.members &&
-      taskData.members.some(
-        (member) => member.fullname === nameFromLocalStorage
-      )
+      taskData.members?.some((member) => member.fullname === name) &&
+      ["in progress"].includes(taskData.status)
     );
   }, [taskData]);
-  console.log(taskData.members);
+  console.log(taskData.status);
   const handleDelete = (projectId) => {
     swal({
       title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,

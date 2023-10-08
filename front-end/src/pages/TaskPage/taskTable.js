@@ -10,6 +10,7 @@ import {
   faPenToSquare,
   faTrash,
   faTasks,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
@@ -95,6 +96,25 @@ const ProjectList = () => {
       }
     });
   };
+  const handleCompletedTask = (task) => {
+    swal({
+      title: `Confirm the task ${task.title} is completed`,
+      text: "Once confirmed, you will not be able to restore this status",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willAccept) => {
+      if (willAccept) {
+        await axiosClient.patch(`/tasks/complete/${task._id}`);
+        swal(`${task.title.toUpperCase()} has been confirmed as completed`, {
+          icon: "success",
+        });
+        await fetchData();
+      } else {
+        return;
+      }
+    });
+  };
   const handleCheckboxChange = (selectedRows) => {
     setSelectedRows(selectedRows);
     setIsAnyCheckboxSelected(selectedRows.length > 0);
@@ -124,6 +144,7 @@ const ProjectList = () => {
     return (
       <div>
         <IconButton
+          style={params.data.status !== "missed" ? { display: "none" } : {}}
           onClick={() => openEditForm(params.data)}
           variant="outlined"
           color="primary"
@@ -131,17 +152,31 @@ const ProjectList = () => {
           <FontAwesomeIcon icon={faPenToSquare} />
         </IconButton>
         <IconButton
+          style={
+            params.data.status !== "not started" ? { display: "none" } : {}
+          }
           onClick={() => handleDelete(params.data)}
           variant="outlined"
           color="error"
         >
           <FontAwesomeIcon icon={faTrash} />
         </IconButton>
+
         <Link to={`/tasking/report/${params.data._id}`}>
           <IconButton variant="outlined" color="primary">
             <FontAwesomeIcon icon={faTasks} />
           </IconButton>
         </Link>
+        <IconButton
+          style={
+            params.data.status !== "in progress" ? { display: "none" } : {}
+          }
+          variant="outlined"
+          color="primary"
+          onClick={() => handleCompletedTask(params.data)}
+        >
+          <FontAwesomeIcon icon={faCheck} />
+        </IconButton>
       </div>
     );
   };
@@ -205,6 +240,13 @@ const ProjectList = () => {
           return {
             color: "white",
             backgroundColor: "#c1945c",
+            fontWeight: "500",
+          };
+        }
+        if (params.value === "missed") {
+          return {
+            color: "white",
+            backgroundColor: "#C70039",
             fontWeight: "500",
           };
         }
@@ -273,7 +315,7 @@ const ProjectList = () => {
       </Grid>
       <div
         className="ag-theme-alpine"
-        style={{ height: "350px", width: "100%", borderRadius: "10px" }}
+        style={{ height: "550px", width: "100%", borderRadius: "10px" }}
       >
         <AgGridReact
           columnDefs={columnDefs}
@@ -282,7 +324,7 @@ const ProjectList = () => {
           onGridReady={fetchData}
           pagination={true}
           pivotPanelShow={"always"}
-          paginationPageSize={5}
+          paginationPageSize={10}
           rowGroupPanelShow={"always"}
           suppressRowClickSelection={true}
           rowSelection={"multiple"}

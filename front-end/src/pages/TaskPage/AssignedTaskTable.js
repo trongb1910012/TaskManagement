@@ -225,6 +225,13 @@ const AssignedTaskTable = () => {
             fontWeight: "500",
           };
         }
+        if (params.value === "missed") {
+          return {
+            color: "white",
+            backgroundColor: "red",
+            fontWeight: "500",
+          };
+        }
         return null;
       },
     },

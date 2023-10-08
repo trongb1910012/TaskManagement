@@ -176,7 +176,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
         </div>
         <div className={cx("group-button")}>
           <button className={cx("submit-button")} type="submit">
-            Create Board
+            Create Task
           </button>
         </div>
       </form>
