@@ -13,12 +13,24 @@ exports.get_all_user = async (req, res) => {
     const users = await User.find({
       role: ["user", "project manager", "board manager"],
     }).select("-password");
-    const response = users.map((user) => {
-      return {
+    const users1 = await User.find({
+      role: "user",
+    }).select("-password");
+    const bms = await User.find({
+      role: "board manager",
+    }).select("-password");
+    const pms = await User.find({
+      role: "project manager",
+    }).select("-password");
+    const response = {
+      userCount: users1.length,
+      pmCount: pms.length,
+      bmCount: bms.length,
+      users: users.map((user) => ({
         ...user._doc,
         birthDay: user.birthDay.toISOString().split("T")[0],
-      };
-    });
+      })),
+    };
     res.status(200).json(response);
   } catch (err) {
     console.error(err);
@@ -64,6 +76,7 @@ exports.get_only_user = async (req, res) => {
     const users = await User.find({
       role: "user",
     }).select("-password");
+
     const response = users.map((user) => {
       return {
         ...user._doc,

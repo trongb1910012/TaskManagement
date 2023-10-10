@@ -6,6 +6,7 @@ module.exports = (app) => {
 
   router.get("/", tasks.get_CongViec);
   router.get("/nv", tasks.get_CongViec_Nv);
+  router.get("/chart", tasks.getTaskStatusCounts);
   router.get("/created", tasks.get_created_tasks);
   router.get("/taskinfo", tasks.getTaskById);
   router.get("/:id", tasks.get_CV_KeHoach);
@@ -15,7 +16,6 @@ module.exports = (app) => {
   router.patch("/start/:taskId", tasks.AcceptTask1);
   router.patch("/complete/:taskId", tasks.ConfirmCompletedTask);
   router.put("/:id", tasks.sua_CongViec);
-  // router.delete("/:id", tasks.xoa_CongViec);
   router.delete("/", tasks.xoa_CongViec);
   app.use("/api/tasks", router);
 };

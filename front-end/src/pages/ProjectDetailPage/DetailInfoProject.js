@@ -4,16 +4,18 @@ import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
 import axiosClient from "../../api/api";
 export const ProjectInfo = () => {
   const [projectData, setProjectData] = useState(null);
+  const [projectMembers, setProjectMembers] = useState(null);
   const { id } = useParams();
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(`/projects/projectInfo?id=${id}`);
+      const response1 = await axiosClient.get(`/projects/members/${id}`);
       setProjectData(response.data.projects);
+      setProjectMembers(response1.data.members);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-
   useEffect(() => {
     fetchData();
   });
@@ -24,6 +26,7 @@ export const ProjectInfo = () => {
         border: "1px solid #30324e",
         borderRadius: "18px",
         mb: "10px",
+        boxShadow: "rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;",
       }}
     >
       <CardContent>
@@ -56,6 +59,21 @@ export const ProjectInfo = () => {
           </Box>
         ) : (
           <Typography>Loading user data...</Typography>
+        )}
+        {projectMembers ? (
+          <>
+            <Typography variant="h5" gutterBottom>
+              Members:
+            </Typography>
+            {projectMembers.map((mb) => (
+              <p>
+                {"- "}
+                {mb.fullname}
+              </p>
+            ))}
+          </>
+        ) : (
+          <></>
         )}
       </CardContent>
       <Divider />

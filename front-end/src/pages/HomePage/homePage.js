@@ -5,6 +5,8 @@ import axiosClient from "../../api/api";
 import { Grid } from "@mui/material";
 import AssignedTaskTable from "../TaskPage/AssignedTaskTable";
 import ProjectList from "../TaskPage/taskTable";
+import { AdminStat } from "./AdminStat";
+import PieChart from "../PieChart/PieChart";
 // import TableComponent from "../GanttTask/GanttTask";
 // import MyCalendar from "../Calendar/Calendar";
 const cx = classNames.bind(styles);
@@ -30,15 +32,8 @@ function HomePage() {
   };
   return (
     <div className={cx("wrapper")}>
+      {role === "admin" && <AdminStat />}
       <div className={cx("kaban")}>
-        <Grid container spacing={2}>
-          {/* <Grid item sm={12} xs={12} md={12} xl={12}>
-            <TableComponent></TableComponent>
-          </Grid> */}
-          {/* <Grid item xs={12} md={6} xl={12}>
-            <MyCalendar />
-          </Grid> */}
-        </Grid>
         <Grid container>
           {dSKeHoach.map((board) => (
             <Grid item xs={12} md={12} xl={12}>
@@ -77,14 +72,20 @@ function HomePage() {
               </div>
             </Grid>
           ))}
+
           {role === "user" && (
-            <Grid item xs={12} md={12} xl={12}>
+            <Grid item xs={12} md={6} xl={6}>
               <AssignedTaskTable />
             </Grid>
           )}
-          {role !== "user" && role !== "board manager" && (
-            <Grid item xs={12} md={12} xl={12}>
+          {role !== "user" && role !== "board manager" && role !== "admin" && (
+            <Grid item xs={12} md={6} xl={6}>
               <ProjectList />
+            </Grid>
+          )}
+          {role === "admin" && (
+            <Grid item xs={12} md={6} xl={3}>
+              <PieChart />
             </Grid>
           )}
         </Grid>

@@ -6,15 +6,13 @@ import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAdd,
-  faEye,
   faFile,
   faPenToSquare,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Grid, IconButton } from "@mui/material";
-import swal from "sweetalert";
+
 // import ProjectBoardTable from "./ProjectBoardTable";
-import { Link } from "react-router-dom";
+
 import AddUserForm from "./UserAddForm";
 import EditUserForm from "./UserEditForm";
 const UserListTable = (role) => {
@@ -24,12 +22,10 @@ const UserListTable = (role) => {
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const [rowDataForForm, setRowDataForForm] = useState(null);
-  const [selectedProjectId, setSelectedProjectId] = useState(null);
-  const [selectedProjectName, setSelectedProjectName] = useState(null);
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(`/users`);
-      setProjects(response.data);
+      setProjects(response.data.users);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -55,8 +51,6 @@ const UserListTable = (role) => {
 
   const handleOpenTable = (projectId, projectName) => {
     setIsUserListTableOpen(!isUserListTableOpen);
-    setSelectedProjectId(projectId);
-    setSelectedProjectName(projectName);
   };
   const actionCellRenderer = (params) => {
     if (params.columnApi.getRowGroupColumns().length > 0) {

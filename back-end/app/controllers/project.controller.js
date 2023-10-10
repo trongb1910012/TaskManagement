@@ -5,6 +5,7 @@ const config = require("../config");
 const db = require("../models");
 const Project = db.Project;
 const Board = db.Board;
+const Task = db.Task;
 //Lay tat ca ke hoach
 exports.get_KeHoach = async (req, res, next) => {
   try {
@@ -246,5 +247,47 @@ exports.getProjectbyId = async (req, res) => {
     return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+// Controller để liệt kê các thành viên của một project
+// Controller to list the members of a project
+exports.listProjectMembers = async (req, res) => {
+  try {
+    const projectId = req.params.projectId; // Get projectId from request parameters
+
+    // Find boards belonging to the project based on projectId
+    const boards = await Board.find({ project: projectId });
+
+    if (!boards) {
+      return res.status(404).json({ error: "No boards found in the project" });
+    }
+
+    const taskPromises = boards.map((board) => {
+      // Find tasks belonging to each board
+      return Task.find({ board: board._id }).populate("members", "fullname");
+    });
+
+    // Execute the task queries
+    const taskResults = await Promise.all(taskPromises);
+
+    // Create a Set to store unique members
+    const membersSet = new Set();
+
+    // Iterate over the task results and add members to the Set
+    taskResults.forEach((tasks) => {
+      tasks.forEach((task) => {
+        task.members.forEach((member) => {
+          membersSet.add(member);
+        });
+      });
+    });
+
+    // Convert the Set to an array of members
+    const projectMembers = Array.from(membersSet);
+
+    res.status(200).json({ members: projectMembers });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "An error occurred" });
   }
 };

@@ -24,6 +24,7 @@ export const TaskInfo = () => {
         border: "1px solid #30324e",
         borderRadius: "18px",
         mb: "10px",
+        boxShadow: "rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;",
       }}
     >
       <CardContent>

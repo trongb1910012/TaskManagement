@@ -43,22 +43,6 @@ const menuConfig = {
       icon: <FontAwesomeIcon icon={faUserGroup} />,
     },
     {
-      path: "/tasking/project",
-      name: "Project",
-      icon: <FontAwesomeIcon icon={faClipboard} />,
-    },
-    {
-      path: "/tasking/board",
-      name: "Board",
-      icon: <FontAwesomeIcon icon={faTh} />,
-    },
-    {
-      path: "/tasking/task",
-      name: "Task",
-      icon: <FontAwesomeIcon icon={faList} />,
-    },
-
-    {
       path: "/tasking",
       name: "Log Out",
       icon: <FontAwesomeIcon icon={faPowerOff} />,

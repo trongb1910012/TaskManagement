@@ -5,6 +5,7 @@ module.exports = (app) => {
   const router = express.Router();
 
   router.get("/", projects.get_KeHoach);
+  router.get("/members/:projectId", projects.listProjectMembers);
   router.post("/", projects.them_KeHoach);
   router.put("/:id", projects.sua_KeHoach);
   router.delete("/:id", projects.xoa_KeHoach);

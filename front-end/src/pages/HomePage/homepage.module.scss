@@ -13,8 +13,7 @@
 
 .board {
     border: 1px solid #000;
-    margin-inline: 10px;
-    margin-top: 10px;
+    margin-top: 20px;
     padding: 10px;
     height: auto;
     border-radius: 18px;
@@ -52,4 +51,42 @@
     background: #30324e;
     color: white;
     font-size: 21px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stat {
+    align-items: center;
+    padding: 30px;
+    width: 180px;
+    background-color: #f2f2f2;
+    border: 2px solid #30324e;
+    border-radius: 8px;
+    cursor: pointer;
+
+    .stat-label {
+        font-size: 13px;
+    }
+}
+
+.count {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+@media (max-width: 768px) {
+    .stats {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .stat {
+        width: 100%;
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
 }

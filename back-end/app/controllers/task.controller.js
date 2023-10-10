@@ -560,3 +560,32 @@ exports.ConfirmCompletedTask = async (req, res) => {
     });
   }
 };
+exports.getTaskStatusCounts = async (req, res) => {
+  try {
+    const completedCount = await Task.countDocuments({ status: "completed" });
+    const inProgressCount = await Task.countDocuments({
+      status: "in progress",
+    });
+    const missedCount = await Task.countDocuments({ status: "missed" });
+    const notStartedCount = await Task.countDocuments({
+      status: "not started",
+    });
+
+    const chartData = {
+      labels: ["Completed", "In Progress", "Missed", "Not Started"],
+      datasets: [
+        {
+          label: " Tasks",
+          data: [completedCount, inProgressCount, missedCount, notStartedCount],
+          backgroundColor: ["#33a47c", "#c1945c", "#C70039", "#64687d"],
+          hoverBackgroundColor: ["#33a47c", "#c1945c", "#C70039", "#64687d"],
+        },
+      ],
+    };
+
+    res.json(chartData);
+  } catch (error) {
+    console.error("Error fetching task status counts:", error);
+    res.status(500).json({ error: "Error fetching task status counts" });
+  }
+};
