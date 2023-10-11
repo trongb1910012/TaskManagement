@@ -291,3 +291,33 @@ exports.listProjectMembers = async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 };
+exports.getProjectStatusCounts = async (req, res) => {
+  try {
+    const completedCount = await Project.countDocuments({
+      status: "completed",
+    });
+    const inProgressCount = await Project.countDocuments({
+      status: "in progress",
+    });
+    const plannedCount = await Project.countDocuments({
+      status: "planned",
+    });
+
+    const chartData = {
+      labels: ["Completed", "In Progress", "Planeed"],
+      datasets: [
+        {
+          label: " Tasks",
+          data: [completedCount, inProgressCount, plannedCount],
+          backgroundColor: ["#33a47c", "#c1945c", "#64687d"],
+          hoverBackgroundColor: ["#33a47c", "#c1945c", "#64687d"],
+        },
+      ],
+    };
+
+    res.json(chartData);
+  } catch (error) {
+    console.error("Error fetching task status counts:", error);
+    res.status(500).json({ error: "Error fetching task status counts" });
+  }
+};

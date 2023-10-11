@@ -589,3 +589,159 @@ exports.getTaskStatusCounts = async (req, res) => {
     res.status(500).json({ error: "Error fetching task status counts" });
   }
 };
+//Lấy tất cả công việc trong các kế hoạch của PM
+exports.get_Tasks_Projects = async (req, res, next) => {
+  try {
+    const condition = {};
+    const title = req.query.title;
+    if (title) {
+      condition.title = { $regex: new RegExp(title), $options: "i" };
+    }
+
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const memberId = decodedToken.id;
+
+    const projectsPromise = Project.find({
+      ...condition,
+      owner: memberId,
+    })
+      .populate({
+        path: "owner",
+        select: "fullname",
+      })
+      .sort({ status: -1, createAt: -1 });
+    const countPromise = Project.countDocuments({
+      ...condition,
+      owner: memberId,
+    });
+
+    const [projects, count] = await Promise.all([
+      projectsPromise,
+      countPromise,
+    ]);
+    const formattedProjects = projects.map((project) => {
+      const formattedStartDate = new Date(project.startDate)
+        .toISOString()
+        .substr(0, 10);
+      const formattedEndDate = new Date(project.endDate)
+        .toISOString()
+        .substr(0, 10);
+      return {
+        ...project._doc,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      };
+    });
+
+    const response = {
+      projects: formattedProjects,
+      count: count, // Số lượng kế hoạch
+    };
+
+    return res.status(200).json(response);
+  } catch (err) {
+    console.error(err);
+    return next(
+      new BadRequestError(500, "An error occurred while retrieving projects")
+    );
+  }
+};
+
+exports.getProjectsBoardsTasks = async (req, res, next) => {
+  try {
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const memberId = decodedToken.id;
+
+    // Get projects
+    const projects = await Project.find({
+      owner: memberId,
+    });
+
+    // Get boards for each project
+    const boardsPromises = projects.map(async (project) => {
+      const boards = await Board.find({
+        project: project._id,
+      });
+      // Get tasks for each board
+      const tasksPromises = boards.map(async (board) => {
+        const tasks = await Task.find({
+          board: board._id,
+        })
+          .populate({ path: "members", select: "fullname" })
+          .populate({
+            path: "board",
+            select: "board_name",
+            populate: {
+              path: "project",
+              select: ["startDate", "endDate", "title"],
+            },
+          })
+          .populate({
+            path: "creator",
+            select: "fullname",
+          })
+          .sort({ status: -1, dueDate: 1 });
+        return tasks;
+      });
+      const tasks = await Promise.all(tasksPromises);
+      return {
+        project,
+        boards,
+        tasks: tasks.flat(),
+      };
+    });
+
+    // Resolve promises
+    const results = await Promise.all(boardsPromises);
+
+    // Format data
+    const formattedProjects = results.map((result) => {
+      const project = result.project;
+      const formattedStartDate = new Date(project.startDate)
+        .toISOString()
+        .substr(0, 10);
+      const formattedEndDate = new Date(project.endDate)
+        .toISOString()
+        .substr(0, 10);
+      return {
+        ...project._doc,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+        boards: result.boards,
+        tasks: result.tasks,
+      };
+    });
+
+    const formattedBoards = results.flatMap((result) =>
+      result.boards.map((board) => ({ ...board._doc }))
+    );
+
+    const formattedTasks = results.flatMap((result) =>
+      result.tasks.map((task) => {
+        const formattedDueDate = new Date(task.dueDate)
+          .toISOString()
+          .substr(0, 10);
+        return {
+          ...task._doc,
+          dueDate: formattedDueDate,
+        };
+      })
+    );
+
+    return res.json({
+      projects: formattedProjects,
+      boards: formattedBoards,
+      tasks: formattedTasks,
+    });
+  } catch (err) {
+    next(err);
+  }
+};

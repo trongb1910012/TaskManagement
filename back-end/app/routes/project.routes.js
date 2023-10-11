@@ -6,6 +6,7 @@ module.exports = (app) => {
 
   router.get("/", projects.get_KeHoach);
   router.get("/members/:projectId", projects.listProjectMembers);
+  router.get("/chart", projects.getProjectStatusCounts);
   router.post("/", projects.them_KeHoach);
   router.put("/:id", projects.sua_KeHoach);
   router.delete("/:id", projects.xoa_KeHoach);

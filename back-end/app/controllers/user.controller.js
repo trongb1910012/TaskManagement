@@ -7,9 +7,18 @@ const User = db.User;
 const Project = db.Project;
 const Task = db.Task;
 const Board = db.Board;
+const Report = db.Report;
 //Lay danh sach user
 exports.get_all_user = async (req, res) => {
   try {
+    const condition = {};
+    const title = req.query.title;
+    if (title) {
+      condition.title = { $regex: new RegExp(title), $options: "i" };
+    }
+
+    const tasks = await Task.find(condition);
+    const reports = await Report.find(condition);
     const users = await User.find({
       role: ["user", "project manager", "board manager"],
     }).select("-password");
@@ -22,10 +31,14 @@ exports.get_all_user = async (req, res) => {
     const pms = await User.find({
       role: "project manager",
     }).select("-password");
+    const inProgressTasks = await Task.find({ status: "in progress" });
     const response = {
       userCount: users1.length,
       pmCount: pms.length,
       bmCount: bms.length,
+      tasksCount: tasks.length,
+      reportsCount: reports.length,
+      inProgressTasks: inProgressTasks.length,
       users: users.map((user) => ({
         ...user._doc,
         birthDay: user.birthDay.toISOString().split("T")[0],

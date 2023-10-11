@@ -4,9 +4,11 @@ import styles from "./homepage.module.scss";
 import axiosClient from "../../api/api";
 import { Grid } from "@mui/material";
 import AssignedTaskTable from "../TaskPage/AssignedTaskTable";
-import ProjectList from "../TaskPage/taskTable";
+// import ProjectList from "../TaskPage/taskTable";
 import { AdminStat } from "./AdminStat";
 import PieChart from "../PieChart/PieChart";
+import ProjectPieChart from "../PieChart/ProjectPieChart";
+import ProjectMangerTasks from "../TaskPage/PmTaskTable";
 // import TableComponent from "../GanttTask/GanttTask";
 // import MyCalendar from "../Calendar/Calendar";
 const cx = classNames.bind(styles);
@@ -74,18 +76,31 @@ function HomePage() {
           ))}
 
           {role === "user" && (
-            <Grid item xs={12} md={6} xl={6}>
+            <Grid item xs={12} md={12} xl={12}>
               <AssignedTaskTable />
             </Grid>
           )}
-          {role !== "user" && role !== "board manager" && role !== "admin" && (
-            <Grid item xs={12} md={6} xl={6}>
-              <ProjectList />
-            </Grid>
+          {role === "project manager" && (
+            <>
+              <Grid item xs={12} md={6} xl={8}>
+                <ProjectMangerTasks />
+              </Grid>
+              <Grid item xs={6} md={3} xl={2}>
+                <PieChart />
+              </Grid>
+              <Grid item xs={6} md={3} xl={2}>
+                <ProjectPieChart />
+              </Grid>
+            </>
           )}
           {role === "admin" && (
-            <Grid item xs={12} md={6} xl={3}>
+            <Grid item xs={6} md={6} xl={3}>
               <PieChart />
+            </Grid>
+          )}
+          {role === "board manager" && (
+            <Grid item xs={6} md={6} xl={3}>
+              <></>
             </Grid>
           )}
         </Grid>

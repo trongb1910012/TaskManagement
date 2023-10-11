@@ -8,6 +8,7 @@ module.exports = (app) => {
   router.get("/nv", tasks.get_CongViec_Nv);
   router.get("/chart", tasks.getTaskStatusCounts);
   router.get("/created", tasks.get_created_tasks);
+  router.get("/ownerTasks", tasks.getProjectsBoardsTasks);
   router.get("/taskinfo", tasks.getTaskById);
   router.get("/:id", tasks.get_CV_KeHoach);
   router.post("/", tasks.them_CongViec);
