@@ -33,7 +33,7 @@ module.exports = (mongoose) => {
       },
       status: {
         type: String,
-        enum: ["open", "resolved"],
+        enum: ["open", "resolved", "rejected"],
         default: "open",
       },
     },

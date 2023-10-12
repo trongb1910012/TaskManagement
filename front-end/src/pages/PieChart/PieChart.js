@@ -18,16 +18,14 @@ const PieChart = () => {
 
     fetchData();
   }, []);
-
   return (
     <div>
       {chartData ? (
         <>
-          <h2>Task chart</h2>
           <Doughnut data={chartData} />
         </>
       ) : (
-        <p>Loading chart data...</p>
+        <p>No task</p>
       )}
     </div>
   );

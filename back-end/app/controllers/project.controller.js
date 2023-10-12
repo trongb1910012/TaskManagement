@@ -293,16 +293,24 @@ exports.listProjectMembers = async (req, res) => {
 };
 exports.getProjectStatusCounts = async (req, res) => {
   try {
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const memberId = decodedToken.id;
     const completedCount = await Project.countDocuments({
       status: "completed",
+      owner: memberId,
     });
     const inProgressCount = await Project.countDocuments({
       status: "in progress",
+      owner: memberId,
     });
     const plannedCount = await Project.countDocuments({
       status: "planned",
+      owner: memberId,
     });
-
     const chartData = {
       labels: ["Completed", "In Progress", "Planeed"],
       datasets: [

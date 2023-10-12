@@ -9,7 +9,10 @@ const ProjectPieChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosClient.get("/projects/chart");
+        const token = localStorage.getItem("token");
+        const response = await axiosClient.get(
+          `/projects/chart?token=${token}`
+        );
         setChartData(response.data);
       } catch (error) {
         console.error("Error fetching chart data:", error);
@@ -18,16 +21,14 @@ const ProjectPieChart = () => {
 
     fetchData();
   }, []);
-
   return (
     <div>
       {chartData ? (
         <>
-          <h2>Project chart</h2>
           <Doughnut data={chartData} />
         </>
       ) : (
-        <p>Loading chart data...</p>
+        <p>No project</p>
       )}
     </div>
   );

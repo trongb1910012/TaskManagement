@@ -77,8 +77,8 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
   };
   const handleDelete = (taskId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${taskId.title} này`,
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: `You definitely want to delete ${taskId.title} task`,
+      text: "Once deleted, you will not be able to restore this task",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -87,7 +87,7 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
         await axiosClient.delete(`/tasks/`, {
           data: { taskIds: taskId._id },
         });
-        swal(`Công việc ${taskId.title.toUpperCase()} đã được xóa`, {
+        swal(`${taskId.title.toUpperCase()} has been deleted`, {
           icon: "success",
         });
         await fetchData();
@@ -98,8 +98,8 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
   };
   const handleDeleteSelectedTasks = () => {
     swal({
-      title: "Bạn chắc chắn muốn xóa những công việc đã chọn?",
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: "Are you sure you want to delete the selected tasks?",
+      text: "Once deleted, you will not be able to restore these task",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -109,7 +109,7 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
         await axiosClient.delete("/tasks/", {
           data: { taskIds: selectedTaskIds },
         });
-        swal("Các công việc đã được xóa thành công!", {
+        swal("Tasks have been remove", {
           icon: "success",
         });
         await fetchData();

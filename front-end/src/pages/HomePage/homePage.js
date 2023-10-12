@@ -82,10 +82,10 @@ function HomePage() {
           )}
           {role === "project manager" && (
             <>
-              <Grid item xs={12} md={6} xl={8}>
+              <Grid item xs={12} md={6} xl={7}>
                 <ProjectMangerTasks />
               </Grid>
-              <Grid item xs={6} md={3} xl={2}>
+              <Grid item xs={6} md={3} xl={3}>
                 <PieChart />
               </Grid>
               <Grid item xs={6} md={3} xl={2}>

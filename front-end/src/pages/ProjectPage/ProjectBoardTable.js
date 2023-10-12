@@ -34,31 +34,14 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // const handleAddRow = () => {
-  //   const emptyRow = {
-  //     title: "",
-  //     description: "",
-  //     startDate: "",
-  //     endDate: "",
-  //     status: "",
-  //     budget: "",
-  //     owner: {
-  //       fullname: "",
-  //     },
-  //   };
-
-  //   setProjects([...projects, emptyRow]);
-  // };
   const handleEdit = async (rowData) => {
     try {
+      const { _id, board_name } = rowData;
+      const requestBody = { board_name };
       const token = localStorage.getItem("token");
-      const response = await axiosClient.put(
-        `/boards/${rowData.id}?token=${token}`,
-        rowData
-      );
+      await axiosClient.put(`/boards/${_id}?token=${token}`, requestBody);
 
-      console.log(response.data); // Xử lý phản hồi theo ý muốn
+      console.log(requestBody); // Xử lý phản hồi theo ý muốn
       cogoToast.success("Cập nhật dự án thành công");
       fetchData(); // Cập nhật dữ liệu sau khi chỉnh sửa thành công
     } catch (error) {
@@ -76,7 +59,7 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
     }).then(async (willDelete) => {
       if (willDelete) {
         const token = localStorage.getItem("token");
-        await axiosClient.delete(`/boards/${projectId.id}?token=${token}`);
+        await axiosClient.delete(`/boards/${projectId._id}?token=${token}`);
         swal(`${projectId.board_name} đã được xóa`, {
           icon: "success",
         });

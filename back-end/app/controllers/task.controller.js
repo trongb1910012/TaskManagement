@@ -60,7 +60,10 @@ exports.them_CongViec = async (req, res, next) => {
     }
     const project = await Project.findById(board.project);
     // Check if project.endDate is less than dueDate
-    if (project.endDate && project.endDate < dueDate) {
+    if (
+      project.endDate &&
+      project.endDate.toISOString().split("T")[0] < dueDate
+    ) {
       return next(
         new BadRequestError(
           400,
@@ -82,7 +85,7 @@ exports.them_CongViec = async (req, res, next) => {
     const savedTask = await task.save();
 
     // Return the saved task document as a JSON response
-    return res.status(200).json(savedTask);
+    return res.status(200).json(task);
   } catch (err) {
     console.error(err);
     return next(

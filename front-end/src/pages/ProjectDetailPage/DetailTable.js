@@ -57,7 +57,7 @@ const DetailTable = (project) => {
       );
 
       console.log(response.data); // Xử lý phản hồi theo ý muốn
-      cogoToast.success("Cập nhật dự án thành công");
+      cogoToast.success("Added project successfully");
       fetchData(); // Cập nhật dữ liệu sau khi chỉnh sửa thành công
     } catch (error) {
       console.error(error); // Xử lý lỗi một cách phù hợp
@@ -66,8 +66,8 @@ const DetailTable = (project) => {
 
   const handleDelete = (projectId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.board_name} này`,
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: `You definitely want to delete ${projectId.board_name} board`,
+      text: "Once deleted, you will not be able to restore this board",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -75,7 +75,7 @@ const DetailTable = (project) => {
       if (willDelete) {
         const token = localStorage.getItem("token");
         await axiosClient.delete(`/boards/${projectId._id}?token=${token}`);
-        swal(`${projectId.board_name} đã được xóa`, {
+        swal(`${projectId.board_name} has been deleted `, {
           icon: "success",
         });
         await fetchData();

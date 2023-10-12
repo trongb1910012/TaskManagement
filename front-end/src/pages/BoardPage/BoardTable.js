@@ -6,6 +6,7 @@ import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAdd,
+  faBriefcase,
   faEye,
   faPenToSquare,
   faTrash,
@@ -15,6 +16,7 @@ import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import CreateBoardForm from "./CreateBoardForm";
 import TasksByBoardTable from "./TasksByBoardId";
+import { Link } from "react-router-dom";
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
@@ -26,6 +28,7 @@ const ProjectTable = () => {
   const [selectedProjectId, setSelectedBoardId] = useState(null);
   const [selectedBoardName, setSelectedBoardName] = useState(null);
   const [selectedProjectName, setSelectedProjectName] = useState(null);
+  const role = localStorage.getItem("role");
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -41,22 +44,6 @@ const ProjectTable = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  // const handleAddRow = () => {
-  //   const emptyRow = {
-  //     title: "",
-  //     description: "",
-  //     startDate: "",
-  //     endDate: "",
-  //     status: "",
-  //     budget: "",
-  //     owner: {
-  //       fullname: "",
-  //     },
-  //   };
-
-  //   setProjects([...projects, emptyRow]);
-  // };
   const handleOpenForm = () => {
     setIsCreateFormOpen(true);
   };
@@ -65,14 +52,13 @@ const ProjectTable = () => {
   };
   const handleEdit = async (rowData) => {
     try {
+      const { _id, board_name } = rowData;
+      const requestBody = { board_name };
       const token = localStorage.getItem("token");
-      const response = await axiosClient.put(
-        `/boards/${rowData._id}?token=${token}`,
-        rowData
-      );
+      await axiosClient.put(`/boards/${_id}?token=${token}`, requestBody);
 
-      console.log(response.data); // Xử lý phản hồi theo ý muốn
-      cogoToast.success("Cập nhật dự án thành công");
+      console.log(requestBody); // Xử lý phản hồi theo ý muốn
+      cogoToast.success("Board updated successfully");
       fetchData(); // Cập nhật dữ liệu sau khi chỉnh sửa thành công
     } catch (error) {
       console.error(error); // Xử lý lỗi một cách phù hợp
@@ -81,8 +67,8 @@ const ProjectTable = () => {
 
   const handleDelete = (projectId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.board_name} này`,
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: `You definitely want to delete ${projectId.board_name} board`,
+      text: "Once deleted, you will not be able to restore this board",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -90,7 +76,7 @@ const ProjectTable = () => {
       if (willDelete) {
         const token = localStorage.getItem("token");
         await axiosClient.delete(`/boards/${projectId._id}?token=${token}`);
-        swal(`${projectId.board_name} đã được xóa`, {
+        swal(`${projectId.board_name} has been deleted`, {
           icon: "success",
         });
         await fetchData();
@@ -138,8 +124,13 @@ const ProjectTable = () => {
             }
             variant="outlined"
           >
-            <FontAwesomeIcon icon={faEye} />
+            <FontAwesomeIcon icon={faBriefcase} />
           </IconButton>
+          <Link to={`/tasking/project/${params.data.project}`}>
+            <IconButton variant="outlined">
+              <FontAwesomeIcon icon={faEye} />
+            </IconButton>
+          </Link>
         </>
       </div>
     );
@@ -235,9 +226,11 @@ const ProjectTable = () => {
         </Grid>
         <Grid item>
           {" "}
-          <IconButton onClick={() => handleOpenForm()} variant="outlined">
-            <FontAwesomeIcon icon={faAdd} />
-          </IconButton>
+          {role !== "board manager" && (
+            <IconButton onClick={() => handleOpenForm()} variant="outlined">
+              <FontAwesomeIcon icon={faAdd} />
+            </IconButton>
+          )}
         </Grid>
       </Grid>
       <div

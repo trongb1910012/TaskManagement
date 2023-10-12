@@ -142,3 +142,102 @@ exports.deleteReportById = async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi xóa báo cáo" });
   }
 };
+//Giải quyết báo cáo
+exports.resolveReport = async (req, res, next) => {
+  try {
+    const reportId = req.params.reportId;
+
+    // Find the report by ID
+    const report = await Report.findById(reportId);
+
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+
+    // Check if the report is already resolved
+    if (report.status === "resolved") {
+      return res.status(400).json({ message: "Report is already resolved" });
+    }
+    if (report.status === "rejected") {
+      return res.status(400).json({ message: "Report is already rejected" });
+    }
+
+    // Update the report status to "resolved"
+    report.status = "resolved";
+    await report.save();
+
+    return res.json({ message: "Report resolved" });
+  } catch (err) {
+    next(err);
+  }
+};
+//từ chối báo cáo
+exports.rejectReport = async (req, res, next) => {
+  try {
+    const reportId = req.params.reportId;
+
+    // Find the report by ID
+    const report = await Report.findById(reportId);
+
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+
+    // Check if the report is already resolved
+    if (report.status === "rejected") {
+      return res.status(400).json({ message: "Report is already rejected" });
+    }
+    if (report.status === "resolved") {
+      return res.status(400).json({ message: "Report is already resolved" });
+    }
+
+    // Update the report status to "resolved"
+    report.status = "rejected";
+    await report.save();
+
+    return res.json({ message: "Report rejected" });
+  } catch (err) {
+    next(err);
+  }
+};
+//Thông tin báo cáo
+exports.getReportById = async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    const report = await Report.findById(id)
+      .populate({
+        path: "author",
+        select: "fullname",
+      })
+      .populate({
+        path: "task",
+        select: "title",
+        populate: {
+          path: "board",
+          select: "board_name",
+          populate: { path: "project", select: "title" },
+        },
+      });
+    if (!report) {
+      return res.status(404).json({ message: "Report not found" });
+    }
+    const formattedDate = new Date(report.createdAt)
+      .toISOString()
+      .substr(0, 10);
+    const task = await Task.findById(report.task._id);
+    const board = await Board.findById(task.board._id);
+    const project = await Project.findById(board.project._id);
+    const formattedReport = {
+      ...report._doc,
+      createdAt: formattedDate,
+      taskName: task.title,
+      boardName: board.board_name,
+      projectName: project.title,
+    };
+    // Trả về kết quả
+    return res.json(formattedReport);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};

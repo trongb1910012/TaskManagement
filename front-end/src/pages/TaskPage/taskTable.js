@@ -143,6 +143,21 @@ const ProjectList = () => {
 
     return (
       <div>
+        <Link to={`/tasking/report/${params.data._id}`}>
+          <IconButton variant="outlined" color="primary">
+            <FontAwesomeIcon icon={faTasks} />
+          </IconButton>
+        </Link>
+        <IconButton
+          style={
+            params.data.status !== "in progress" ? { display: "none" } : {}
+          }
+          variant="outlined"
+          color="primary"
+          onClick={() => handleCompletedTask(params.data)}
+        >
+          <FontAwesomeIcon icon={faCheck} />
+        </IconButton>
         <IconButton
           style={params.data.status !== "missed" ? { display: "none" } : {}}
           onClick={() => openEditForm(params.data)}
@@ -160,22 +175,6 @@ const ProjectList = () => {
           color="error"
         >
           <FontAwesomeIcon icon={faTrash} />
-        </IconButton>
-
-        <Link to={`/tasking/report/${params.data._id}`}>
-          <IconButton variant="outlined" color="primary">
-            <FontAwesomeIcon icon={faTasks} />
-          </IconButton>
-        </Link>
-        <IconButton
-          style={
-            params.data.status !== "in progress" ? { display: "none" } : {}
-          }
-          variant="outlined"
-          color="primary"
-          onClick={() => handleCompletedTask(params.data)}
-        >
-          <FontAwesomeIcon icon={faCheck} />
         </IconButton>
       </div>
     );

@@ -253,7 +253,7 @@ const ProjectTable = () => {
         />
       )}
       <Grid container spacing={0}>
-        <Grid item xs={12} xl={6}>
+        <Grid item xs={12} xl={12}>
           {isProjectTableOpen && (
             <ProjectBoardTable
               projectId={selectedProjectId}

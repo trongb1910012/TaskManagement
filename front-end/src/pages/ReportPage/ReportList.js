@@ -4,8 +4,13 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useParams } from "react-router-dom";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Link, useParams } from "react-router-dom";
+import {
+  faCheck,
+  faEye,
+  faTrash,
+  faX,
+} from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import { Grid } from "@mui/material";
@@ -25,13 +30,13 @@ var headerCheckboxSelection = function (params) {
 
 export const ReportsList = () => {
   const [projects, setProjects] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [isAnyCheckboxSelected, setIsAnyCheckboxSelected] = useState(false);
+
   const [taskData, setTaskData] = useState([]);
   const { id } = useParams();
   const updateTasksStatus = async () => {
     await axiosClient.put(`/tasks`);
   };
+  const role = localStorage.getItem("role");
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -65,11 +70,11 @@ export const ReportsList = () => {
       ["in progress"].includes(taskData.status)
     );
   }, [taskData]);
-  console.log(taskData.status);
+
   const handleDelete = (projectId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: `You definitely want to delete ${projectId.title} report`,
+      text: "Once deleted, you will not be able to restore this report",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -78,7 +83,7 @@ export const ReportsList = () => {
         await axiosClient.delete(`/reports/`, {
           data: { id: projectId._id },
         });
-        swal(`${projectId.title.toUpperCase()} đã được xóa`, {
+        swal(`${projectId.title.toUpperCase()} has been deleted`, {
           icon: "success",
         });
         await fetchData();
@@ -87,29 +92,43 @@ export const ReportsList = () => {
       }
     });
   };
-  const handleDeleteSelectedTasks = () => {
+  const handleResolve = (projectId) => {
     swal({
-      title: "Bạn chắc chắn muốn xóa những công việc đã chọn?",
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: `Resolve ${projectId.title} report`,
+      text: "Once resolved, you will not be able to restore this report status!",
+      icon: "info",
+      buttons: true,
+      dangerMode: false,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        await axiosClient.patch(`/reports/resolve/${projectId._id}`);
+        swal(`${projectId.title.toUpperCase()} has been resolved`, {
+          icon: "success",
+        });
+        await fetchData();
+      } else {
+        return;
+      }
+    });
+  };
+  const handleReject = (projectId) => {
+    swal({
+      title: `Reject ${projectId.title} report`,
+      text: "Once reject, you will not be able to restore this report status!",
       icon: "warning",
       buttons: true,
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        const selectedTaskIds = selectedRows.map((row) => row._id);
-        await axiosClient.delete("/report/", {
-          data: { taskIds: selectedTaskIds },
-        });
-        swal("Các công việc đã được xóa thành công!", {
+        await axiosClient.patch(`/reports/reject/${projectId._id}`);
+        swal(` ${projectId.title.toUpperCase()} has been reject`, {
           icon: "success",
         });
         await fetchData();
+      } else {
+        return;
       }
     });
-  };
-  const handleCheckboxChange = (selectedRows) => {
-    setSelectedRows(selectedRows);
-    setIsAnyCheckboxSelected(selectedRows.length > 0);
   };
 
   const actionCellRenderer = (params) => {
@@ -119,20 +138,44 @@ export const ReportsList = () => {
 
     return (
       <div>
-        {/* <IconButton
-          onClick={() => openEditForm(params.data)}
-          variant="outlined"
-          color="primary"
-        >
-          <FontAwesomeIcon icon={faPenToSquare} />
-        </IconButton> */}
-        <IconButton
-          onClick={() => handleDelete(params.data)}
-          variant="outlined"
-          color="error"
-        >
-          <FontAwesomeIcon icon={faTrash} />
-        </IconButton>
+        {role === "user" && (
+          <>
+            <IconButton
+              style={params.data.status !== "open" ? { display: "none" } : {}}
+              onClick={() => handleDelete(params.data)}
+              variant="outlined"
+              color="error"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+            <Link to={`/tasking/report/detail/${params.data._id}`}>
+              <IconButton variant="outlined" color="error">
+                <FontAwesomeIcon icon={faEye} />
+              </IconButton>
+            </Link>
+          </>
+        )}
+
+        {role !== "user" && (
+          <>
+            <IconButton
+              style={params.data.status !== "open" ? { display: "none" } : {}}
+              onClick={() => handleResolve(params.data)}
+              variant="outlined"
+              color="info"
+            >
+              <FontAwesomeIcon icon={faCheck} />
+            </IconButton>
+            <IconButton
+              style={params.data.status !== "open" ? { display: "none" } : {}}
+              onClick={() => handleReject(params.data)}
+              variant="outlined"
+              color="error"
+            >
+              <FontAwesomeIcon icon={faX} />
+            </IconButton>
+          </>
+        )}
       </div>
     );
   };
@@ -169,7 +212,7 @@ export const ReportsList = () => {
       sortable: true,
       filter: true,
       cellStyle: (params) => {
-        if (params.value === "solved") {
+        if (params.value === "resolved") {
           return {
             color: "white",
             backgroundColor: "#33a47c",
@@ -180,6 +223,13 @@ export const ReportsList = () => {
           return {
             color: "white",
             backgroundColor: "#64687d",
+            fontWeight: "500",
+          };
+        }
+        if (params.value === "rejected") {
+          return {
+            color: "white",
+            backgroundColor: "#C70039",
             fontWeight: "500",
           };
         }
@@ -220,19 +270,7 @@ export const ReportsList = () => {
         <Grid item>
           <h1>REPORTS</h1>{" "}
         </Grid>
-        <Grid item>
-          {isAnyCheckboxSelected ? (
-            <IconButton
-              sx={{ color: "red" }}
-              onClick={handleDeleteSelectedTasks}
-              variant="outlined"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-          ) : (
-            <></>
-          )}
-        </Grid>
+        <Grid item></Grid>
       </Grid>
       <div
         className="ag-theme-alpine"
@@ -249,9 +287,6 @@ export const ReportsList = () => {
           rowGroupPanelShow={"always"}
           suppressRowClickSelection={true}
           rowSelection={"multiple"}
-          onSelectionChanged={(event) =>
-            handleCheckboxChange(event.api.getSelectedRows())
-          }
         ></AgGridReact>
       </div>
     </div>
