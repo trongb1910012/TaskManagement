@@ -11,10 +11,12 @@ import {
 import axiosClient from "../../api/api";
 import classNames from "classnames/bind";
 import styles from "../HomePage/homepage.module.scss";
+import swal from "sweetalert";
 const cx = classNames.bind(styles);
 export const ReportDetail = () => {
   const [data, setData] = useState(null);
   const { reportId } = useParams();
+  const role = localStorage.getItem("role");
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(
@@ -25,10 +27,47 @@ export const ReportDetail = () => {
       console.error("Error fetching data:", error);
     }
   };
-
   useEffect(() => {
     fetchData();
   });
+  const handleResolve = (reportId) => {
+    swal({
+      title: `Resolve this report`,
+      text: "Once resolved, you will not be able to restore this report status!",
+      icon: "info",
+      buttons: true,
+      dangerMode: false,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        await axiosClient.patch(`/reports/resolve/${reportId}`);
+        swal(`This report has been resolved`, {
+          icon: "success",
+        });
+        await fetchData();
+      } else {
+        return;
+      }
+    });
+  };
+  const handleReject = (reportId) => {
+    swal({
+      title: `Reject this report`,
+      text: "Once reject, you will not be able to restore this report status!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        await axiosClient.patch(`/reports/reject/${reportId}`);
+        swal(` This has been reject`, {
+          icon: "success",
+        });
+        await fetchData();
+      } else {
+        return;
+      }
+    });
+  };
 
   return (
     <div className={cx("wrapper")}>
@@ -75,25 +114,35 @@ export const ReportDetail = () => {
         </CardContent>
         <Divider />
       </Card>
-      <Card
-        sx={{
-          border: "1px solid #30324e",
-          borderRadius: "18px",
-          mb: "10px",
-          boxShadow: "rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;",
-        }}
-      >
+      {role === "user" || (data && data.status !== "open") ? null : (
         <Box
           sx={{
             alignItems: "center",
             display: "flex",
             flexDirection: "column",
+            mb: "10px",
           }}
         >
-          <Button>aaa</Button>
-          <Button>bbb</Button>
+          <Button
+            variant="contained"
+            onClick={() => handleResolve(reportId)}
+            style={{
+              backgroundColor: "#30324e",
+              color: "#ffffff",
+              marginBottom: "10px",
+            }}
+          >
+            Resolve
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleReject(reportId)}
+            style={{ backgroundColor: "red", color: "#ffffff" }}
+          >
+            Reject
+          </Button>
         </Box>
-      </Card>
+      )}
     </div>
   );
 };

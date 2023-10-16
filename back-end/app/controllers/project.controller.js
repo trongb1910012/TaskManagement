@@ -6,6 +6,7 @@ const db = require("../models");
 const Project = db.Project;
 const Board = db.Board;
 const Task = db.Task;
+const User = db.User;
 //Lay tat ca ke hoach
 exports.get_KeHoach = async (req, res, next) => {
   try {
@@ -130,6 +131,9 @@ exports.xoa_KeHoach = async (req, res, next) => {
     if (userId !== project.owner.toString()) {
       return next(new BadRequestError(403, "Forbidden"));
     }
+    const boards = await Board.find({ project: projectId });
+    const boardIds = boards.map((board) => board._id);
+    await Task.deleteMany({ board: { $in: boardIds } });
     // Delete all boards associated with the project
     await Board.deleteMany({ project: projectId });
 
@@ -253,9 +257,8 @@ exports.getProjectbyId = async (req, res) => {
 // Controller to list the members of a project
 exports.listProjectMembers = async (req, res) => {
   try {
-    const projectId = req.params.projectId; // Get projectId from request parameters
+    const projectId = req.params.projectId;
 
-    // Find boards belonging to the project based on projectId
     const boards = await Board.find({ project: projectId });
 
     if (!boards) {
@@ -263,27 +266,42 @@ exports.listProjectMembers = async (req, res) => {
     }
 
     const taskPromises = boards.map((board) => {
-      // Find tasks belonging to each board
       return Task.find({ board: board._id }).populate("members", "fullname");
     });
 
-    // Execute the task queries
     const taskResults = await Promise.all(taskPromises);
 
-    // Create a Set to store unique members
-    const membersSet = new Set();
+    const memberTaskCountMap = new Map();
 
-    // Iterate over the task results and add members to the Set
     taskResults.forEach((tasks) => {
       tasks.forEach((task) => {
         task.members.forEach((member) => {
-          membersSet.add(member);
+          const memberId = member._id.toString();
+          if (memberTaskCountMap.has(memberId)) {
+            memberTaskCountMap.set(
+              memberId,
+              memberTaskCountMap.get(memberId) + 1
+            );
+          } else {
+            memberTaskCountMap.set(memberId, 1);
+          }
         });
       });
     });
 
-    // Convert the Set to an array of members
-    const projectMembers = Array.from(membersSet);
+    const memberIds = Array.from(memberTaskCountMap.keys());
+    const members = await User.find({ _id: { $in: memberIds } });
+
+    const projectMembers = members.map((member) => {
+      const memberId = member._id.toString();
+      const taskCount = memberTaskCountMap.get(memberId);
+      return {
+        member: memberId,
+        fullname: member.fullname,
+        email: member.email,
+        taskCount: taskCount,
+      };
+    });
 
     res.status(200).json({ members: projectMembers });
   } catch (error) {
@@ -315,7 +333,7 @@ exports.getProjectStatusCounts = async (req, res) => {
       labels: ["Completed", "In Progress", "Planeed"],
       datasets: [
         {
-          label: " Tasks",
+          label: "Projects",
           data: [completedCount, inProgressCount, plannedCount],
           backgroundColor: ["#33a47c", "#c1945c", "#64687d"],
           hoverBackgroundColor: ["#33a47c", "#c1945c", "#64687d"],

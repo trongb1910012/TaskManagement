@@ -145,12 +145,13 @@ Content-Type: application/json
 ### Xoa bang cong viec
 DELETE http://localhost:8080/api/boards/64f03b1fea0f1b3e87fd1440
 ### Them Comment
-POST http://localhost:8080/api/comments?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjgxMWI4ZDM3NWRmYThkMGUwY2YxMiIsImlhdCI6MTY5MTEyMzk4OCwiZXhwIjoxNjkxMjEwMzg4fQ.Q6ngGBUyAgOv-ppe9MqIPA4udHfOBB7SyIy8uMc06vw
+POST http://localhost:8080/api/comments?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZTcwMjMyMmQ4NWJiMDkyZGMyOThlOSIsImlhdCI6MTY5NzQyOTU0MywiZXhwIjoxNjk3NTE1OTQzfQ.ifObOkgYu-PrRCbCPrR30-S2Y4W8f8iIvj-L6otS7WQ
 Content-Type: application/json
 
 {
-  "task_id": "64c497992e1ff91ebfebefe0",
-  "comment_text": "Bai tap nay bo ich"
+  "task_id": "652cbb88dadf62638ef45241",
+  "comment_text": "This is a comment on the task.",
+  "new_dueDate": "2023-10-21"
 }
 ### Xem tat ca comment
 GET http://localhost:8080/api/comments

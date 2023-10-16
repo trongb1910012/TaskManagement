@@ -55,8 +55,8 @@ const ProjectTable = () => {
   };
   const handleDelete = (projectId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: `You definitely want to delete ${projectId.title} project`,
+      text: "Once deleted, all boards and tasks will be deleted",
       icon: "warning",
       buttons: true,
       dangerMode: true,

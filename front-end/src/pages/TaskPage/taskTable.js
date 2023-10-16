@@ -57,8 +57,8 @@ const ProjectList = () => {
   }, []);
   const handleDelete = (projectId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: `You definitely want to delete ${projectId.title} task`,
+      text: "Once deleted, you will not be able to restore this report",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -67,7 +67,7 @@ const ProjectList = () => {
         await axiosClient.delete(`/tasks/`, {
           data: { taskIds: projectId._id },
         });
-        swal(`${projectId.title.toUpperCase()} đã được xóa`, {
+        swal(`${projectId.title.toUpperCase()} has been deleted`, {
           icon: "success",
         });
         await fetchData();

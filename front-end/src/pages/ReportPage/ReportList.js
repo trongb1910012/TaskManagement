@@ -149,7 +149,7 @@ export const ReportsList = () => {
               <FontAwesomeIcon icon={faTrash} />
             </IconButton>
             <Link to={`/tasking/report/detail/${params.data._id}`}>
-              <IconButton variant="outlined" color="error">
+              <IconButton variant="outlined">
                 <FontAwesomeIcon icon={faEye} />
               </IconButton>
             </Link>
@@ -174,6 +174,11 @@ export const ReportsList = () => {
             >
               <FontAwesomeIcon icon={faX} />
             </IconButton>
+            <Link to={`/tasking/report/detail/${params.data._id}`}>
+              <IconButton variant="outlined">
+                <FontAwesomeIcon icon={faEye} />
+              </IconButton>
+            </Link>
           </>
         )}
       </div>

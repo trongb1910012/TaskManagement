@@ -14,6 +14,15 @@ module.exports = (mongoose) => {
       comment_text: {
         type: String,
       },
+      new_dueDate: {
+        type: Date,
+        required: true,
+      },
+      status: {
+        type: String,
+        enum: ["open", "resolved", "rejected"],
+        default: "open",
+      },
     },
     { timestamps: true }
   );

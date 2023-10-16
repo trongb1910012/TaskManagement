@@ -22,22 +22,12 @@ import { LicenseManager } from "ag-grid-enterprise";
 import { Link } from "react-router-dom";
 LicenseManager.setLicenseKey("AG-047238");
 
-var checkboxSelection = function (params) {
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
-
-var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
-
 const ProjectMangerTasks = () => {
   const [projects, setProjects] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [rowDataForForm, setRowDataForForm] = useState(null);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [isAnyCheckboxSelected, setIsAnyCheckboxSelected] = useState(false);
+
   const updateTasksStatus = async () => {
     await axiosClient.put(`/tasks`);
   };
@@ -59,8 +49,8 @@ const ProjectMangerTasks = () => {
   }, []);
   const handleDelete = (projectId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: `You definitely want to delete ${projectId.title} task`,
+      text: "Once deleted, you will not be able to restore this report",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -69,7 +59,7 @@ const ProjectMangerTasks = () => {
         await axiosClient.delete(`/tasks/`, {
           data: { taskIds: projectId._id },
         });
-        swal(`${projectId.title.toUpperCase()} đã được xóa`, {
+        swal(`${projectId.title.toUpperCase()} has been deleted`, {
           icon: "success",
         });
         await fetchData();
@@ -78,26 +68,7 @@ const ProjectMangerTasks = () => {
       }
     });
   };
-  const handleDeleteSelectedTasks = () => {
-    swal({
-      title: "Bạn chắc chắn muốn xóa những công việc đã chọn?",
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then(async (willDelete) => {
-      if (willDelete) {
-        const selectedTaskIds = selectedRows.map((row) => row._id);
-        await axiosClient.delete("/tasks/", {
-          data: { taskIds: selectedTaskIds },
-        });
-        swal("Các công việc đã được xóa thành công!", {
-          icon: "success",
-        });
-        await fetchData();
-      }
-    });
-  };
+
   const handleCompletedTask = (task) => {
     swal({
       title: `Confirm the task ${task.title} is completed`,
@@ -116,10 +87,6 @@ const ProjectMangerTasks = () => {
         return;
       }
     });
-  };
-  const handleCheckboxChange = (selectedRows) => {
-    setSelectedRows(selectedRows);
-    setIsAnyCheckboxSelected(selectedRows.length > 0);
   };
   const openCreateForm = () => {
     setIsFormOpen(false);
@@ -188,8 +155,6 @@ const ProjectMangerTasks = () => {
       field: "title",
       sortable: true,
       filter: true,
-      checkboxSelection: checkboxSelection,
-      headerCheckboxSelection: headerCheckboxSelection,
     },
     {
       headerName: "Project",
@@ -287,19 +252,9 @@ const ProjectMangerTasks = () => {
           <h1>My project's tasks</h1>{" "}
         </Grid>
         <Grid item>
-          {isAnyCheckboxSelected ? (
-            <IconButton
-              sx={{ color: "red" }}
-              onClick={handleDeleteSelectedTasks}
-              variant="outlined"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-          ) : (
-            <IconButton onClick={() => openCreateForm()} variant="outlined">
-              <FontAwesomeIcon icon={faAdd} />
-            </IconButton>
-          )}
+          <IconButton onClick={() => openCreateForm()} variant="outlined">
+            <FontAwesomeIcon icon={faAdd} />
+          </IconButton>
         </Grid>
       </Grid>
       <div
@@ -316,10 +271,6 @@ const ProjectMangerTasks = () => {
           paginationPageSize={10}
           rowGroupPanelShow={"always"}
           suppressRowClickSelection={true}
-          rowSelection={"multiple"}
-          onSelectionChanged={(event) =>
-            handleCheckboxChange(event.api.getSelectedRows())
-          }
         ></AgGridReact>
       </div>
       {isCreateFormOpen && (

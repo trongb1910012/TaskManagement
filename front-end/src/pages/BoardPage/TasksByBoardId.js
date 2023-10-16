@@ -16,13 +16,7 @@ import { IconButton, Grid } from "@mui/material";
 import swal from "sweetalert";
 import AddTasksForm from "./AddTaskByBoardForm";
 import EditTaskForm from "./EditTaskByBoardForm";
-var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
-var checkboxSelection = function (params) {
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
+
 const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
   const [boards, setBoards] = useState([]);
   const [rowDataForForm, setRowDataForForm] = useState(null);
@@ -187,8 +181,6 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
       field: "title",
       sortable: true,
       filter: true,
-      checkboxSelection: checkboxSelection,
-      headerCheckboxSelection: headerCheckboxSelection,
     },
     {
       headerName: "Description",
