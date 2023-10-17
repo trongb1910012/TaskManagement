@@ -8,5 +8,7 @@ module.exports = (app) => {
   router.get("/xgh", comments.get_CommentsByUser);
   router.get("/xgh/pm", comments.get_CommentsByProject);
   router.get("/:task_id", comments.getComment_ByTaskId);
+  router.delete("/:id", comments.deleteComment);
+  router.patch("/reject/:id", comments.rejectComment);
   app.use("/api/comments", router);
 };

@@ -9,6 +9,7 @@ import PieChart from "../PieChart/PieChart";
 import ProjectPieChart from "../PieChart/ProjectPieChart";
 import ProjectMangerTasks from "../TaskPage/PmTaskTable";
 import { PMStat } from "./PMStat";
+import { PMExtendRequestList } from "../Extend/PMExtendList";
 // import TableComponent from "../GanttTask/GanttTask";
 // import MyCalendar from "../Calendar/Calendar";
 const cx = classNames.bind(styles);
@@ -39,6 +40,7 @@ function HomePage() {
               <Grid item xs={12} md={12} xl={12}>
                 <PMStat />
               </Grid>
+
               <Grid item xs={6} md={3} xl={3}>
                 <Button
                   variant="contained"
@@ -66,6 +68,9 @@ function HomePage() {
                   </Grid>
                 </>
               )}
+              <Grid item xs={12} md={12} xl={12}>
+                <PMExtendRequestList />
+              </Grid>
             </>
           )}
           {role === "admin" && (

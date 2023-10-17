@@ -3,6 +3,7 @@ const handle = require("../helpers/promise");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 const db = require("../models");
+const { response } = require("express");
 const Task = db.Task;
 const Project = db.Project;
 const Board = db.Board;
@@ -450,13 +451,18 @@ exports.getTaskById = async (req, res) => {
     }
     const board = await Board.findById(task.board._id);
     const project = await Project.findById(board.project._id);
-
-    // Trả về kết quả
-    return res.json({
-      task,
+    const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
+    const formattedTask = {
+      ...task._doc,
+      dueDate: formattedDate,
+    };
+    const response = {
+      task: formattedTask,
       boardName: board.board_name,
       projectName: project.title,
-    });
+    };
+
+    return res.json(response);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

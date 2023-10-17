@@ -8,6 +8,7 @@ import "./TaskTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClipboardCheck,
+  faClock,
   faPenToSquare,
   faTasks,
   faTrash,
@@ -110,11 +111,19 @@ const AssignedTaskTable = () => {
       return (
         <>
           {params.data.status === "not started" ? null : (
-            <Link to={`/tasking/report/${params.data._id}`}>
-              <IconButton variant="outlined" color="primary">
-                <FontAwesomeIcon icon={faTasks} />
-              </IconButton>
-            </Link>
+            <>
+              {" "}
+              <Link to={`/tasking/report/${params.data._id}`}>
+                <IconButton variant="outlined" color="primary">
+                  <FontAwesomeIcon icon={faTasks} />
+                </IconButton>
+              </Link>{" "}
+              <Link to={`/tasking/extend/${params.data._id}`}>
+                <IconButton variant="outlined" color="secondary">
+                  <FontAwesomeIcon icon={faClock} />
+                </IconButton>
+              </Link>
+            </>
           )}
 
           <IconButton
