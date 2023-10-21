@@ -27,6 +27,7 @@ const AddUserForm = ({ onBoardCreated, closeForm }) => {
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
       closeForm();
+      console.log(formData);
       // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
       setFormData({
         fullname: "",

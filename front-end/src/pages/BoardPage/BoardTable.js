@@ -17,10 +17,7 @@ import cogoToast from "cogo-toast";
 import CreateBoardForm from "./CreateBoardForm";
 import TasksByBoardTable from "./TasksByBoardId";
 import { Link } from "react-router-dom";
-var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
+
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
@@ -100,6 +97,7 @@ const ProjectTable = () => {
       <div>
         <>
           <IconButton
+            style={params.data.status !== "open" ? { display: "none" } : {}}
             onClick={() => handleEdit(params.data)}
             variant="outlined"
             color="primary"
@@ -127,7 +125,10 @@ const ProjectTable = () => {
             <FontAwesomeIcon icon={faBriefcase} />
           </IconButton>
           <Link to={`/tasking/project/${params.data.project}`}>
-            <IconButton variant="outlined">
+            <IconButton
+              variant="outlined"
+              style={role !== "board manager" ? { display: "none" } : {}}
+            >
               <FontAwesomeIcon icon={faEye} />
             </IconButton>
           </Link>
@@ -141,7 +142,6 @@ const ProjectTable = () => {
       field: "board_name",
       sortable: true,
       filter: true,
-      headerCheckboxSelection: headerCheckboxSelection,
     },
     {
       headerName: "Project",

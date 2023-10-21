@@ -8,7 +8,8 @@ import { AdminStat } from "./AdminStat";
 import PieChart from "../PieChart/PieChart";
 import ProjectPieChart from "../PieChart/ProjectPieChart";
 import ProjectMangerTasks from "../TaskPage/PmTaskTable";
-import { PMStat } from "./PMStat";
+import BMTasks from "../TaskPage/BmTaskTable";
+import { PMStat, BMStat } from "./PMStat";
 import { PMExtendRequestList } from "../Extend/PMExtendList";
 // import TableComponent from "../GanttTask/GanttTask";
 // import MyCalendar from "../Calendar/Calendar";
@@ -73,14 +74,17 @@ function HomePage() {
               </Grid>
             </>
           )}
-          {role === "admin" && (
+          {/* {role === "admin" && (
             <Grid item xs={6} md={6} xl={3}>
               <PieChart />
             </Grid>
-          )}
+          )} */}
           {role === "board manager" && (
-            <Grid item xs={6} md={6} xl={3}>
-              <></>
+            <Grid item xs={6} md={6} xl={12}>
+              <>
+                <BMStat></BMStat>
+                <BMTasks></BMTasks>
+              </>
             </Grid>
           )}
         </Grid>

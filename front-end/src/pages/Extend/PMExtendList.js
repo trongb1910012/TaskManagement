@@ -27,7 +27,6 @@ export const PMExtendRequestList = () => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(projects);
   const handleDelete = (projectId) => {
     swal({
       title: `You definitely want to delete this extend request`,
@@ -49,15 +48,15 @@ export const PMExtendRequestList = () => {
   };
   const handleResolve = (projectId) => {
     swal({
-      title: `Resolve ${projectId.title} report`,
-      text: "Once resolved, you will not be able to restore this report status!",
+      title: `Resolve this request`,
+      text: "Once resolved, you will not be able to restore this request status!",
       icon: "info",
       buttons: true,
       dangerMode: false,
     }).then(async (willDelete) => {
       if (willDelete) {
-        await axiosClient.patch(`/reports/resolve/${projectId._id}`);
-        swal(`${projectId.title.toUpperCase()} has been resolved`, {
+        await axiosClient.patch(`/comments/resolve/${projectId.id}`);
+        swal(`This extend request has been resolved`, {
           icon: "success",
         });
         await fetchData();

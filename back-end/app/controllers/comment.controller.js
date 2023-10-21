@@ -190,8 +190,18 @@ exports.get_CommentsByProject = async (req, res, next) => {
         },
       },
     ]);
+    // Sort comments in JavaScript based on "status"
+    const sortedComments = comments.sort((a, b) => {
+      if (a.status === "open" && b.status !== "open") {
+        return -1; // a comes before b
+      } else if (a.status !== "open" && b.status === "open") {
+        return 1; // a comes after b
+      } else {
+        return 0; // a and b retain their relative order
+      }
+    });
 
-    return res.status(200).json(comments);
+    return res.status(200).json(sortedComments);
   } catch (error) {
     console.error(error);
     return next(
@@ -221,6 +231,7 @@ exports.deleteComment = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+//Tu choi xin gia han
 exports.rejectComment = async (req, res) => {
   try {
     const commentId = req.params.id;
@@ -243,6 +254,50 @@ exports.rejectComment = async (req, res) => {
       comment.status = "rejected";
       await comment.save();
       return res.status(200).json({ message: "Comment rejected successfully" });
+    }
+
+    // If the comment is neither "open" nor "resolved", return a 400 error
+    return res.status(400).json({ message: "Invalid comment status" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+//Giai quyet xin gia han
+exports.resolveComment = async (req, res) => {
+  try {
+    const commentId = req.params.id;
+
+    // Find the comment by ID
+    const comment = await Comment.findById(commentId);
+
+    // If the comment doesn't exist, return a 404 error
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    // If the comment is already resolved, return a 400 error
+    if (comment.status === "resolved") {
+      return res.status(400).json({ message: "Comment is already resolved" });
+    }
+    if (comment.status === "rejected") {
+      return res.status(400).json({ message: "Comment is already rejected" });
+    }
+
+    // Update the comment status to "resolved" if it is currently "open"
+    if (comment.status === "open") {
+      comment.status = "resolved";
+      await comment.save();
+
+      // Update the dueDate of the corresponding task
+      const task = await Task.findById(comment.task_id);
+      if (!task) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+      task.dueDate = comment.new_dueDate;
+      await task.save();
+
+      return res.status(200).json({ message: "Comment resolved successfully" });
     }
 
     // If the comment is neither "open" nor "resolved", return a 400 error

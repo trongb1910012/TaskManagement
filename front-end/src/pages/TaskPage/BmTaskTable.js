@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -6,28 +7,23 @@ import axiosClient from "../../api/api";
 import "./TaskTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faAdd,
+  faClock,
   faPenToSquare,
-  faTrash,
   faTasks,
-  faCheck,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
 import AddTasksForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
-import { Grid } from "@mui/material";
-import "ag-grid-enterprise";
-import { LicenseManager } from "ag-grid-enterprise";
-import { Link } from "react-router-dom";
-LicenseManager.setLicenseKey("AG-047238");
 
-const ProjectMangerTasks = () => {
+const BMTasks = () => {
   const [projects, setProjects] = useState([]);
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [rowDataForForm, setRowDataForForm] = useState(null);
-
+  const [userinfo, setUserinfo] = useState([]);
   const updateTasksStatus = async () => {
     await axiosClient.put(`/tasks`);
   };
@@ -35,7 +31,7 @@ const ProjectMangerTasks = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.get(
-        `/tasks/ownerTasks?token=${token}`
+        `/tasks/leaderTasks?token=${token}`
       );
       setProjects(response.data.tasks);
     } catch (error) {
@@ -43,14 +39,24 @@ const ProjectMangerTasks = () => {
     }
   };
 
+  const getUserInfo = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axiosClient.get(`/users/userinfo?token=${token}`);
+      setUserinfo(response.data.userinfo);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
+    getUserInfo();
     updateTasksStatus();
     fetchData();
   }, []);
   const handleDelete = (projectId) => {
     swal({
-      title: `You definitely want to delete ${projectId.title} task`,
-      text: "Once deleted, you will not be able to restore this report",
+      title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
+      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -59,7 +65,7 @@ const ProjectMangerTasks = () => {
         await axiosClient.delete(`/tasks/`, {
           data: { taskIds: projectId._id },
         });
-        swal(`${projectId.title.toUpperCase()} has been deleted`, {
+        swal(`${projectId.title.toUpperCase()} đã được xóa`, {
           icon: "success",
         });
         await fetchData();
@@ -69,36 +75,10 @@ const ProjectMangerTasks = () => {
     });
   };
 
-  const handleCompletedTask = (task) => {
-    swal({
-      title: `Confirm the task ${task.title} is completed`,
-      text: "Once confirmed, you will not be able to restore this status",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then(async (willAccept) => {
-      if (willAccept) {
-        await axiosClient.patch(`/tasks/complete/${task._id}`);
-        swal(`${task.title.toUpperCase()} has been confirmed as completed`, {
-          icon: "success",
-        });
-        await fetchData();
-      } else {
-        return;
-      }
-    });
-  };
-  const openCreateForm = () => {
-    setIsFormOpen(false);
-    setIsCreateFormOpen(false);
-    setIsCreateFormOpen(true);
-  };
   const closeCreateForm = () => {
     setIsCreateFormOpen(false);
   };
   const openEditForm = (rowData) => {
-    setIsCreateFormOpen(false);
-    setIsFormOpen(false);
     setIsFormOpen(true);
     setRowDataForForm(rowData);
   };
@@ -109,13 +89,32 @@ const ProjectMangerTasks = () => {
     if (params.columnApi.getRowGroupColumns().length > 0) {
       return null;
     }
+    // Kiểm tra id người dùng và id creator
+    if (userinfo._id !== params.data.creator._id) {
+      return (
+        <>
+          {params.data.status === "not started" ? null : (
+            <>
+              {" "}
+              <Link to={`/tasking/extend/${params.data._id}`}>
+                <IconButton variant="outlined" color="secondary">
+                  <FontAwesomeIcon icon={faClock} />
+                </IconButton>
+              </Link>
+            </>
+          )}
 
+          <Link to={`/tasking/report/${params.data._id}`}>
+            <IconButton variant="outlined" color="primary">
+              <FontAwesomeIcon icon={faTasks} />
+            </IconButton>
+          </Link>
+        </>
+      );
+    }
     return (
       <div>
         <IconButton
-          style={
-            params.data.status !== "not started" ? { display: "none" } : {}
-          }
           onClick={() => openEditForm(params.data)}
           variant="outlined"
           color="primary"
@@ -123,31 +122,17 @@ const ProjectMangerTasks = () => {
           <FontAwesomeIcon icon={faPenToSquare} />
         </IconButton>
         <IconButton
-          style={
-            params.data.status !== "not started" ? { display: "none" } : {}
-          }
           onClick={() => handleDelete(params.data)}
           variant="outlined"
           color="error"
         >
           <FontAwesomeIcon icon={faTrash} />
         </IconButton>
-
         <Link to={`/tasking/report/${params.data._id}`}>
           <IconButton variant="outlined" color="primary">
             <FontAwesomeIcon icon={faTasks} />
           </IconButton>
         </Link>
-        <IconButton
-          style={
-            params.data.status !== "in progress" ? { display: "none" } : {}
-          }
-          variant="outlined"
-          color="primary"
-          onClick={() => handleCompletedTask(params.data)}
-        >
-          <FontAwesomeIcon icon={faCheck} />
-        </IconButton>
       </div>
     );
   };
@@ -155,6 +140,18 @@ const ProjectMangerTasks = () => {
     {
       headerName: "Title",
       field: "title",
+      sortable: true,
+      filter: true,
+    },
+    {
+      headerName: "Description",
+      field: "description",
+      sortable: true,
+      filter: true,
+    },
+    {
+      headerName: "Board",
+      field: "board.board_name",
       sortable: true,
       filter: true,
     },
@@ -170,7 +167,18 @@ const ProjectMangerTasks = () => {
       sortable: true,
       filter: true,
     },
-
+    {
+      headerName: "Creator",
+      field: "creator.fullname",
+      sortable: true,
+      filter: true,
+      valueGetter: function (params) {
+        if (params.data && params.data.creator) {
+          return params.data.creator.fullname;
+        }
+        return "";
+      },
+    },
     {
       headerName: "Status",
       field: "status",
@@ -202,32 +210,31 @@ const ProjectMangerTasks = () => {
         if (params.value === "missed") {
           return {
             color: "white",
-            backgroundColor: "#C70039",
+            backgroundColor: "red",
             fontWeight: "500",
           };
         }
         return null;
       },
     },
-    {
-      headerName: "Members",
-      field: "members",
-      sortable: true,
-      filter: true,
-      valueGetter: function (params) {
-        if (params.data && params.data.members) {
-          return params.data.members.map((member) => member.fullname);
-        }
-        return "";
-      },
-    },
+    // {
+    //   headerName: "Members",
+    //   field: "members",
+    //   sortable: true,
+    //   filter: true,
+    //   valueGetter: function (params) {
+    //     if (params.data && params.data.members) {
+    //       return params.data.members.map((member) => member.fullname);
+    //     }
+    //     return "";
+    //   },
+    // },
     {
       headerName: "Action",
       field: "action",
       sortable: false,
       filter: false,
       editable: false,
-      rowGroup: false,
       cellRenderer: actionCellRenderer,
     },
   ];
@@ -237,9 +244,9 @@ const ProjectMangerTasks = () => {
   // };
   const defaultColDef = useMemo(() => {
     return {
+      enableRowGroup: true,
       enablePivot: true,
       enableValue: true,
-      enableRowGroup: true,
       sortable: true,
       resizable: true,
       filter: true,
@@ -249,19 +256,14 @@ const ProjectMangerTasks = () => {
   }, []);
   return (
     <div>
-      <Grid container justifyContent="space-between">
+      <Grid container justifyContent="flex-start">
         <Grid item>
-          <h1>My project's tasks</h1>{" "}
-        </Grid>
-        <Grid item>
-          <IconButton onClick={() => openCreateForm()} variant="outlined">
-            <FontAwesomeIcon icon={faAdd} />
-          </IconButton>
+          <h1>My Board's Tasks</h1>
         </Grid>
       </Grid>
       <div
         className="ag-theme-alpine"
-        style={{ height: "350px", width: "100%", borderRadius: "10px" }}
+        style={{ height: "350px", width: "100%" }}
       >
         <AgGridReact
           columnDefs={columnDefs}
@@ -270,23 +272,31 @@ const ProjectMangerTasks = () => {
           onGridReady={fetchData}
           pagination={true}
           pivotPanelShow={"always"}
-          paginationPageSize={10}
           rowGroupPanelShow={"always"}
-          suppressRowClickSelection={true}
+          paginationPageSize={5}
         ></AgGridReact>
       </div>
-      {isCreateFormOpen && (
-        <AddTasksForm onBoardCreated={fetchData} closeForm={closeCreateForm} />
-      )}
-      {isFormOpen && (
-        <EditTaskForm
-          onBoardCreated={fetchData}
-          rowData={rowDataForForm}
-          closeForm={closeForm}
-        />
-      )}
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          {isCreateFormOpen && (
+            <AddTasksForm
+              onBoardCreated={fetchData}
+              closeForm={closeCreateForm}
+            />
+          )}
+        </Grid>
+        <Grid item xs={6}>
+          {isFormOpen && (
+            <EditTaskForm
+              onBoardCreated={fetchData}
+              rowData={rowDataForForm}
+              closeForm={closeForm}
+            />
+          )}
+        </Grid>
+      </Grid>
     </div>
   );
 };
 
-export default ProjectMangerTasks;
+export default BMTasks;

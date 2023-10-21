@@ -4,6 +4,7 @@ import styles from "./DetailProjectPage.module.scss";
 import { useParams } from "react-router-dom";
 import DetailTable from "./DetailTable";
 import { ProjectInfo } from "./DetailInfoProject";
+import BackButton from "../../components/BackButton";
 const cx = classNames.bind(styles);
 const DetailProjectPage = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ const DetailProjectPage = () => {
   }, [id]);
   return (
     <div className={cx("wrapper")}>
+      <BackButton></BackButton>
       <ProjectInfo></ProjectInfo>
       <DetailTable id={chiTietKeHoach.id}></DetailTable>
     </div>

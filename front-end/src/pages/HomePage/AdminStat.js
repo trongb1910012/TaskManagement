@@ -20,18 +20,6 @@ export function AdminStat() {
   return (
     <div className={cx("stats")}>
       <button className={cx("stat")}>
-        <span className={cx("stat-label")}>Tasks: </span>
-        <span className={cx("count")}>{stat.tasksCount}</span>
-      </button>
-      <button className={cx("stat")}>
-        <span className={cx("stat-label")}>In progress: </span>
-        <span className={cx("count")}>{stat.inProgressTasks}</span>
-      </button>
-      <button className={cx("stat")}>
-        <span className={cx("stat-label")}>Reports: </span>
-        <span className={cx("count")}>{stat.reportsCount}</span>
-      </button>
-      <button className={cx("stat")}>
         <span className={cx("stat-label")}>Users: </span>
         <span className={cx("count")}>{stat.userCount}</span>
       </button>

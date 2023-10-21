@@ -12,6 +12,7 @@ import axiosClient from "../../api/api";
 import classNames from "classnames/bind";
 import styles from "../HomePage/homepage.module.scss";
 import swal from "sweetalert";
+import BackButton from "../../components/BackButton";
 const cx = classNames.bind(styles);
 export const ReportDetail = () => {
   const [data, setData] = useState(null);
@@ -71,7 +72,7 @@ export const ReportDetail = () => {
 
   return (
     <div className={cx("wrapper")}>
-      {" "}
+      <BackButton />
       <Card
         sx={{
           border: "1px solid #30324e",

@@ -10,5 +10,6 @@ module.exports = (app) => {
   router.get("/:task_id", comments.getComment_ByTaskId);
   router.delete("/:id", comments.deleteComment);
   router.patch("/reject/:id", comments.rejectComment);
+  router.patch("/resolve/:id", comments.resolveComment);
   app.use("/api/comments", router);
 };

@@ -9,7 +9,9 @@ module.exports = (app) => {
   router.get("/chart", tasks.getTaskStatusCounts);
   router.get("/created", tasks.get_created_tasks);
   router.get("/ownerTasks", tasks.getProjectsBoardsTasks);
+  router.get("/leaderTasks", tasks.getBoardsTasks);
   router.get("/taskinfo", tasks.getTaskById);
+  router.get("/deadline", tasks.getTasksNearDeadline);
   router.get("/:id", tasks.get_CV_KeHoach);
   router.post("/", tasks.them_CongViec);
   router.post("/updateStatus", tasks.updateTaskStatus);

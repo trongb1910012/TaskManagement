@@ -18,6 +18,8 @@ import { AddReportForm } from "./ReportAddForm";
 import { TaskInfo } from "./TaskInfo";
 import classNames from "classnames/bind";
 import styles from "./ReportPage.module.scss";
+import BackButton from "../../components/BackButton";
+
 const cx = classNames.bind(styles);
 var checkboxSelection = function (params) {
   return params.columnApi.getRowGroupColumns().length === 0;
@@ -269,6 +271,7 @@ export const ReportsList = () => {
   }, []);
   return (
     <div className={cx("wrapper")}>
+      <BackButton />
       <TaskInfo />
       {shouldShowAddReportForm && <AddReportForm fetch={fetchData} />}
       <Grid container justifyContent="space-between">

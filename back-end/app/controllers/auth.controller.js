@@ -7,11 +7,13 @@ const db = require("../models");
 const User = db.User;
 
 exports.signup = async (req, res, next) => {
+  const defaultDateOfBirth = new Date(2000, 0, 1);
   const user = new User({
     username: req.body.username,
     email: req.body.email,
     fullname: req.body.fullname,
     password: bcrypt.hashSync(req.body.password, 8),
+    birthDay: req.body.birthDay || new Date(2000, 0, 1),
   });
 
   const [error] = await handle(user.save());

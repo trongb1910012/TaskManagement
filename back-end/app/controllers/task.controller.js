@@ -4,9 +4,11 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const db = require("../models");
 const { response } = require("express");
+const moment = require("moment");
 const Task = db.Task;
 const Project = db.Project;
 const Board = db.Board;
+const Report = db.Report;
 
 //them cong viec
 exports.them_CongViec1 = async (req, res, next) => {
@@ -752,5 +754,115 @@ exports.getProjectsBoardsTasks = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+  }
+};
+//Lấy tất cả các công việc trong nhóm công việc của BM
+exports.getBoardsTasks = async (req, res, next) => {
+  const token = req.query.token;
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const userId = decodedToken.id;
+
+    // Find all boards where the board leader is the logged-in user
+    const boards = await Board.find({ board_leader: userId });
+
+    // Extract board IDs
+    const boardIds = boards.map((board) => board._id);
+
+    // Find all tasks associated with the boards
+    const tasks = await Task.find({ board: { $in: boardIds } })
+      .populate({
+        path: "members",
+        select: "fullname",
+      })
+      .populate({
+        path: "board",
+        select: "board_name",
+      })
+      .populate({
+        path: "creator",
+        select: "fullname",
+      })
+      .populate({
+        path: "board",
+        select: "board_name",
+        populate: {
+          path: "project",
+          select: ["startDate", "endDate", "title"],
+        },
+      })
+      .sort({ "board.project._id": 1, status: -1, dueDate: 1 });
+    const formattedTasks = tasks.map((task) => {
+      const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
+      const formattedStartDate = new Date(task.board.project.startDate)
+        .toISOString()
+        .substr(0, 10);
+      const formattedEndDate = new Date(task.board.project.endDate)
+        .toISOString()
+        .substr(0, 10);
+      return {
+        ...task._doc,
+        dueDate: formattedDate,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      };
+    });
+    const inProgressTasks = formattedTasks.filter(
+      (task) => task.status === "in progress"
+    );
+    const taskIds = formattedTasks.map((task) => task._id);
+
+    // Count reports with task_id in taskIds
+    const reportCount = await Report.countDocuments({
+      task: { $in: taskIds },
+    });
+    const response = {
+      taskCount: formattedTasks.length,
+      inProgressTaskCount: inProgressTasks.length,
+      reportCount: reportCount,
+      tasks: formattedTasks,
+    };
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error(error);
+    return next(
+      new BadRequestError(500, "An error occurred while retrieving tasks")
+    );
+  }
+};
+//Lấy các công việc gần đến deadline
+exports.getTasksNearDeadline = async (req, res, next) => {
+  try {
+    const token = req.query.token;
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const decodedToken = jwt.verify(token, config.jwt.secret);
+    const memberId = decodedToken.id;
+    // Lấy ngày hiện tại
+    const currentDate = moment().startOf("day");
+
+    // Lấy ngày deadline trước 1 ngày
+    const deadlineDate = moment(currentDate).add(1, "day");
+
+    // Tìm các công việc gần đến deadline
+    const tasks = await Task.find({
+      dueDate: {
+        $gte: currentDate.toDate(),
+        $lt: deadlineDate.toDate(),
+      },
+      members: memberId,
+    });
+
+    return res.status(200).json(tasks);
+  } catch (error) {
+    console.error(error);
+    return next(
+      new Error("An error occurred while retrieving tasks near deadline")
+    );
   }
 };

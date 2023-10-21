@@ -18,6 +18,7 @@ import { Grid } from "@mui/material";
 import classNames from "classnames/bind";
 import styles from "../ReportPage/ReportPage.module.scss";
 import { ExtendRequestForm } from "../Extend/AddExtendForm";
+import BackButton from "../../components/BackButton";
 const cx = classNames.bind(styles);
 
 export const ExtendRequestList = () => {
@@ -253,6 +254,7 @@ export const ExtendRequestList = () => {
   }, []);
   return (
     <div className={cx("wrapper")}>
+      <BackButton></BackButton>
       <Grid container justifyContent="space-between">
         <Grid item xl={12}>
           {" "}
