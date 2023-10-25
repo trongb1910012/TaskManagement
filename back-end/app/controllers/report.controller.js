@@ -3,6 +3,7 @@ const handle = require("../helpers/promise");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 const db = require("../models");
+const path = require("path");
 const Report = db.Report;
 const Board = db.Board;
 const Task = db.Task;
@@ -107,7 +108,8 @@ exports.addReport = async (req, res) => {
       description,
       author,
       project,
-      task: taskId, // Assign taskId to the task field
+      task: taskId,
+      file: req.file.filename,
     });
 
     // Lưu báo cáo vào cơ sở dữ liệu
@@ -240,4 +242,18 @@ exports.getReportById = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
+};
+//Download file bao cao
+const uploadPath = path.join("uploads");
+
+exports.downloadFile = (req, res) => {
+  const filename = req.params.filename;
+  const file = path.join(uploadPath, filename);
+
+  res.download(file, (err) => {
+    if (err) {
+      console.error("Lỗi tải file:", err);
+      res.status(500).send("Lỗi tải file");
+    }
+  });
 };

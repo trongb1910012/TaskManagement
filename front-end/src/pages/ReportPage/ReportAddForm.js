@@ -14,20 +14,35 @@ export const AddReportForm = ({ fetch }) => {
     title: "",
     description: "",
     taskId: id,
+    file: null, // Initialize file as null
   });
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axiosClient.post(`/reports?token=${token}`, formData);
+      const form = new FormData();
+      form.append("title", formData.title);
+      form.append("description", formData.description);
+      form.append("taskId", formData.taskId);
+      form.append("file", formData.file); // Append the file to the form data
+
+      await axiosClient.post(`/reports?token=${token}`, form, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Set the content type as multipart/form-data
+        },
+      });
+
       cogoToast.success("Report add successful !!!", {
         position: "bottom-right",
       });
+
       fetch();
+
       setFormData({
         title: "",
         description: "",
         taskId: id,
+        file: null, // Reset the file property in the form data state
       });
     } catch (error) {
       cogoToast.error("Report add failed !!!", {
@@ -40,6 +55,13 @@ export const AddReportForm = ({ fetch }) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
+    }));
+  };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]; // Get the first selected file
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      file: file, // Update the file property in the form data state
     }));
   };
   return (
@@ -74,6 +96,17 @@ export const AddReportForm = ({ fetch }) => {
             name="description"
             value={formData.description}
             onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label className={cx("pop-form-label")}>File:</label>
+          <input
+            className={cx("pop-form-input")}
+            type="file"
+            id="file"
+            name="file"
+            onChange={handleFileChange}
             required
           />
         </div>

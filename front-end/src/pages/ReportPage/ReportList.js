@@ -11,7 +11,7 @@ import {
   faTrash,
   faX,
 } from "@fortawesome/free-solid-svg-icons";
-import { IconButton } from "@mui/material";
+import { IconButton, Button } from "@mui/material";
 import swal from "sweetalert";
 import { Grid } from "@mui/material";
 import { AddReportForm } from "./ReportAddForm";
@@ -132,7 +132,40 @@ export const ReportsList = () => {
       }
     });
   };
+  const handleDownload = async (params) => {
+    const fileTitle = params.data.file; // Lấy tên file từ dữ liệu Ag Grid
 
+    try {
+      // Gửi yêu cầu tải xuống file bằng cách sử dụng ID của file (nếu có)
+      const response = await axiosClient.get(`/reports/download/${fileTitle}`, {
+        responseType: "blob", // Yêu cầu dữ liệu trả về dạng blob
+      });
+
+      // Xử lý dữ liệu blob và tạo URL tải xuống
+      const file = new Blob([response.data]);
+      const fileURL = URL.createObjectURL(file);
+
+      // Tạo một thẻ a ẩn để tải xuống file
+      const downloadLink = document.createElement("a");
+      downloadLink.href = fileURL;
+      downloadLink.download = fileTitle;
+      downloadLink.click();
+
+      // Giải phóng URL tải xuống
+      URL.revokeObjectURL(fileURL);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
+  const reportFileRenderer = (params) => {
+    return (
+      <div>
+        <Button onClick={() => handleDownload(params)}>
+          {params.data.file}
+        </Button>
+      </div>
+    );
+  };
   const actionCellRenderer = (params) => {
     if (params.columnApi.getRowGroupColumns().length > 0) {
       return null;
@@ -212,6 +245,17 @@ export const ReportsList = () => {
       field: "author.fullname",
       sortable: true,
       filter: true,
+    },
+    {
+      headerName: "Attached File",
+      cellRenderer: reportFileRenderer,
+      sortable: true,
+      filter: true,
+      cellStyle: {
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+      },
     },
     {
       headerName: "Status",

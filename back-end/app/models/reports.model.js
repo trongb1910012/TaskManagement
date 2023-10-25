@@ -36,6 +36,9 @@ module.exports = (mongoose) => {
         enum: ["open", "resolved", "rejected"],
         default: "open",
       },
+      file: {
+        type: String,
+      },
     },
     { timestamps: true }
   );
