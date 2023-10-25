@@ -42,7 +42,9 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
       await axiosClient.put(`/boards/${_id}?token=${token}`, requestBody);
 
       console.log(requestBody); // Xử lý phản hồi theo ý muốn
-      cogoToast.success("Cập nhật dự án thành công");
+      cogoToast.success("Update project successfully", {
+        position: "bottom-right",
+      });
       fetchData(); // Cập nhật dữ liệu sau khi chỉnh sửa thành công
     } catch (error) {
       console.error(error); // Xử lý lỗi một cách phù hợp

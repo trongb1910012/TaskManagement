@@ -24,7 +24,9 @@ const EditProjectForm = ({ onBoardCreated, rowData, closeForm }) => {
         `/projects/${rowData._id}?token=${token}`,
         formData
       );
-      cogoToast.success("Thêm dự thành công");
+      cogoToast.success("Update project successfully", {
+        position: "bottom-right",
+      });
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
@@ -38,7 +40,9 @@ const EditProjectForm = ({ onBoardCreated, rowData, closeForm }) => {
         status: "",
       });
     } catch (error) {
-      cogoToast.error("Cần điền các thông tin trống"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Add project fail", {
+        position: "bottom-right",
+      }); // Xử lý lỗi một cách phù hợp
     }
   };
 

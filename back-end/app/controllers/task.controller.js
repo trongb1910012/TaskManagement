@@ -74,6 +74,17 @@ exports.them_CongViec = async (req, res, next) => {
         )
       );
     }
+    if (
+      project.startDate &&
+      project.startDate.toISOString().split("T")[0] > dueDate
+    ) {
+      return next(
+        new BadRequestError(
+          400,
+          "Due date cannot be before the project start date"
+        )
+      );
+    }
     // Create a new task document with the task data
     const task = new Task({
       title,

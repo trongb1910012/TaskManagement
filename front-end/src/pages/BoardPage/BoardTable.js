@@ -55,7 +55,9 @@ const ProjectTable = () => {
       await axiosClient.put(`/boards/${_id}?token=${token}`, requestBody);
 
       console.log(requestBody); // Xử lý phản hồi theo ý muốn
-      cogoToast.success("Board updated successfully");
+      cogoToast.success("Board updated successfully", {
+        position: "bottom-right",
+      });
       fetchData(); // Cập nhật dữ liệu sau khi chỉnh sửa thành công
     } catch (error) {
       console.error(error); // Xử lý lỗi một cách phù hợp
@@ -185,26 +187,6 @@ const ProjectTable = () => {
       cellRenderer: actionCellRenderer,
     },
   ];
-
-  // const autoGroupColumnDef = useMemo(() => {
-  //   return {
-  //     headerName: "Group",
-  //     minWidth: 170,
-  //     field: "Title",
-  //     valueGetter: (params) => {
-  //       if (params.node.group) {
-  //         return params.node.key;
-  //       } else {
-  //         return params.data[params.colDef.field];
-  //       }
-  //     },
-  //     headerCheckboxSelection: true,
-  //     cellRenderer: "agGroupCellRenderer",
-  //     cellRendererParams: {
-  //       checkbox: true,
-  //     },
-  //   };
-  // }, []);
   const defaultColDef = useMemo(() => {
     return {
       editable: true,

@@ -54,8 +54,8 @@ const AssignedTaskTable = () => {
   }, []);
   const handleDelete = (projectId) => {
     swal({
-      title: `Bạn chắc chắn muốn xóa công việc ${projectId.title} này`,
-      text: "Sau khi xóa, bạn sẽ không thể khôi phục công việc này!",
+      title: `You definitely want to delete ${projectId.title} task`,
+      text: "Once deleted, you will not be able to restore this report",
       icon: "warning",
       buttons: true,
       dangerMode: true,
@@ -75,9 +75,9 @@ const AssignedTaskTable = () => {
   };
   const handleAcceptTask = (task) => {
     swal({
-      title: `Bạn sẽ nhận công việc ${task.title} này`,
-      text: "Sau khi nhận, bạn sẽ không thể khôi phục công việc này!",
-      icon: "warning",
+      title: `You will accept "${task.title}" task`,
+      text: "Once accepted, you will not be able to restore this task status",
+      icon: "info",
       buttons: true,
       dangerMode: true,
     }).then(async (willAccept) => {

@@ -159,7 +159,9 @@ const ProjectList = () => {
           <FontAwesomeIcon icon={faCheck} />
         </IconButton>
         <IconButton
-          style={params.data.status !== "missed" ? { display: "none" } : {}}
+          style={
+            params.data.status !== "not started" ? { display: "none" } : {}
+          }
           onClick={() => openEditForm(params.data)}
           variant="outlined"
           color="primary"

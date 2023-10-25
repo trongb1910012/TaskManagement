@@ -64,7 +64,7 @@ const ProjectTable = () => {
       if (willDelete) {
         const token = localStorage.getItem("token");
         await axiosClient.delete(`/projects/${projectId._id}?token=${token}`);
-        swal(`${projectId.title.toUpperCase()} đã được xóa`, {
+        swal(`${projectId.title.toUpperCase()} has been deleted`, {
           icon: "success",
         });
         await fetchData();
@@ -179,25 +179,6 @@ const ProjectTable = () => {
     },
   ];
 
-  const autoGroupColumnDef = useMemo(() => {
-    return {
-      headerName: "Group",
-      minWidth: 170,
-      field: "Title",
-      valueGetter: (params) => {
-        if (params.node.group) {
-          return params.node.key;
-        } else {
-          return params.data[params.colDef.title];
-        }
-      },
-      headerCheckboxSelection: true,
-      cellRenderer: "agGroupCellRenderer",
-      cellRendererParams: {
-        checkbox: true,
-      },
-    };
-  }, []);
   const defaultColDef = useMemo(() => {
     return {
       enableRowGroup: true,
@@ -234,7 +215,6 @@ const ProjectTable = () => {
           onGridReady={fetchData}
           pagination={true}
           pivotPanelShow={"always"}
-          autoGroupColumnDef={autoGroupColumnDef}
           rowGroupPanelShow={"always"}
           paginationPageSize={5}
         ></AgGridReact>

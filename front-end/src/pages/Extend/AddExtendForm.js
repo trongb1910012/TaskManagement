@@ -20,7 +20,9 @@ export const ExtendRequestForm = ({ fetch }) => {
     try {
       const token = localStorage.getItem("token");
       await axiosClient.post(`/comments?token=${token}`, formData);
-      cogoToast.success("Extend request add successfully !!!");
+      cogoToast.success("Extend request add successfully !!!", {
+        position: "bottom-right",
+      });
       fetch();
       setFormData({
         new_dueDate: "",
@@ -28,7 +30,12 @@ export const ExtendRequestForm = ({ fetch }) => {
         task_id: id,
       });
     } catch (error) {
-      cogoToast.error("New due date must be greater than the current due date");
+      cogoToast.error(
+        "New due date must be greater than the current due date",
+        {
+          position: "bottom-right",
+        }
+      );
     }
   };
   const handleChange = (e) => {
@@ -51,7 +58,7 @@ export const ExtendRequestForm = ({ fetch }) => {
       <form onSubmit={handleSubmit}>
         <div>
           <label className={cx("pop-form-label")}>Reason: </label>
-          <input
+          <textarea
             className={cx("pop-form-input")}
             type="text"
             id="comment_text"

@@ -60,12 +60,15 @@ export const AccountProfileDetails = () => {
     event.preventDefault();
 
     try {
-      const response = await axiosClient.put(`/users/${values.id}`, values);
-      console.log(response);
+      await axiosClient.put(`/users/${values.id}`, values);
       localStorage.setItem("fullname", values.fullname);
-      cogoToast.success("Information update successful !!!");
+      cogoToast.success("Information update successful !!!", {
+        position: "bottom-right",
+      });
     } catch (error) {
-      cogoToast.error("Information update failed !!!"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Information update failed !!!", {
+        position: "bottom-right",
+      }); // Xử lý lỗi một cách phù hợp
     }
   };
 

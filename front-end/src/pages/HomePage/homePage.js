@@ -16,15 +16,18 @@ import { PMExtendRequestList } from "../Extend/PMExtendList";
 const cx = classNames.bind(styles);
 function HomePage() {
   const [role, setRole] = useState("");
-
+  const [showTasks, setShowTasks] = useState(true);
+  const [showExtends, setShowExends] = useState(false);
   useEffect(() => {
     const userRole = localStorage.getItem("role");
     setRole(userRole);
   }, []);
-  const [showTasks, setShowTasks] = useState(true);
 
   const handleToggle = () => {
     setShowTasks(!showTasks);
+  };
+  const handleToggleExtendRequest = () => {
+    setShowExends(!showExtends);
   };
   return (
     <div className={cx("wrapper")}>
@@ -50,6 +53,13 @@ function HomePage() {
                 >
                   Chart
                 </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleToggleExtendRequest}
+                  style={{ backgroundColor: "#30324e", color: "#ffffff" }}
+                >
+                  Extend Requests
+                </Button>
               </Grid>
               {showTasks ? (
                 <>
@@ -69,9 +79,11 @@ function HomePage() {
                   </Grid>
                 </>
               )}
-              <Grid item xs={12} md={12} xl={12}>
-                <PMExtendRequestList />
-              </Grid>
+              {showExtends && (
+                <Grid item xs={12} md={12} xl={12}>
+                  <PMExtendRequestList />
+                </Grid>
+              )}
             </>
           )}
           {/* {role === "admin" && (

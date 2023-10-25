@@ -21,7 +21,9 @@ exports.get_all_user = async (req, res) => {
     const reports = await Report.find(condition);
     const users = await User.find({
       role: ["user", "project manager", "board manager"],
-    }).select("-password");
+    })
+      .select("-password")
+      .sort({ role: 1 });
     const users1 = await User.find({
       role: "user",
     }).select("-password");

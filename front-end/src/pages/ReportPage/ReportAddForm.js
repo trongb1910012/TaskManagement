@@ -20,7 +20,9 @@ export const AddReportForm = ({ fetch }) => {
     try {
       const token = localStorage.getItem("token");
       await axiosClient.post(`/reports?token=${token}`, formData);
-      cogoToast.success("Report add successful !!!");
+      cogoToast.success("Report add successful !!!", {
+        position: "bottom-right",
+      });
       fetch();
       setFormData({
         title: "",
@@ -28,7 +30,9 @@ export const AddReportForm = ({ fetch }) => {
         taskId: id,
       });
     } catch (error) {
-      cogoToast.error("Report update failed !!!");
+      cogoToast.error("Report add failed !!!", {
+        position: "bottom-right",
+      });
     }
   };
   const handleChange = (e) => {

@@ -27,7 +27,9 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
         formData
       );
       console.log(response);
-      cogoToast.success("Added board successfully");
+      cogoToast.success("Added board successfully", {
+        position: "bottom-right",
+      });
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
@@ -41,7 +43,9 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
         members: [],
       });
     } catch (error) {
-      cogoToast.error("An error occurred while adding board"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("An error occurred while adding board", {
+        position: "bottom-right",
+      }); // Xử lý lỗi một cách phù hợp
     }
   };
   useEffect(() => {

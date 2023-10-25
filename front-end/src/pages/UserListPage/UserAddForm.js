@@ -22,7 +22,9 @@ const AddUserForm = ({ onBoardCreated, closeForm }) => {
     try {
       await axiosClient.post(`/auth/signup `, formData);
 
-      cogoToast.success("Add user successfully !!");
+      cogoToast.success("Add user successfully !!", {
+        position: "bottom-right",
+      });
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
@@ -37,7 +39,9 @@ const AddUserForm = ({ onBoardCreated, closeForm }) => {
         password: "123123",
       });
     } catch (error) {
-      cogoToast.error("Add user failed !!"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Add user failed !!", {
+        position: "bottom-right",
+      }); // Xử lý lỗi một cách phù hợp
     }
   };
 

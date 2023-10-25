@@ -28,7 +28,9 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
         formData
       );
       console.log(response);
-      cogoToast.success("Thêm nhóm công việc thành công");
+      cogoToast.success("Add task successfully", {
+        position: "bottom-right",
+      });
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
@@ -42,7 +44,9 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
         members: [],
       });
     } catch (error) {
-      cogoToast.error("Cần điền các thông tin trống"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Add task fail", {
+        position: "bottom-right",
+      }); // Xử lý lỗi một cách phù hợp
     }
   };
   useEffect(() => {

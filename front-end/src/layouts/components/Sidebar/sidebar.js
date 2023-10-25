@@ -117,7 +117,7 @@ const menuConfig = {
   ],
 };
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const role = localStorage.getItem("role");
   const toggle = () => setIsOpen(!isOpen);
 

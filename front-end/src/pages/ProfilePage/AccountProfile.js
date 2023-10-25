@@ -8,6 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import axiosClient from "../../api/api";
+import BackButton from "../../components/BackButton";
 export const AccountProfile = () => {
   const [userData, setUserData] = useState(null);
 
@@ -33,6 +34,7 @@ export const AccountProfile = () => {
       }}
     >
       <CardContent>
+        <BackButton></BackButton>
         {userData ? (
           <Box
             sx={{

@@ -10,7 +10,7 @@ const UserListPage = () => {
   return (
     <div className={cx("wrapper")}>
       <Grid container spacing={2}>
-        <Grid item xl={12}>
+        <Grid item sm={12} md={12} xl={12}>
           <UserListTable />
         </Grid>
       </Grid>

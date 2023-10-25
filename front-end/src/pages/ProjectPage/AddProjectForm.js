@@ -25,7 +25,9 @@ const AddProjectForm = ({ onBoardCreated, closeForm }) => {
         formData
       );
       console.log(response);
-      cogoToast.success("Thêm dự án thành công");
+      cogoToast.success("Add project successfully", {
+        position: "bottom-right",
+      });
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
@@ -38,7 +40,9 @@ const AddProjectForm = ({ onBoardCreated, closeForm }) => {
         endDate: "",
       });
     } catch (error) {
-      cogoToast.error("Cần điền các thông tin trống"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Add project fail", {
+        position: "bottom-right",
+      }); // Xử lý lỗi một cách phù hợp
     }
   };
 

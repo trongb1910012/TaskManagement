@@ -25,7 +25,9 @@ const CreateBoardForm = ({ project, onBoardCreated, onClose }) => {
         {}
       );
       console.log(response);
-      cogoToast.success("Added board successfully");
+      cogoToast.success("Added board successfully", {
+        position: "bottom-right",
+      });
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
@@ -33,7 +35,9 @@ const CreateBoardForm = ({ project, onBoardCreated, onClose }) => {
       // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
       setFormData({ board_name: "", project: project, board_leader: "" });
     } catch (error) {
-      cogoToast.error("An error occurred while adding board"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("An error occurred while adding board", {
+        position: "bottom-right",
+      }); // Xử lý lỗi một cách phù hợp
     }
   };
   useEffect(() => {

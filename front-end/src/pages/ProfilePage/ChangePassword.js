@@ -51,14 +51,18 @@ export const ChangePassword = () => {
     try {
       await axiosClient.put(`/auth/${formData.userId}/password`, formData);
 
-      cogoToast.success("Password changed successfully !!!");
+      cogoToast.success("Password changed successfully !!!", {
+        position: "bottom-right",
+      });
       setFormData({
         userId: formData.userId,
         currentPassword: "",
         newPassword: "",
       });
     } catch (error) {
-      cogoToast.error("Mật khẩu hiện tại không hợp lệ "); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Current password is not correct ", {
+        position: "bottom-right",
+      }); // Xử lý lỗi một cách phù hợp
     }
   };
 

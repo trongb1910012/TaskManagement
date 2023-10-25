@@ -7,6 +7,8 @@ const Project = db.Project;
 const Board = db.Board;
 const Task = db.Task;
 const User = db.User;
+const Report = db.Report;
+const Comment = db.Comment;
 //Lay tat ca ke hoach
 exports.get_KeHoach = async (req, res, next) => {
   try {
@@ -133,8 +135,12 @@ exports.xoa_KeHoach = async (req, res, next) => {
     }
     const boards = await Board.find({ project: projectId });
     const boardIds = boards.map((board) => board._id);
+    const tasks = await Task.find({ board: { $in: boardIds } });
+    const taskIds = tasks.map((task) => task._id);
+
+    await Report.deleteMany({ task: { $in: taskIds } });
+    await Comment.deleteMany({ task: { $in: taskIds } });
     await Task.deleteMany({ board: { $in: boardIds } });
-    // Delete all boards associated with the project
     await Board.deleteMany({ project: projectId });
 
     // Delete the project itself
