@@ -25,6 +25,8 @@ const DetailTable = (project) => {
   const [isTaskTableOpen, setIsTaskTableOpen] = useState(false);
   const [selectedProjectId, setSelectedBoardId] = useState(null);
   const [selectedProjectName, setSelectedBoardName] = useState(null);
+  const userId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role");
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(`/boards/${project.id}`);
@@ -98,6 +100,13 @@ const DetailTable = (project) => {
       <div>
         <>
           <IconButton
+            style={
+              role === "project manager" ||
+              (role === "board manager" &&
+                userId === params.data.board_leader._id)
+                ? {}
+                : { display: "none" }
+            }
             onClick={() => handleEdit(params.data)}
             variant="outlined"
             color="primary"
@@ -105,6 +114,13 @@ const DetailTable = (project) => {
             <FontAwesomeIcon icon={faPenToSquare} />
           </IconButton>
           <IconButton
+            style={
+              role === "project manager" ||
+              (role === "board manager" &&
+                userId === params.data.board_leader._id)
+                ? {}
+                : { display: "none" }
+            }
             disabled={params.data.countCompletedTasks > 0}
             onClick={() => handleDelete(params.data)}
             variant="outlined"
@@ -114,7 +130,11 @@ const DetailTable = (project) => {
           </IconButton>
           <IconButton
             onClick={() =>
-              handleOpenTable(params.data._id, params.data.board_name)
+              handleOpenTable(
+                params.data._id,
+                params.data.board_name,
+                params.data.projectName
+              )
             }
             variant="outlined"
           >

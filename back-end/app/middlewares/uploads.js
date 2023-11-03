@@ -17,9 +17,6 @@ var upload = multer({
     // Cho phép tất cả các loại tệp tin
     callback(null, true);
   },
-  limits: {
-    // Xóa giới hạn kích thước tệp tin (2MB)
-  },
 });
 
 module.exports = upload;

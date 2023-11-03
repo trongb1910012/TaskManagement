@@ -7,6 +7,7 @@ module.exports = (app) => {
   router.get("/cv_leader", boards.get_Boards_byToken2);
   router.get("/:id", boards.getBoardsByProjectId);
   router.get("/leader/:u_id", boards.getBoardsByUserId);
+  router.get("/boardInfo/:id", boards.get_board_info);
   router.post("/", boards.createBoard);
   router.put("/:id", boards.update_Board);
   router.delete("/:id", boards.deleteBoard);

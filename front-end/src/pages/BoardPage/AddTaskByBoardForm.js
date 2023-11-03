@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import axiosClient from "../../api/api";
 import cogoToast from "cogo-toast";
@@ -15,11 +16,12 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
     description: "",
     dueDate: "",
     members: [],
+    previousTask: "",
   });
   const [userList, setUserList] = useState([]);
+  const [taskList, setTaskList] = useState([]);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.post(
@@ -41,6 +43,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
         description: "",
         dueDate: "",
         members: [],
+        previousTask: "",
       });
     } catch (error) {
       cogoToast.error("An error occurred while adding board", {
@@ -52,6 +55,13 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
     const getListUser = async () => {
       const res = await axiosClient.get(`/users/dsUser`);
       setUserList(res.data);
+    };
+    getListUser();
+  }, []);
+  useEffect(() => {
+    const getListUser = async () => {
+      const res = await axiosClient.get(`/tasks/${boardId}`);
+      setTaskList(res.data.tasks);
     };
     getListUser();
   }, []);
@@ -123,6 +133,26 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
             onChange={handleChange}
             required
           />
+        </div>
+        <div>
+          <label className={cx("pop-form-label")} htmlFor="project">
+            Project:
+          </label>
+          <select
+            className={cx("pop-form-input")}
+            type="text"
+            name="previousTask"
+            id="previousTask"
+            value={formData.previousTask}
+            onChange={handleChange}
+          >
+            <option value="">-- Choose previous task --</option>
+            {taskList.map((task) => (
+              <option key={task._id} value={task._id}>
+                {task.title}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className={cx("pop-form-label")}>Members:</label>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -30,7 +31,7 @@ export const ReportDetail = () => {
   };
   useEffect(() => {
     fetchData();
-  });
+  }, []);
   const handleResolve = (reportId) => {
     swal({
       title: `Resolve this report`,

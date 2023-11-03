@@ -8,6 +8,8 @@ const Board = db.Board;
 const Project = db.Project;
 const Task = db.Task;
 const User = db.User;
+const Report = db.Report;
+const Comment = db.Comment;
 // Them bang cong viec
 exports.createBoard = async (req, res, next) => {
   if (!req.body.board_name) {
@@ -205,10 +207,12 @@ exports.deleteBoard = async (req, res) => {
     if (!board) {
       return res.status(404).send({ message: "Board not found" });
     }
-
+    const tasks = await Task.find({ board: boardId });
+    const taskIds = tasks.map((task) => task._id);
     // Find all tasks in the board
     await Task.deleteMany({ board: boardId });
-
+    await Report.deleteMany({ task: { $in: taskIds } });
+    await Comment.deleteMany({ task: { $in: taskIds } });
     // Delete the board
     await Board.findByIdAndDelete(boardId);
 
@@ -445,5 +449,40 @@ exports.get_Boards_byToken2 = async (req, res, next) => {
     return next(
       new BadRequestError(500, "An error occurred while retrieving projects")
     );
+  }
+};
+//Lay thong tin board
+exports.get_board_info = async (req, res, next) => {
+  try {
+    const boardId = req.params.id;
+
+    // Check if boardId is provided
+    if (!boardId) {
+      return res.status(400).json({ message: "Board ID is required" });
+    }
+
+    // Find the board document by ID
+    const board = await Board.findById(boardId).populate({
+      path: "project",
+      select: "title",
+    });
+
+    // If the board document does not exist, return a 404 error
+    if (!board) {
+      return res.status(404).json({ message: "Board not found" });
+    }
+    const formattedDate = new Date(board.createdAt).toISOString().substr(0, 10);
+    const formattedBoard = {
+      ...board._doc,
+      createdAt: formattedDate,
+    };
+    // Return the board document as a JSON response
+    return res.status(200).json(formattedBoard);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "An error occurred while retrieving the board",
+      error: err.message,
+    });
   }
 };

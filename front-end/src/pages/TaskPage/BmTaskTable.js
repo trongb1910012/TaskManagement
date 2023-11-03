@@ -144,8 +144,8 @@ const BMTasks = () => {
       filter: true,
     },
     {
-      headerName: "Description",
-      field: "description",
+      headerName: "Project",
+      field: "board.project.title",
       sortable: true,
       filter: true,
     },
@@ -156,10 +156,17 @@ const BMTasks = () => {
       filter: true,
     },
     {
-      headerName: "Project",
-      field: "board.project.title",
+      headerName: "Previous Task",
+      field: "previousTask.title",
       sortable: true,
       filter: true,
+      cellRenderer: (params) => {
+        if (params.value === null || params.value === undefined) {
+          return "-";
+        } else {
+          return params.value;
+        }
+      },
     },
     {
       headerName: "Due Date",
@@ -217,18 +224,6 @@ const BMTasks = () => {
         return null;
       },
     },
-    // {
-    //   headerName: "Members",
-    //   field: "members",
-    //   sortable: true,
-    //   filter: true,
-    //   valueGetter: function (params) {
-    //     if (params.data && params.data.members) {
-    //       return params.data.members.map((member) => member.fullname);
-    //     }
-    //     return "";
-    //   },
-    // },
     {
       headerName: "Action",
       field: "action",
@@ -238,10 +233,6 @@ const BMTasks = () => {
       cellRenderer: actionCellRenderer,
     },
   ];
-
-  // const onFilterTextBoxChanged = (event) => {
-  //   gridApi.setQuickFilter(event.target.value);
-  // };
   const defaultColDef = useMemo(() => {
     return {
       enableRowGroup: true,

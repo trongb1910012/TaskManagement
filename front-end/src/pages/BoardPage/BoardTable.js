@@ -99,7 +99,6 @@ const ProjectTable = () => {
       <div>
         <>
           <IconButton
-            style={params.data.status !== "open" ? { display: "none" } : {}}
             onClick={() => handleEdit(params.data)}
             variant="outlined"
             color="primary"

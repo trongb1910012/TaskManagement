@@ -73,7 +73,7 @@ const ProjectMangerTasks = () => {
     swal({
       title: `Confirm the task ${task.title} is completed`,
       text: "Once confirmed, you will not be able to restore this status",
-      icon: "warning",
+      icon: "info",
       buttons: true,
       dangerMode: true,
     }).then(async (willAccept) => {

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
@@ -31,8 +32,7 @@ export const ProjectInfo = () => {
   };
   useEffect(() => {
     fetchData();
-  });
-
+  }, []);
   return (
     <>
       <Card

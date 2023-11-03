@@ -9,7 +9,7 @@ const Task = db.Task;
 const Project = db.Project;
 const Board = db.Board;
 const Report = db.Report;
-
+const Comment = db.Report;
 //them cong viec
 exports.them_CongViec1 = async (req, res, next) => {
   if (!req.body.title) {
@@ -45,7 +45,7 @@ exports.them_CongViec = async (req, res, next) => {
     const decodedToken = jwt.verify(token, config.jwt.secret);
     const userId = decodedToken.id;
     // Get the project ID and task data from the request body
-    const { board_id, title, description, dueDate } = req.body;
+    const { board_id, title, description, dueDate, previousTask } = req.body;
     const members = req.body.members || req.query.members || [];
     // Check if the project ID and task data are provided
     if (!board_id || !title || !description || !dueDate) {
@@ -59,7 +59,7 @@ exports.them_CongViec = async (req, res, next) => {
 
     // If the project document does not exist, return a 404 error
     if (!board) {
-      return next(new BadRequestError(404, "Project not found"));
+      return next(new BadRequestError(404, "Board not found"));
     }
     const project = await Project.findById(board.project);
     // Check if project.endDate is less than dueDate
@@ -85,6 +85,7 @@ exports.them_CongViec = async (req, res, next) => {
         )
       );
     }
+
     // Create a new task document with the task data
     const task = new Task({
       title,
@@ -93,8 +94,18 @@ exports.them_CongViec = async (req, res, next) => {
       board: board_id,
       members: [...members],
       creator: userId,
+      previousTask: previousTask || undefined,
     });
+    if (req.body.previousTask) {
+      const prevTask = await Task.findById(req.body.previousTask);
 
+      // Kiểm tra dueDate lớn hơn dueDate của previousTask
+      if (task.dueDate <= prevTask.dueDate) {
+        throw new Error(
+          `Due date phải lớn hơn previous task ${prevTask.dueDate}`
+        );
+      }
+    }
     // Save the task document to the database
     const savedTask = await task.save();
 
@@ -185,7 +196,8 @@ exports.get_CV_KeHoach = async (req, res, next) => {
       })
       .populate({ path: "creator", select: "fullname" })
       .populate({ path: "board", select: "board_name" })
-      .sort({ status: -1, dueDate: 1 });
+      .populate({ path: "previousTask", select: "title" })
+      .sort({ dueDate: 1 });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       return { ...task._doc, dueDate: formattedDate };
@@ -238,7 +250,8 @@ exports.xoa_CongViec = async (req, res) => {
 
     // Find the tasks with the specified IDs and remove them
     const deletedTasks = await Task.deleteMany({ _id: { $in: taskIds } });
-
+    await Report.deleteMany({ task: { $in: taskIds } });
+    await Comment.deleteMany({ task: { $in: taskIds } });
     if (deletedTasks.n === 0) {
       return res.status(404).json({
         success: false,
@@ -270,16 +283,24 @@ exports.sua_CongViec = async (req, res, next) => {
       return next(new BadRequestError(404, "Task not found"));
     }
 
-    // // Only allow the owner of the project to update it
-    // if (
-    //   req.userId &&
-    //   project.owner &&
-    //   req.userId.toString() !== project.owner.toString()
-    // ) {
-    //   return next(new BadRequestError(403, "Forbidden"));
-    // }
+    // Kiểm tra nếu trường "dueDate" được cập nhật và có giá trị
+    if (updates.dueDate) {
+      const previousTaskId = task.previousTask;
+      if (previousTaskId) {
+        // Tìm kiếm thông tin của previousTask
+        const previousTask = await Task.findById(previousTaskId);
+        const updatedDueDate = new Date(updates.dueDate);
+        const previousDueDate = new Date(previousTask.dueDate);
+        // Kiểm tra "dueDate" của công việc đang được cập nhật phải lớn hơn "dueDate" của previousTask
+        if (updatedDueDate <= previousDueDate) {
+          throw new Error(
+            `Due date must be greater than the due date of the previous task ${updatedDueDate} ${updatedDueDate}`
+          );
+        }
+      }
+    }
 
-    // Update the project fields with the new values
+    // Cập nhật các trường của công việc với các giá trị mới
     Object.keys(updates).forEach((key) => {
       task[key] = updates[key];
     });
@@ -710,7 +731,7 @@ exports.getProjectsBoardsTasks = async (req, res, next) => {
             path: "creator",
             select: "fullname",
           })
-          .sort({ status: -1, dueDate: 1 });
+          .sort({ dueDate: 1 });
         return tasks;
       });
       const tasks = await Promise.all(tasksPromises);
@@ -799,6 +820,10 @@ exports.getBoardsTasks = async (req, res, next) => {
         select: "fullname",
       })
       .populate({
+        path: "previousTask",
+        select: "title",
+      })
+      .populate({
         path: "board",
         select: "board_name",
         populate: {
@@ -806,7 +831,7 @@ exports.getBoardsTasks = async (req, res, next) => {
           select: ["startDate", "endDate", "title"],
         },
       })
-      .sort({ "board.project._id": 1, status: -1, dueDate: 1 });
+      .sort({ dueDate: 1 });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       const formattedStartDate = new Date(task.board.project.startDate)

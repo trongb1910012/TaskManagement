@@ -263,20 +263,73 @@ exports.rejectComment = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
-//Giai quyet xin gia han
+// Giai quyet xin gia han
+// exports.resolveComment = async (req, res) => {
+//   try {
+//     const commentId = req.params.id;
+
+//     // Tìm comment theo ID
+//     const comment = await Comment.findById(commentId);
+
+//     // Nếu comment không tồn tại, trả về lỗi 404
+//     if (!comment) {
+//       return res.status(404).json({ message: "Comment not found" });
+//     }
+
+//     // Nếu comment đã được giải quyết hoặc từ chối, trả về lỗi 400
+//     if (comment.status === "resolved") {
+//       return res.status(400).json({ message: "Comment is already resolved" });
+//     }
+//     if (comment.status === "rejected") {
+//       return res.status(400).json({ message: "Comment is already rejected" });
+//     }
+
+//     // Cập nhật trạng thái của comment thành "resolved" nếu hiện tại là "open"
+//     if (comment.status === "open") {
+//       comment.status = "resolved";
+//       await comment.save();
+
+//       // Cập nhật giá trị "dueDate" của công việc tương ứng
+//       const task = await Task.findById(comment.task_id);
+//       if (!task) {
+//         return res.status(404).json({ message: "Task not found" });
+//       }
+//       const previousDueDate = task.dueDate; // Lưu giữ giá trị "dueDate" hiện tại của công việc
+//       task.dueDate = comment.new_dueDate;
+//       await task.save();
+
+//       // Cập nhật "dueDate" của các công việc sau đó
+//       const tasksToUpdate = await Task.find({ _id: { $gt: task._id } }); // Tìm các công việc có _id lớn hơn công việc hiện tại
+//       for (const taskToUpdate of tasksToUpdate) {
+//         taskToUpdate.dueDate = new Date(
+//           taskToUpdate.dueDate.getTime() + (task.dueDate - previousDueDate)
+//         );
+//         await taskToUpdate.save();
+//       }
+
+//       return res.status(200).json({ message: "Comment resolved successfully" });
+//     }
+
+//     // Nếu trạng thái của comment không phải "open" hoặc "resolved", trả về lỗi 400
+//     return res.status(400).json({ message: "Invalid comment status" });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ message: "Server error" });
+//   }
+// };
 exports.resolveComment = async (req, res) => {
   try {
     const commentId = req.params.id;
 
-    // Find the comment by ID
+    // Tìm comment theo ID
     const comment = await Comment.findById(commentId);
 
-    // If the comment doesn't exist, return a 404 error
+    // Nếu comment không tồn tại, trả về lỗi 404
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
     }
 
-    // If the comment is already resolved, return a 400 error
+    // Nếu comment đã được giải quyết hoặc từ chối, trả về lỗi 400
     if (comment.status === "resolved") {
       return res.status(400).json({ message: "Comment is already resolved" });
     }
@@ -284,23 +337,49 @@ exports.resolveComment = async (req, res) => {
       return res.status(400).json({ message: "Comment is already rejected" });
     }
 
-    // Update the comment status to "resolved" if it is currently "open"
+    // Cập nhật trạng thái của comment thành "resolved" nếu hiện tại là "open"
     if (comment.status === "open") {
       comment.status = "resolved";
       await comment.save();
 
-      // Update the dueDate of the corresponding task
+      // Cập nhật giá trị "dueDate" của công việc tương ứng
       const task = await Task.findById(comment.task_id);
       if (!task) {
         return res.status(404).json({ message: "Task not found" });
       }
+      const previousDueDate = task.dueDate; // Lưu giữ giá trị "dueDate" hiện tại của công việc
       task.dueDate = comment.new_dueDate;
       await task.save();
+
+      // Định nghĩa hàm đệ quy để cập nhật "dueDate" của các công việc liên tiếp
+      const updateTasks = async (taskId, newDueDate) => {
+        const tasksToUpdate = await Task.find({ previousTask: taskId });
+        for (const taskToUpdate of tasksToUpdate) {
+          taskToUpdate.dueDate = new Date(
+            taskToUpdate.dueDate.getTime() + (newDueDate - previousDueDate)
+          );
+          await taskToUpdate.save();
+          await updateTasks(taskToUpdate._id, taskToUpdate.dueDate);
+        }
+      };
+
+      // Gọi hàm đệ quy để cập nhật "dueDate" của các công việc liên tiếp
+      await updateTasks(task._id, task.dueDate);
+
+      // Cập nhật "endDate" của dự án mà các công việc thuộc về
+      // const project = await Project.findById(task.project_id);
+      // if (!project) {
+      //   return res.status(404).json({ message: "Project not found" });
+      // }
+      // project.endDate = new Date(
+      //   project.endDate.getTime() + (task.dueDate - previousDueDate)
+      // );
+      // await project.save();
 
       return res.status(200).json({ message: "Comment resolved successfully" });
     }
 
-    // If the comment is neither "open" nor "resolved", return a 400 error
+    // Nếu trạng thái của comment không phải "open" hoặc "resolved", trả về lỗi 400
     return res.status(400).json({ message: "Invalid comment status" });
   } catch (error) {
     console.error(error);

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { AgGridReact } from "ag-grid-react";
@@ -19,40 +20,35 @@ import EditTaskForm from "./EditTaskByBoardForm";
 
 const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
   const [boards, setBoards] = useState([]);
+  const [boardInfo, setBoardInfo] = useState([]);
   const [rowDataForForm, setRowDataForForm] = useState(null);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [isAnyCheckboxSelected, setIsAnyCheckboxSelected] = useState(false);
+  const userId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role");
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(`/tasks/${boardId}`);
+
       setBoards(response.data.tasks);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-
+  const fetchBoardInfo = async () => {
+    try {
+      const response = await axiosClient.get(`/boards/boardInfo/${boardId}`);
+      setBoardInfo(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchBoardInfo();
   }, []);
-
-  // const handleAddRow = () => {
-  //   const emptyRow = {
-  //     title: "",
-  //     description: "",
-  //     startDate: "",
-  //     endDate: "",
-  //     status: "",
-  //     budget: "",
-  //     owner: {
-  //       fullname: "",
-  //     },
-  //   };
-
-  //   setProjects([...projects, emptyRow]);
-  // };
   const openCreateForm = () => {
     setIsEditFormOpen(false);
     setIsCreateFormOpen(true);
@@ -142,6 +138,9 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
       <div>
         <>
           <IconButton
+            style={
+              params.data.status === "completed" ? { display: "none" } : {}
+            }
             onClick={() => openEditForm(params.data)}
             variant="outlined"
             color="primary"
@@ -149,7 +148,9 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
             <FontAwesomeIcon icon={faPenToSquare} />
           </IconButton>
           <IconButton
-            disabled={params.data.status !== "not started"}
+            style={
+              params.data.status !== "not started" ? { display: "none" } : {}
+            }
             onClick={() => handleDelete(params.data)}
             variant="outlined"
             color="error"
@@ -197,6 +198,12 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
     {
       headerName: "Creator",
       field: "creator.fullname",
+      sortable: true,
+      filter: true,
+    },
+    {
+      headerName: "Previos Task",
+      field: "previousTask.title",
       sortable: true,
       filter: true,
     },
@@ -285,7 +292,16 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
               <FontAwesomeIcon icon={faTrash} />
             </IconButton>
           ) : (
-            <IconButton onClick={() => openCreateForm()} variant="outlined">
+            <IconButton
+              style={
+                role === "project manager" ||
+                (role === "board manager" && userId === boardInfo.board_leader)
+                  ? {}
+                  : { display: "none" }
+              }
+              onClick={() => openCreateForm()}
+              variant="outlined"
+            >
               <FontAwesomeIcon icon={faAdd} />
             </IconButton>
           )}

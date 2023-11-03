@@ -17,7 +17,6 @@ export const PMExtendRequestList = () => {
       const token = localStorage.getItem("token");
       const response = await axiosClient.get(`/comments/xgh/pm?token=${token}`);
       setProjects(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -69,7 +68,7 @@ export const PMExtendRequestList = () => {
     swal({
       title: `Reject this request `,
       text: "Once reject, you will not be able to restore this extend request status",
-      icon: "warning",
+      icon: "info",
       buttons: true,
       dangerMode: true,
     }).then(async (willDelete) => {

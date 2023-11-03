@@ -50,6 +50,7 @@ const Login = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("fullname", fullname);
       localStorage.setItem("role", response.data.role);
+      localStorage.setItem("userId", response.data.id);
       navigate("/tasking/home");
     } catch (error) {
       cogoToast.error("Incorrect username or password!!");
