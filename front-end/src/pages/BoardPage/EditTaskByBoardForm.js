@@ -19,13 +19,19 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
   });
   const [boardsList, setBoardsList] = useState([]);
   const [userList, setUserList] = useState([]);
+  const [errors, setErrors] = useState({}); // State to store validation errors
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     try {
       const response = await axiosClient.put(`/tasks/${rowData._id}`, formData);
       console.log(response);
-      cogoToast.success("Added board successfully", {
+      cogoToast.success("Update task successfully", {
         position: "bottom-right",
       });
 
@@ -41,11 +47,12 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
         members: [],
       });
     } catch (error) {
-      cogoToast.error("An error occurred while adding board", {
+      cogoToast.error("An error occurred while updating task", {
         position: "bottom-right",
       }); // Xử lý lỗi một cách phù hợp
     }
   };
+
   useEffect(() => {
     const getListUser = async () => {
       const res = await axiosClient.get(`/users/dsUser`);
@@ -53,6 +60,7 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
     };
     getListUser();
   }, []);
+
   useEffect(() => {
     const getBoardsList = async () => {
       const resKH = await axiosClient.get(
@@ -62,6 +70,7 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
     };
     getBoardsList();
   }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -70,6 +79,30 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
       [name]: value,
     }));
   };
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    if (!formData.title.trim()) {
+      newErrors.title = "Title is required";
+      isValid = false;
+    }
+
+    if (!formData.board_id) {
+      newErrors.board_id = "Board is required";
+      isValid = false;
+    }
+
+    if (formData.dueDate < new Date().toISOString().substring(0, 10)) {
+      newErrors.dueDate = "Due Date should be in the future";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   return (
     <div className={cx("popup-form")}>
       <Grid container justifyContent="flex-end">
@@ -94,6 +127,9 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             onChange={handleChange}
             required
           />
+          {errors.title && (
+            <span className={cx("error-message")}>{errors.title}</span>
+          )}
         </div>
         <div>
           <label className={cx("pop-form-label")}>Description:</label>
@@ -118,6 +154,9 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             onChange={handleChange}
             required
           />
+          {errors.dueDate && (
+            <span className={cx("error-message")}>{errors.dueDate}</span>
+          )}
         </div>
         <div>
           <label className={cx("pop-form-label")}>Board:</label>
@@ -128,6 +167,7 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             id="board_id"
             value={formData.board_id}
             onChange={handleChange}
+            required
           >
             {boardsList.map((b) => (
               <option key={b._id} value={b._id}>
@@ -135,24 +175,10 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
               </option>
             ))}
           </select>
+          {errors.board_id && (
+            <span className={cx("error-message")}>{errors.board_id}</span>
+          )}
         </div>
-        {/* <div>
-          <select
-            className={cx("pop-form-input")}
-            multiple
-            type="text"
-            name="members"
-            id="members"
-            value={formData.members}
-            onChange={handleChange}
-          >
-            {userList.map((user) => (
-              <option key={user._id} value={user._id}>
-                {user.fullname}
-              </option>
-            ))}
-          </select>
-        </div> */}
         <div>
           <label className={cx("pop-form-label")}>Members:</label>
           <Select
@@ -170,15 +196,6 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
               value: user._id,
               label: user.fullname,
             }))}
-            // onChange={(selectedOptions) => {
-            //   const selectedUserIds = selectedOptions.map(
-            //     (option) => option.value
-            //   );
-            //   setFormData((prevFormData) => ({
-            //     ...prevFormData,
-            //     members: selectedUserIds,
-            //   }));
-            // }}
             onChange={(selectedOptions) => {
               const selectedUserIds = selectedOptions.map(
                 (option) => option.value

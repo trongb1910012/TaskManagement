@@ -24,7 +24,7 @@ const AddBoardByProject = ({ onBoardCreated, closeForm, projectId }) => {
         formData
       );
       console.log(response);
-      cogoToast.success("Thêm nhóm công việc thành công");
+      cogoToast.success("Adding board successfully");
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
@@ -36,7 +36,7 @@ const AddBoardByProject = ({ onBoardCreated, closeForm, projectId }) => {
         board_leader: "",
       });
     } catch (error) {
-      cogoToast.error("Cần điền các thông tin trống"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Adding board fail"); // Xử lý lỗi một cách phù hợp
     }
   };
   useEffect(() => {

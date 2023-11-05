@@ -20,8 +20,12 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
   });
   const [userList, setUserList] = useState([]);
   const [taskList, setTaskList] = useState([]);
+  const [errors, setErrors] = useState({});
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.post(
@@ -84,6 +88,23 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
       }));
     }
   };
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    if (!formData.title.trim()) {
+      newErrors.title = "Title is required";
+      isValid = false;
+    }
+
+    if (formData.dueDate < new Date().toISOString().substring(0, 10)) {
+      newErrors.dueDate = "Due Date should be in the future";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   return (
     <div className={cx("popup-form")}>
@@ -109,6 +130,9 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
             onChange={handleChange}
             required
           />
+          {errors.title && (
+            <span className={cx("error-message")}>{errors.title}</span>
+          )}
         </div>
         <div>
           <label className={cx("pop-form-label")}>Description:</label>
@@ -133,11 +157,12 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
             onChange={handleChange}
             required
           />
+          {errors.dueDate && (
+            <span className={cx("error-message")}>{errors.dueDate}</span>
+          )}
         </div>
         <div>
-          <label className={cx("pop-form-label")} htmlFor="project">
-            Project:
-          </label>
+          <label className={cx("pop-form-label")}>Previous Task:</label>
           <select
             className={cx("pop-form-input")}
             type="text"

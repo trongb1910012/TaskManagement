@@ -9,7 +9,7 @@ import PieChart from "../PieChart/PieChart";
 import ProjectPieChart from "../PieChart/ProjectPieChart";
 import ProjectMangerTasks from "../TaskPage/PmTaskTable";
 import BMTasks from "../TaskPage/BmTaskTable";
-import { PMStat, BMStat } from "./PMStat";
+import { PMStat, BMStat, UserStat } from "./PMStat";
 import { PMExtendRequestList } from "../Extend/PMExtendList";
 // import TableComponent from "../GanttTask/GanttTask";
 // import MyCalendar from "../Calendar/Calendar";
@@ -36,6 +36,7 @@ function HomePage() {
         <Grid container>
           {role === "user" && (
             <Grid item xs={12} md={12} xl={12}>
+              <UserStat />
               <AssignedTaskTable />
             </Grid>
           )}

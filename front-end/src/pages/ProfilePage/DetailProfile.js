@@ -26,6 +26,11 @@ export const AccountProfileDetails = () => {
     phoneNumber: "",
     birthDay: "",
   });
+  const [errors, setErrors] = useState({
+    fullname: "",
+    email: "",
+    phoneNumber: "",
+  });
 
   const fetchData = async () => {
     try {
@@ -49,6 +54,37 @@ export const AccountProfileDetails = () => {
   useEffect(() => {
     fetchData();
   }, []);
+  const validateForm = () => {
+    let valid = true;
+    const newErrors = { ...errors };
+
+    // Validate Full name
+    if (values.fullname.trim() === "") {
+      newErrors.fullname = "Full name is required";
+      valid = false;
+    } else {
+      newErrors.fullname = "";
+    }
+
+    // Validate Email
+    if (!/^\S+@\S+\.\S+$/.test(values.email)) {
+      newErrors.email = "Invalid email address";
+      valid = false;
+    } else {
+      newErrors.email = "";
+    }
+
+    // Validate Phone
+    if (!/^\d{10}$/.test(values.phoneNumber)) {
+      newErrors.phoneNumber = "Invalid phone number (10 digits)";
+      valid = false;
+    } else {
+      newErrors.phoneNumber = "";
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
   const handleChange = (event) => {
     setValues((prevState) => ({
       ...prevState,
@@ -58,17 +94,22 @@ export const AccountProfileDetails = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    try {
-      await axiosClient.put(`/users/${values.id}`, values);
-      localStorage.setItem("fullname", values.fullname);
-      cogoToast.success("Information update successful !!!", {
+    if (validateForm()) {
+      try {
+        await axiosClient.put(`/users/${values.id}`, values);
+        localStorage.setItem("fullname", values.fullname);
+        cogoToast.success("Information update successful !!!", {
+          position: "bottom-right",
+        });
+      } catch (error) {
+        cogoToast.error("Information update failed !!!", {
+          position: "bottom-right",
+        }); // Xử lý lỗi một cách phù hợp
+      }
+    } else {
+      cogoToast.error("Please correct the validation errors", {
         position: "bottom-right",
       });
-    } catch (error) {
-      cogoToast.error("Information update failed !!!", {
-        position: "bottom-right",
-      }); // Xử lý lỗi một cách phù hợp
     }
   };
 
@@ -88,6 +129,8 @@ export const AccountProfileDetails = () => {
                     onChange={handleChange}
                     required
                     value={values.fullname}
+                    error={!!errors.fullname}
+                    helperText={errors.fullname}
                   />
                 </Grid>
                 <Grid xs={12} md={6}>
@@ -108,6 +151,8 @@ export const AccountProfileDetails = () => {
                     onChange={handleChange}
                     required
                     value={values.email}
+                    error={!!errors.email}
+                    helperText={errors.email}
                   />
                 </Grid>
                 <Grid xs={12} md={6}>
@@ -142,6 +187,8 @@ export const AccountProfileDetails = () => {
                     onChange={handleChange}
                     required
                     value={values.phoneNumber}
+                    error={!!errors.phoneNumber}
+                    helperText={errors.phoneNumber}
                   />
                 </Grid>
               </Grid>

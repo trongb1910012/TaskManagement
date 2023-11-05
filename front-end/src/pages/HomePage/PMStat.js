@@ -68,3 +68,31 @@ export function BMStat() {
     </div>
   );
 }
+export function UserStat() {
+  const [stat, setStat] = useState([]);
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axiosClient.get(`/tasks/nv?token=${token}`);
+      setStat(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  return (
+    <div className={cx("stats")}>
+      <button className={cx("stat")}>
+        <span className={cx("stat-label")}>Tasks: </span>
+        <span className={cx("count")}>{stat.taskCount}</span>
+      </button>
+      <button className={cx("stat")}>
+        <span className={cx("stat-label")}>Reports: </span>
+        <span className={cx("count")}>{stat.reportCount}</span>
+      </button>
+    </div>
+  );
+}

@@ -18,7 +18,7 @@ exports.get_all_user = async (req, res) => {
     }
 
     const tasks = await Task.find(condition);
-    const reports = await Report.find(condition);
+    const reports = await Report.find({ status: "open" });
     const users = await User.find({
       role: ["user", "project manager", "board manager"],
     })

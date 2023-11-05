@@ -202,7 +202,7 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
       filter: true,
     },
     {
-      headerName: "Previos Task",
+      headerName: "Previous Task",
       field: "previousTask.title",
       sortable: true,
       filter: true,

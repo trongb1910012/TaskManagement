@@ -18,9 +18,15 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
   });
   const [boardsList, setBoardsList] = useState([]);
   const [userList, setUserList] = useState([]);
+  const [errors, setErrors] = useState({}); // State to store validation errors
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
+
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       const response = await axiosClient.post(
@@ -49,6 +55,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
       }); // Xử lý lỗi một cách phù hợp
     }
   };
+
   useEffect(() => {
     const getListUser = async () => {
       const res = await axiosClient.get(`/users/dsUser`);
@@ -56,6 +63,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
     };
     getListUser();
   }, []);
+
   useEffect(() => {
     const getBoardsList = async () => {
       const resKH = await axiosClient.get(
@@ -65,6 +73,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
     };
     getBoardsList();
   }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -83,6 +92,29 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
         [name]: value,
       }));
     }
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    if (!formData.title.trim()) {
+      newErrors.title = "Title is required";
+      isValid = false;
+    }
+
+    if (!formData.board_id) {
+      newErrors.board_id = "Board is required";
+      isValid = false;
+    }
+
+    if (formData.dueDate < new Date().toISOString().substring(0, 10)) {
+      newErrors.dueDate = "Due Date should be in the future";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
   };
 
   return (
@@ -109,6 +141,9 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
             onChange={handleChange}
             required
           />
+          {errors.title && (
+            <span className={cx("error-message")}>{errors.title}</span>
+          )}
         </div>
         <div>
           <label className={cx("pop-form-label")}>Description:</label>
@@ -133,6 +168,9 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
             onChange={handleChange}
             required
           />
+          {errors.dueDate && (
+            <span className={cx("error-message")}>{errors.dueDate}</span>
+          )}
         </div>
         <div>
           <label className={cx("pop-form-label")}>Board:</label>
@@ -143,6 +181,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
             id="board_id"
             value={formData.board_id}
             onChange={handleChange}
+            required
           >
             <option value="">-- Choose boards --</option>
             {boardsList.map((b) => (
@@ -151,6 +190,9 @@ const AddTasksForm = ({ onBoardCreated, closeForm }) => {
               </option>
             ))}
           </select>
+          {errors.board_id && (
+            <span className={cx("error-message")}>{errors.board_id}</span>
+          )}
         </div>
         <div>
           <label className={cx("pop-form-label")}>Members:</label>

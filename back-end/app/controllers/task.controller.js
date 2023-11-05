@@ -348,6 +348,14 @@ exports.get_CongViec_Nv = async (req, res, next) => {
         },
       })
       .sort({ "board.project._id": 1, status: -1, dueDate: 1 });
+    const taskCount = await Task.countDocuments({
+      members: memberId,
+    });
+    const taskIds = tasks.map((task) => task._id);
+
+    const reportCount = await Report.countDocuments({
+      task: { $in: taskIds },
+    });
     const formattedTasks = tasks.map((task) => {
       const formattedDate = new Date(task.dueDate).toISOString().substr(0, 10);
       const formattedStartDate = new Date(task.board.project.startDate)
@@ -366,6 +374,8 @@ exports.get_CongViec_Nv = async (req, res, next) => {
 
     const response = {
       tasks: formattedTasks,
+      taskCount: taskCount,
+      reportCount: reportCount,
     };
     return res.status(200).json(response);
   } catch (err) {
