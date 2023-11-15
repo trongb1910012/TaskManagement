@@ -57,7 +57,7 @@ option[value="completed"] {
 
 .popup-form .group-button {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .popup-form .submit-button {
@@ -69,6 +69,7 @@ option[value="completed"] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    justify-content: center;
 }
 
 .popup-form .submit-button:hover {

@@ -47,7 +47,7 @@ export const PMExtendRequestList = () => {
   };
   const handleResolve = (projectId) => {
     swal({
-      title: `Resolve this request`,
+      title: `Resolve this request `,
       text: "Once resolved, you will not be able to restore this request status!",
       icon: "info",
       buttons: true,

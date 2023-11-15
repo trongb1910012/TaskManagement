@@ -11,13 +11,12 @@ const cx = classNames.bind(styles);
 const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
   const [formData, setFormData] = useState({
     board_id: rowData.board.id,
-    board_name: rowData.board.board_name,
     title: rowData.title,
     description: rowData.description,
     dueDate: rowData.dueDate,
     members: rowData.members,
   });
-  const [boardsList, setBoardsList] = useState([]);
+
   const [userList, setUserList] = useState([]);
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,7 +31,6 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
       closeForm();
       // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
       setFormData({
-        board_id: "",
         title: "",
         description: "",
         dueDate: "",
@@ -50,15 +48,6 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
       setUserList(res.data);
     };
     getListUser();
-  }, []);
-  useEffect(() => {
-    const getBoardsList = async () => {
-      const resKH = await axiosClient.get(
-        `/boards/cv_leader?token=${localStorage.getItem("token")}`
-      );
-      setBoardsList(resKH.data);
-    };
-    getBoardsList();
   }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -117,24 +106,6 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             required
           />
         </div>
-        <div>
-          <label className={cx("pop-form-label")}>Board:</label>
-          <select
-            className={cx("pop-form-input")}
-            type="text"
-            name="board_id"
-            id="board_id"
-            value={formData.board_id}
-            onChange={handleChange}
-          >
-            {boardsList.map((b) => (
-              <option key={b._id} value={b._id}>
-                {b.board_name}
-              </option>
-            ))}
-          </select>
-        </div>
-
         <div>
           <label className={cx("pop-form-label")}>Members:</label>
           <Select

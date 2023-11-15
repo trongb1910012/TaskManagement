@@ -133,6 +133,11 @@ const BMTasks = () => {
             <FontAwesomeIcon icon={faTasks} />
           </IconButton>
         </Link>
+        <Link to={`/tasking/extend/${params.data._id}`}>
+          <IconButton variant="outlined" color="secondary">
+            <FontAwesomeIcon icon={faClock} />
+          </IconButton>
+        </Link>
       </div>
     );
   };
@@ -193,7 +198,6 @@ const BMTasks = () => {
       filter: true,
       cellStyle: (params) => {
         if (params.value === "completed") {
-          //mark police cells as red
           return {
             color: "white",
             backgroundColor: "#33a47c",

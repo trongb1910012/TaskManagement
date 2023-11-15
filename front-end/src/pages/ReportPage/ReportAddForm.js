@@ -3,9 +3,6 @@ import { useParams } from "react-router-dom";
 import axiosClient from "../../api/api";
 import classNames from "classnames/bind";
 import styles from "./ReportPage.module.scss";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Grid, IconButton } from "@mui/material";
 import cogoToast from "cogo-toast";
 const cx = classNames.bind(styles);
 export const AddReportForm = ({ fetch }) => {
@@ -66,13 +63,6 @@ export const AddReportForm = ({ fetch }) => {
   };
   return (
     <div className={cx("popup-form")}>
-      <Grid container justifyContent="flex-end">
-        <Grid item>
-          <IconButton className={cx("close-button")}>
-            <FontAwesomeIcon icon={faXmark} />
-          </IconButton>
-        </Grid>
-      </Grid>
       <div className={cx("form-title")}>REPORT</div>
       <form onSubmit={handleSubmit}>
         <div>
@@ -112,7 +102,7 @@ export const AddReportForm = ({ fetch }) => {
         </div>
         <div className={cx("group-button")}>
           <button className={cx("submit-button")} type="submit">
-            Save
+            Submit
           </button>
         </div>
       </form>

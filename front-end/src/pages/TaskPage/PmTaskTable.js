@@ -6,7 +6,6 @@ import axiosClient from "../../api/api";
 import "./TaskTable.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faAdd,
   faPenToSquare,
   faTrash,
   faTasks,
@@ -14,7 +13,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
-import AddTasksForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
 import { Grid } from "@mui/material";
 import "ag-grid-enterprise";
@@ -25,7 +23,7 @@ LicenseManager.setLicenseKey("AG-047238");
 const ProjectMangerTasks = () => {
   const [projects, setProjects] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
+
   const [rowDataForForm, setRowDataForForm] = useState(null);
 
   const updateTasksStatus = async () => {
@@ -88,16 +86,8 @@ const ProjectMangerTasks = () => {
       }
     });
   };
-  const openCreateForm = () => {
-    setIsFormOpen(false);
-    setIsCreateFormOpen(false);
-    setIsCreateFormOpen(true);
-  };
-  const closeCreateForm = () => {
-    setIsCreateFormOpen(false);
-  };
+
   const openEditForm = (rowData) => {
-    setIsCreateFormOpen(false);
     setIsFormOpen(false);
     setIsFormOpen(true);
     setRowDataForForm(rowData);
@@ -259,11 +249,6 @@ const ProjectMangerTasks = () => {
         <Grid item>
           <h1>My project's tasks</h1>{" "}
         </Grid>
-        <Grid item>
-          <IconButton onClick={() => openCreateForm()} variant="outlined">
-            <FontAwesomeIcon icon={faAdd} />
-          </IconButton>
-        </Grid>
       </Grid>
       <div
         className="ag-theme-alpine"
@@ -281,9 +266,6 @@ const ProjectMangerTasks = () => {
           suppressRowClickSelection={true}
         ></AgGridReact>
       </div>
-      {isCreateFormOpen && (
-        <AddTasksForm onBoardCreated={fetchData} closeForm={closeCreateForm} />
-      )}
       {isFormOpen && (
         <EditTaskForm
           onBoardCreated={fetchData}

@@ -15,8 +15,12 @@ export const ExtendRequestForm = ({ fetch }) => {
     comment_text: "",
     task_id: id,
   });
+  const [errors, setErrors] = useState({});
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
     try {
       const token = localStorage.getItem("token");
       await axiosClient.post(`/comments?token=${token}`, formData);
@@ -45,6 +49,25 @@ export const ExtendRequestForm = ({ fetch }) => {
       [name]: value,
     }));
   };
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    if (!formData.comment_text.trim()) {
+      newErrors.comment_text = "Reason is required";
+      isValid = false;
+    }
+
+    const currentDate = new Date().toISOString().substring(0, 10);
+    if (formData.new_dueDate <= currentDate) {
+      newErrors.new_dueDate =
+        "New Due Date must be greater than the current date";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
   return (
     <div className={cx("popup-form")}>
       <Grid container justifyContent="flex-end">
@@ -67,6 +90,9 @@ export const ExtendRequestForm = ({ fetch }) => {
             onChange={handleChange}
             required
           />
+          {errors.comment_text && (
+            <span className={cx("error-message")}>{errors.comment_text}</span>
+          )}
         </div>
         <div>
           <label className={cx("pop-form-label")}>New Due Date:</label>
@@ -79,6 +105,9 @@ export const ExtendRequestForm = ({ fetch }) => {
             onChange={handleChange}
             required
           />
+          {errors.new_dueDate && (
+            <span className={cx("error-message")}>{errors.new_dueDate}</span>
+          )}
         </div>
         <div className={cx("group-button")}>
           <button className={cx("submit-button")} type="submit">

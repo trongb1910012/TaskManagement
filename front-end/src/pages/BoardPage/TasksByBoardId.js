@@ -24,8 +24,7 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
   const [rowDataForForm, setRowDataForForm] = useState(null);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [isAnyCheckboxSelected, setIsAnyCheckboxSelected] = useState(false);
+
   const userId = localStorage.getItem("userId");
   const role = localStorage.getItem("role");
   const fetchData = async () => {
@@ -86,31 +85,12 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
       }
     });
   };
-  const handleDeleteSelectedTasks = () => {
-    swal({
-      title: "Are you sure you want to delete the selected tasks?",
-      text: "Once deleted, you will not be able to restore these task",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then(async (willDelete) => {
-      if (willDelete) {
-        const selectedTaskIds = selectedRows.map((row) => row._id);
-        await axiosClient.delete("/tasks/", {
-          data: { taskIds: selectedTaskIds },
-        });
-        swal("Tasks have been remove", {
-          icon: "success",
-        });
-        await fetchData();
-      }
-    });
-  };
+
   const handleCompletedTask = (task) => {
     swal({
       title: `Confirm the task ${task.title} is completed`,
       text: "Once confirmed, you will not be able to restore this status",
-      icon: "warning",
+      icon: "info",
       buttons: true,
       dangerMode: true,
     }).then(async (willAccept) => {
@@ -125,10 +105,7 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
       }
     });
   };
-  const handleCheckboxChange = (selectedRows) => {
-    setSelectedRows(selectedRows);
-    setIsAnyCheckboxSelected(selectedRows.length > 0);
-  };
+
   const actionCellRenderer = (params) => {
     if (params.columnApi.getRowGroupColumns().length > 0) {
       return null;
@@ -206,6 +183,13 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
       field: "previousTask.title",
       sortable: true,
       filter: true,
+      cellRenderer: (params) => {
+        if (params.value === null || params.value === undefined) {
+          return "-";
+        } else {
+          return params.value;
+        }
+      },
     },
     {
       headerName: "Status",
@@ -283,28 +267,18 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
         </Grid>
 
         <Grid item>
-          {isAnyCheckboxSelected ? (
-            <IconButton
-              sx={{ color: "red" }}
-              onClick={handleDeleteSelectedTasks}
-              variant="outlined"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-          ) : (
-            <IconButton
-              style={
-                role === "project manager" ||
-                (role === "board manager" && userId === boardInfo.board_leader)
-                  ? {}
-                  : { display: "none" }
-              }
-              onClick={() => openCreateForm()}
-              variant="outlined"
-            >
-              <FontAwesomeIcon icon={faAdd} />
-            </IconButton>
-          )}
+          <IconButton
+            style={
+              role === "project manager" ||
+              (role === "board manager" && userId === boardInfo.board_leader)
+                ? {}
+                : { display: "none" }
+            }
+            onClick={() => openCreateForm()}
+            variant="outlined"
+          >
+            <FontAwesomeIcon icon={faAdd} />
+          </IconButton>
         </Grid>
       </Grid>
       <Grid container justifyContent="space-between">
@@ -329,9 +303,6 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
           paginationPageSize={5}
           suppressRowClickSelection={true}
           rowSelection={"multiple"}
-          onSelectionChanged={(event) =>
-            handleCheckboxChange(event.api.getSelectedRows())
-          }
         ></AgGridReact>
       </div>
       {isCreateFormOpen && (

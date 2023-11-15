@@ -17,7 +17,6 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
     dueDate: rowData.dueDate,
     members: rowData.members,
   });
-  const [boardsList, setBoardsList] = useState([]);
   const [userList, setUserList] = useState([]);
   const [errors, setErrors] = useState({}); // State to store validation errors
 
@@ -60,17 +59,6 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
     };
     getListUser();
   }, []);
-
-  useEffect(() => {
-    const getBoardsList = async () => {
-      const resKH = await axiosClient.get(
-        `/boards/cv_leader?token=${localStorage.getItem("token")}`
-      );
-      setBoardsList(resKH.data);
-    };
-    getBoardsList();
-  }, []);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -159,27 +147,6 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
           )}
         </div>
         <div>
-          <label className={cx("pop-form-label")}>Board:</label>
-          <select
-            className={cx("pop-form-input")}
-            type="text"
-            name="board_id"
-            id="board_id"
-            value={formData.board_id}
-            onChange={handleChange}
-            required
-          >
-            {boardsList.map((b) => (
-              <option key={b._id} value={b._id}>
-                {b.board_name}
-              </option>
-            ))}
-          </select>
-          {errors.board_id && (
-            <span className={cx("error-message")}>{errors.board_id}</span>
-          )}
-        </div>
-        <div>
           <label className={cx("pop-form-label")}>Members:</label>
           <Select
             className={cx("pop-form-input")}
@@ -207,12 +174,11 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
             }}
           />
         </div>
-        <button className={cx("submit-button")} type="submit">
-          Update task
-        </button>
-        <button className={cx("submit-button")} onClick={closeForm}>
-          Close
-        </button>
+        <div className={cx("group-button")}>
+          <button className={cx("submit-button")} type="submit">
+            Update task
+          </button>
+        </div>
       </form>
     </div>
   );

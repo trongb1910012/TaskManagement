@@ -4,21 +4,15 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAdd,
-  faFile,
-  faPenToSquare,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAdd, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { Grid, IconButton } from "@mui/material";
 
 // import ProjectBoardTable from "./ProjectBoardTable";
 
 import AddUserForm from "./UserAddForm";
 import EditUserForm from "./UserEditForm";
-const UserListTable = (role) => {
+const UserListTable = () => {
   const [projects, setProjects] = useState([]);
-
-  const [isUserListTableOpen, setIsUserListTableOpen] = useState(false);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const [rowDataForForm, setRowDataForForm] = useState(null);
@@ -48,10 +42,6 @@ const UserListTable = (role) => {
     setIsEditFormOpen(true);
     setRowDataForForm(rowData);
   };
-
-  const handleOpenTable = (projectId, projectName) => {
-    setIsUserListTableOpen(!isUserListTableOpen);
-  };
   const actionCellRenderer = (params) => {
     if (params.columnApi.getRowGroupColumns().length > 0) {
       return null;
@@ -67,17 +57,6 @@ const UserListTable = (role) => {
           >
             <FontAwesomeIcon icon={faPenToSquare} />
           </IconButton>
-          <IconButton
-            onClick={() => handleOpenTable(params.data._id, params.data.title)}
-            variant="outlined"
-          >
-            <FontAwesomeIcon icon={faFile} style={{ color: "#657795" }} />
-          </IconButton>
-          {/* <Link to={`${params.data._id}`}>
-            <IconButton variant="outlined">
-              <FontAwesomeIcon icon={faEye} />
-            </IconButton>
-          </Link> */}
         </>
       </div>
     );

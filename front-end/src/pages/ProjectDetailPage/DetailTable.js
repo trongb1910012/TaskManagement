@@ -15,10 +15,7 @@ import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import CreateBoardForm from "./CreateBoardForm";
 import TasksByBoardTable from "../BoardPage/TasksByBoardId";
-var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
+
 const DetailTable = (project) => {
   const [projects, setProjects] = useState([]);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
@@ -150,7 +147,6 @@ const DetailTable = (project) => {
       field: "board_name",
       sortable: true,
       filter: true,
-      headerCheckboxSelection: headerCheckboxSelection,
     },
     {
       headerName: "Create Date",
@@ -205,10 +201,11 @@ const DetailTable = (project) => {
     <div>
       <Grid container justifyContent="flex-end">
         <Grid item>
-          {" "}
-          <IconButton onClick={() => handleOpenForm()} variant="outlined">
-            <FontAwesomeIcon icon={faAdd} />
-          </IconButton>
+          {role === "project manager" && (
+            <IconButton onClick={() => handleOpenForm()} variant="outlined">
+              <FontAwesomeIcon icon={faAdd} />
+            </IconButton>
+          )}
         </Grid>
       </Grid>
       <div

@@ -16,32 +16,63 @@ const AddUserForm = ({ onBoardCreated, closeForm }) => {
     email: "",
     password: "123123",
   });
+  const [formErrors, setFormErrors] = useState({
+    username: "",
+    fullname: "",
+    email: "",
+    // Thêm các trường khác nếu cần
+  });
+  const validateForm = () => {
+    let errors = {};
+    let isValid = true;
 
+    // Kiểm tra username
+    if (!formData.username.trim()) {
+      errors.username = "Username is required";
+      isValid = false;
+    }
+
+    // Kiểm tra fullname
+    if (!formData.fullname.trim()) {
+      errors.fullname = "Fullname is required";
+      isValid = false;
+    }
+
+    // Kiểm tra email
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = "Email is invalid";
+      isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      await axiosClient.post(`/auth/signup `, formData);
-
-      cogoToast.success("Add user successfully !!", {
-        position: "bottom-right",
-      });
-
-      // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
-      onBoardCreated();
-      closeForm();
-      console.log(formData);
-      // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
-      setFormData({
-        fullname: "",
-        username: "",
-        birthDay: new Date().toISOString().substring(0, 10),
-        email: "",
-        password: "123123",
-      });
-    } catch (error) {
-      cogoToast.error("Add user failed !!", {
-        position: "bottom-right",
-      }); // Xử lý lỗi một cách phù hợp
+    if (validateForm()) {
+      try {
+        await axiosClient.post(`/auth/signup`, formData);
+        cogoToast.success("Adding user successfully", {
+          position: "bottom-right",
+        });
+        onBoardCreated();
+        closeForm();
+        console.log(formData);
+        setFormData({
+          fullname: "",
+          username: "",
+          birthDay: new Date().toISOString().substring(0, 10),
+          email: "",
+          password: "123123",
+        });
+      } catch (error) {
+        cogoToast.error("Email is already in use", {
+          position: "bottom-right",
+        });
+      }
     }
   };
 
@@ -75,6 +106,9 @@ const AddUserForm = ({ onBoardCreated, closeForm }) => {
             onChange={handleChange}
             required
           />
+          {formErrors.username && (
+            <span className={cx("error-message")}>{formErrors.username}</span>
+          )}
         </div>
         <div>
           <label className={cx("pop-form-label")}>Full name:</label>
@@ -87,6 +121,9 @@ const AddUserForm = ({ onBoardCreated, closeForm }) => {
             onChange={handleChange}
             required
           />
+          {formErrors.fullname && (
+            <span className={cx("error-message")}>{formErrors.fullname}</span>
+          )}
         </div>
         <div>
           <label className={cx("pop-form-label")}>Birth date:</label>
@@ -111,6 +148,9 @@ const AddUserForm = ({ onBoardCreated, closeForm }) => {
             onChange={handleChange}
             required
           />
+          {formErrors.email && (
+            <span className={cx("error-message")}>{formErrors.email}</span>
+          )}
         </div>
         <div className={cx("group-button")}>
           <button className={cx("submit-button")} type="submit">

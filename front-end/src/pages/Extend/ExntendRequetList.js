@@ -80,15 +80,15 @@ export const ExtendRequestList = () => {
   };
   const handleResolve = (projectId) => {
     swal({
-      title: `Resolve ${projectId.title} report`,
-      text: "Once resolved, you will not be able to restore this report status!",
+      title: `Resolve this request`,
+      text: "Once resolved, you will not be able to restore this request status!",
       icon: "info",
       buttons: true,
       dangerMode: false,
     }).then(async (willDelete) => {
       if (willDelete) {
-        await axiosClient.patch(`/reports/resolve/${projectId._id}`);
-        swal(`${projectId.title.toUpperCase()} has been resolved`, {
+        await axiosClient.patch(`/comments/resolve/${projectId._id}`);
+        swal(`This extend request has been resolved`, {
           icon: "success",
         });
         await fetchData();
@@ -99,15 +99,15 @@ export const ExtendRequestList = () => {
   };
   const handleReject = (projectId) => {
     swal({
-      title: `Reject ${projectId.title} report`,
-      text: "Once reject, you will not be able to restore this report status!",
-      icon: "warning",
+      title: `Reject this request `,
+      text: "Once reject, you will not be able to restore this extend request status",
+      icon: "info",
       buttons: true,
       dangerMode: true,
     }).then(async (willDelete) => {
       if (willDelete) {
-        await axiosClient.patch(`/reports/reject/${projectId._id}`);
-        swal(` ${projectId.title.toUpperCase()} has been reject`, {
+        await axiosClient.patch(`/comments/reject/${projectId._id}`);
+        swal(` The request has been rejected`, {
           icon: "success",
         });
         await fetchData();

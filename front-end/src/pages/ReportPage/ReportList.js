@@ -21,15 +21,6 @@ import styles from "./ReportPage.module.scss";
 import BackButton from "../../components/BackButton";
 
 const cx = classNames.bind(styles);
-var checkboxSelection = function (params) {
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
-
-var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
-
 export const ReportsList = () => {
   const [projects, setProjects] = useState([]);
 
@@ -161,7 +152,7 @@ export const ReportsList = () => {
     return (
       <div>
         <Button onClick={() => handleDownload(params)}>
-          {params.data.file}
+          {params.data?.file || ""}
         </Button>
       </div>
     );
@@ -225,8 +216,6 @@ export const ReportsList = () => {
       field: "title",
       sortable: true,
       filter: true,
-      checkboxSelection: checkboxSelection,
-      headerCheckboxSelection: headerCheckboxSelection,
     },
     {
       headerName: "Description",
@@ -246,16 +235,20 @@ export const ReportsList = () => {
       sortable: true,
       filter: true,
     },
+
     {
       headerName: "Attached File",
       cellRenderer: reportFileRenderer,
       sortable: true,
-      filter: true,
+      filter: "agTextColumnFilter",
       cellStyle: {
         whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",
       },
+      field: "file",
+      // Thêm floatingFilterComponent
+      floatingFilterComponent: "agTextColumnFilter",
     },
     {
       headerName: "Status",

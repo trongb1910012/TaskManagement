@@ -70,7 +70,29 @@ export const ReportDetail = () => {
       }
     });
   };
+  const handleDownload = async (fileTitle) => {
+    try {
+      // Gửi yêu cầu tải xuống file bằng cách sử dụng ID của file (nếu có)
+      const response = await axiosClient.get(`/reports/download/${fileTitle}`, {
+        responseType: "blob", // Yêu cầu dữ liệu trả về dạng blob
+      });
 
+      // Xử lý dữ liệu blob và tạo URL tải xuống
+      const file = new Blob([response.data]);
+      const fileURL = URL.createObjectURL(file);
+
+      // Tạo một thẻ a ẩn để tải xuống file
+      const downloadLink = document.createElement("a");
+      downloadLink.href = fileURL;
+      downloadLink.download = fileTitle;
+      downloadLink.click();
+
+      // Giải phóng URL tải xuống
+      URL.revokeObjectURL(fileURL);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
   return (
     <div className={cx("wrapper")}>
       <BackButton />
@@ -109,42 +131,48 @@ export const ReportDetail = () => {
               <Typography color="text.secondary" variant="h5" gutterBottom>
                 Description: {data.description}
               </Typography>
+              <Typography color="text.secondary" variant="h5" gutterBottom>
+                Attached file:{" "}
+                <Button onClick={() => handleDownload(data.file)}>
+                  {data.file}
+                </Button>
+              </Typography>
             </Box>
           ) : (
             <Typography>Loading user data...</Typography>
           )}
         </CardContent>
-        <Divider />
-      </Card>
-      {role === "user" || (data && data.status !== "open") ? null : (
-        <Box
-          sx={{
-            alignItems: "center",
-            display: "flex",
-            flexDirection: "column",
-            mb: "10px",
-          }}
-        >
-          <Button
-            variant="contained"
-            onClick={() => handleResolve(reportId)}
-            style={{
-              backgroundColor: "#30324e",
-              color: "#ffffff",
-              marginBottom: "10px",
+        {role === "user" || (data && data.status !== "open") ? null : (
+          <Box
+            sx={{
+              alignItems: "center",
+              display: "flex",
+              flexDirection: "column",
+              mb: "10px",
             }}
           >
-            Resolve
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => handleReject(reportId)}
-            style={{ backgroundColor: "red", color: "#ffffff" }}
-          >
-            Reject
-          </Button>
-        </Box>
-      )}
+            <Button
+              variant="contained"
+              onClick={() => handleResolve(reportId)}
+              style={{
+                backgroundColor: "#30324e",
+                color: "#ffffff",
+                marginBottom: "10px",
+              }}
+            >
+              Resolve
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleReject(reportId)}
+              style={{ backgroundColor: "red", color: "#ffffff" }}
+            >
+              Reject
+            </Button>
+          </Box>
+        )}
+        <Divider />
+      </Card>
     </div>
   );
 };
