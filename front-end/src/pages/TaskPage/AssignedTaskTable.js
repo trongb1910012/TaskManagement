@@ -17,7 +17,8 @@ import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
 import AddTasksForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
-
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 const AssignedTaskTable = () => {
   const [projects, setProjects] = useState([]);
 
@@ -114,28 +115,33 @@ const AssignedTaskTable = () => {
             <>
               {" "}
               <Link to={`/tasking/report/${params.data._id}`}>
-                <IconButton variant="outlined" color="primary">
-                  <FontAwesomeIcon icon={faTasks} />
-                </IconButton>
+                <Tippy content="Reports">
+                  <IconButton variant="outlined" color="primary">
+                    <FontAwesomeIcon icon={faTasks} />
+                  </IconButton>
+                </Tippy>
               </Link>{" "}
               <Link to={`/tasking/extend/${params.data._id}`}>
-                <IconButton variant="outlined" color="secondary">
-                  <FontAwesomeIcon icon={faClock} />
-                </IconButton>
+                <Tippy content="Extend requests">
+                  <IconButton variant="outlined" color="secondary">
+                    <FontAwesomeIcon icon={faClock} />
+                  </IconButton>
+                </Tippy>
               </Link>
             </>
           )}
-
-          <IconButton
-            style={
-              params.data.status !== "not started" ? { display: "none" } : {}
-            }
-            variant="outlined"
-            color="primary"
-            onClick={() => handleAcceptTask(params.data)}
-          >
-            <FontAwesomeIcon icon={faClipboardCheck} />
-          </IconButton>
+          <Tippy content="Accept">
+            <IconButton
+              style={
+                params.data.status !== "not started" ? { display: "none" } : {}
+              }
+              variant="outlined"
+              color="primary"
+              onClick={() => handleAcceptTask(params.data)}
+            >
+              <FontAwesomeIcon icon={faClipboardCheck} />
+            </IconButton>
+          </Tippy>
         </>
       );
     }

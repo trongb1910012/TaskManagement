@@ -14,6 +14,8 @@ import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import "./ProjectTable.css";
 import AddBoardByProject from "./AddBoardByProject";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 var headerCheckboxSelection = function (params) {
   // we put checkbox on the name if we are not doing grouping
   return params.columnApi.getRowGroupColumns().length === 0;
@@ -85,20 +87,24 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
     return (
       <div>
         <>
-          <IconButton
-            onClick={() => handleEdit(params.data)}
-            variant="outlined"
-            color="primary"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </IconButton>
-          <IconButton
-            onClick={() => handleDelete(params.data)}
-            variant="outlined"
-            color="error"
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </IconButton>
+          <Tippy content="Edit">
+            <IconButton
+              onClick={() => handleEdit(params.data)}
+              variant="outlined"
+              color="primary"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </IconButton>
+          </Tippy>
+          <Tippy content="Delete">
+            <IconButton
+              onClick={() => handleDelete(params.data)}
+              variant="outlined"
+              color="error"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+          </Tippy>
         </>
       </div>
     );

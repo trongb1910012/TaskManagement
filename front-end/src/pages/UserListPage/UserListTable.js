@@ -6,11 +6,10 @@ import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAdd, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { Grid, IconButton } from "@mui/material";
-
-// import ProjectBoardTable from "./ProjectBoardTable";
-
 import AddUserForm from "./UserAddForm";
 import EditUserForm from "./UserEditForm";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 const UserListTable = () => {
   const [projects, setProjects] = useState([]);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
@@ -50,13 +49,15 @@ const UserListTable = () => {
     return (
       <div>
         <>
-          <IconButton
-            onClick={() => openEditForm(params.data)}
-            variant="outlined"
-            color="primary"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </IconButton>
+          <Tippy content="Edit">
+            <IconButton
+              onClick={() => openEditForm(params.data)}
+              variant="outlined"
+              color="primary"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </IconButton>
+          </Tippy>
         </>
       </div>
     );

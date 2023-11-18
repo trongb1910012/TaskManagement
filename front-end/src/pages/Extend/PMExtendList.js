@@ -8,6 +8,8 @@ import { faCheck, faTrash, faX } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import { Grid } from "@mui/material";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 export const PMExtendRequestList = () => {
   const [projects, setProjects] = useState([]);
 
@@ -93,35 +95,41 @@ export const PMExtendRequestList = () => {
       <div>
         {role === "user" && (
           <>
-            <IconButton
-              style={params.data.status !== "open" ? { display: "none" } : {}}
-              onClick={() => handleDelete(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
+            <Tippy content="Delete">
+              <IconButton
+                style={params.data.status !== "open" ? { display: "none" } : {}}
+                onClick={() => handleDelete(params.data)}
+                variant="outlined"
+                color="error"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </IconButton>
+            </Tippy>
           </>
         )}
 
         {role !== "user" && (
           <>
-            <IconButton
-              style={params.data.status !== "open" ? { display: "none" } : {}}
-              onClick={() => handleResolve(params.data)}
-              variant="outlined"
-              color="info"
-            >
-              <FontAwesomeIcon icon={faCheck} />
-            </IconButton>
-            <IconButton
-              style={params.data.status !== "open" ? { display: "none" } : {}}
-              onClick={() => handleReject(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faX} />
-            </IconButton>
+            <Tippy content="Resolve">
+              <IconButton
+                style={params.data.status !== "open" ? { display: "none" } : {}}
+                onClick={() => handleResolve(params.data)}
+                variant="outlined"
+                color="info"
+              >
+                <FontAwesomeIcon icon={faCheck} />
+              </IconButton>
+            </Tippy>
+            <Tippy content="Reject">
+              <IconButton
+                style={params.data.status !== "open" ? { display: "none" } : {}}
+                onClick={() => handleReject(params.data)}
+                variant="outlined"
+                color="error"
+              >
+                <FontAwesomeIcon icon={faX} />
+              </IconButton>
+            </Tippy>
           </>
         )}
       </div>

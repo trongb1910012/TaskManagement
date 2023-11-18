@@ -4,13 +4,8 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useParams } from "react-router-dom";
-import {
-  faCheck,
-  faEye,
-  faTrash,
-  faX,
-} from "@fortawesome/free-solid-svg-icons";
+import { useParams } from "react-router-dom";
+import { faCheck, faTrash, faX } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@mui/material";
 import swal from "sweetalert";
 import { Grid } from "@mui/material";
@@ -19,6 +14,8 @@ import classNames from "classnames/bind";
 import styles from "../ReportPage/ReportPage.module.scss";
 import { ExtendRequestForm } from "../Extend/AddExtendForm";
 import BackButton from "../../components/BackButton";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 const cx = classNames.bind(styles);
 
 export const ExtendRequestList = () => {
@@ -126,40 +123,41 @@ export const ExtendRequestList = () => {
       <div>
         {role === "user" && (
           <>
-            <IconButton
-              style={params.data.status !== "open" ? { display: "none" } : {}}
-              onClick={() => handleDelete(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
+            <Tippy content="Delete">
+              <IconButton
+                style={params.data.status !== "open" ? { display: "none" } : {}}
+                onClick={() => handleDelete(params.data)}
+                variant="outlined"
+                color="error"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </IconButton>
+            </Tippy>
           </>
         )}
 
         {role !== "user" && (
           <>
-            <IconButton
-              style={params.data.status !== "open" ? { display: "none" } : {}}
-              onClick={() => handleResolve(params.data)}
-              variant="outlined"
-              color="info"
-            >
-              <FontAwesomeIcon icon={faCheck} />
-            </IconButton>
-            <IconButton
-              style={params.data.status !== "open" ? { display: "none" } : {}}
-              onClick={() => handleReject(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faX} />
-            </IconButton>
-            <Link to={`/tasking/report/detail/${params.data._id}`}>
-              <IconButton variant="outlined">
-                <FontAwesomeIcon icon={faEye} />
+            <Tippy content="Resolve">
+              <IconButton
+                style={params.data.status !== "open" ? { display: "none" } : {}}
+                onClick={() => handleResolve(params.data)}
+                variant="outlined"
+                color="info"
+              >
+                <FontAwesomeIcon icon={faCheck} />
               </IconButton>
-            </Link>
+            </Tippy>
+            <Tippy content="Reject">
+              <IconButton
+                style={params.data.status !== "open" ? { display: "none" } : {}}
+                onClick={() => handleReject(params.data)}
+                variant="outlined"
+                color="error"
+              >
+                <FontAwesomeIcon icon={faX} />
+              </IconButton>
+            </Tippy>
           </>
         )}
       </div>

@@ -17,6 +17,8 @@ import cogoToast from "cogo-toast";
 import CreateBoardForm from "./CreateBoardForm";
 import TasksByBoardTable from "./TasksByBoardId";
 import { Link } from "react-router-dom";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
@@ -98,40 +100,49 @@ const ProjectTable = () => {
     return (
       <div>
         <>
-          <IconButton
-            onClick={() => handleEdit(params.data)}
-            variant="outlined"
-            color="primary"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </IconButton>
-          <IconButton
-            onClick={() => handleDelete(params.data)}
-            variant="outlined"
-            color="error"
-            disabled={params.data.completedTaskCount > 0}
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </IconButton>
-          <IconButton
-            onClick={() =>
-              handleOpenTable(
-                params.data._id,
-                params.data.board_name,
-                params.data.projectName
-              )
-            }
-            variant="outlined"
-          >
-            <FontAwesomeIcon icon={faBriefcase} />
-          </IconButton>
-          <Link to={`/tasking/project/${params.data.project}`}>
+          <Tippy content="Edit">
             <IconButton
+              onClick={() => handleEdit(params.data)}
               variant="outlined"
-              style={role !== "board manager" ? { display: "none" } : {}}
+              color="primary"
             >
-              <FontAwesomeIcon icon={faEye} />
+              <FontAwesomeIcon icon={faPenToSquare} />
             </IconButton>
+          </Tippy>
+          <Tippy content="Delete">
+            <IconButton
+              onClick={() => handleDelete(params.data)}
+              variant="outlined"
+              color="error"
+              disabled={params.data.completedTaskCount > 0}
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+          </Tippy>
+          <Tippy content="Show tasks">
+            <IconButton
+              onClick={() =>
+                handleOpenTable(
+                  params.data._id,
+                  params.data.board_name,
+                  params.data.projectName
+                )
+              }
+              variant="outlined"
+            >
+              <FontAwesomeIcon icon={faBriefcase} />
+            </IconButton>
+          </Tippy>
+
+          <Link to={`/tasking/project/${params.data.project}`}>
+            <Tippy content="Project detail">
+              <IconButton
+                variant="outlined"
+                style={role !== "board manager" ? { display: "none" } : {}}
+              >
+                <FontAwesomeIcon icon={faEye} />
+              </IconButton>
+            </Tippy>
           </Link>
         </>
       </div>

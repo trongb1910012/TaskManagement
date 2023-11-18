@@ -19,7 +19,8 @@ import { TaskInfo } from "./TaskInfo";
 import classNames from "classnames/bind";
 import styles from "./ReportPage.module.scss";
 import BackButton from "../../components/BackButton";
-
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 const cx = classNames.bind(styles);
 export const ReportsList = () => {
   const [projects, setProjects] = useState([]);
@@ -166,44 +167,56 @@ export const ReportsList = () => {
       <div>
         {role === "user" && (
           <>
-            <IconButton
-              style={params.data.status !== "open" ? { display: "none" } : {}}
-              onClick={() => handleDelete(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </IconButton>
-            <Link to={`/tasking/report/detail/${params.data._id}`}>
-              <IconButton variant="outlined">
-                <FontAwesomeIcon icon={faEye} />
+            <Tippy content="Delete">
+              <IconButton
+                style={params.data.status !== "open" ? { display: "none" } : {}}
+                onClick={() => handleDelete(params.data)}
+                variant="outlined"
+                color="error"
+              >
+                <FontAwesomeIcon icon={faTrash} />
               </IconButton>
+            </Tippy>
+
+            <Link to={`/tasking/report/detail/${params.data._id}`}>
+              <Tippy content="Report detail">
+                <IconButton variant="outlined">
+                  <FontAwesomeIcon icon={faEye} />
+                </IconButton>
+              </Tippy>
             </Link>
           </>
         )}
 
         {role !== "user" && (
           <>
-            <IconButton
-              style={params.data.status !== "open" ? { display: "none" } : {}}
-              onClick={() => handleResolve(params.data)}
-              variant="outlined"
-              color="info"
-            >
-              <FontAwesomeIcon icon={faCheck} />
-            </IconButton>
-            <IconButton
-              style={params.data.status !== "open" ? { display: "none" } : {}}
-              onClick={() => handleReject(params.data)}
-              variant="outlined"
-              color="error"
-            >
-              <FontAwesomeIcon icon={faX} />
-            </IconButton>
-            <Link to={`/tasking/report/detail/${params.data._id}`}>
-              <IconButton variant="outlined">
-                <FontAwesomeIcon icon={faEye} />
+            <Tippy content="Resolve">
+              <IconButton
+                style={params.data.status !== "open" ? { display: "none" } : {}}
+                onClick={() => handleResolve(params.data)}
+                variant="outlined"
+                color="info"
+              >
+                <FontAwesomeIcon icon={faCheck} />
               </IconButton>
+            </Tippy>
+            <Tippy content="Reject">
+              <IconButton
+                style={params.data.status !== "open" ? { display: "none" } : {}}
+                onClick={() => handleReject(params.data)}
+                variant="outlined"
+                color="error"
+              >
+                <FontAwesomeIcon icon={faX} />
+              </IconButton>
+            </Tippy>
+
+            <Link to={`/tasking/report/detail/${params.data._id}`}>
+              <Tippy content="Report detail">
+                <IconButton variant="outlined">
+                  <FontAwesomeIcon icon={faEye} />
+                </IconButton>
+              </Tippy>
             </Link>
           </>
         )}

@@ -17,6 +17,8 @@ import ProjectBoardTable from "./ProjectBoardTable";
 import { Link } from "react-router-dom";
 import AddProjectForm from "./AddProjectForm";
 import EditProjectForm from "./EditProjectForm";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
 
@@ -86,31 +88,41 @@ const ProjectTable = () => {
     return (
       <div>
         <>
-          <IconButton
-            onClick={() => openEditForm(params.data)}
-            variant="outlined"
-            color="primary"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </IconButton>
-          <IconButton
-            onClick={() => handleDelete(params.data)}
-            variant="outlined"
-            color="error"
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </IconButton>
-          <IconButton
-            onClick={() => handleOpenTable(params.data._id, params.data.title)}
-            variant="outlined"
-          >
-            <FontAwesomeIcon icon={faFile} style={{ color: "#657795" }} />
-          </IconButton>
-          <Link to={`${params.data._id}`}>
-            <IconButton variant="outlined">
-              <FontAwesomeIcon icon={faEye} />
+          <Tippy content="Edit">
+            <IconButton
+              onClick={() => openEditForm(params.data)}
+              variant="outlined"
+              color="primary"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
             </IconButton>
-          </Link>
+          </Tippy>
+          <Tippy content="Delete">
+            <IconButton
+              onClick={() => handleDelete(params.data)}
+              variant="outlined"
+              color="error"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+          </Tippy>
+          <Tippy content="Show boards">
+            <IconButton
+              onClick={() =>
+                handleOpenTable(params.data._id, params.data.title)
+              }
+              variant="outlined"
+            >
+              <FontAwesomeIcon icon={faFile} style={{ color: "#657795" }} />
+            </IconButton>
+          </Tippy>
+          <Tippy content="Detail">
+            <Link to={`${params.data._id}`}>
+              <IconButton variant="outlined">
+                <FontAwesomeIcon icon={faEye} />
+              </IconButton>
+            </Link>
+          </Tippy>
         </>
       </div>
     );

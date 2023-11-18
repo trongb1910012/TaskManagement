@@ -18,6 +18,8 @@ import { Grid } from "@mui/material";
 import "ag-grid-enterprise";
 import { LicenseManager } from "ag-grid-enterprise";
 import { Link } from "react-router-dom";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 LicenseManager.setLicenseKey("AG-047238");
 
 const ProjectMangerTasks = () => {
@@ -102,42 +104,50 @@ const ProjectMangerTasks = () => {
 
     return (
       <div>
-        <IconButton
-          style={
-            params.data.status !== "not started" ? { display: "none" } : {}
-          }
-          onClick={() => openEditForm(params.data)}
-          variant="outlined"
-          color="primary"
-        >
-          <FontAwesomeIcon icon={faPenToSquare} />
-        </IconButton>
-        <IconButton
-          style={
-            params.data.status !== "not started" ? { display: "none" } : {}
-          }
-          onClick={() => handleDelete(params.data)}
-          variant="outlined"
-          color="error"
-        >
-          <FontAwesomeIcon icon={faTrash} />
-        </IconButton>
+        <Tippy content="Edit">
+          <IconButton
+            style={
+              params.data.status !== "not started" ? { display: "none" } : {}
+            }
+            onClick={() => openEditForm(params.data)}
+            variant="outlined"
+            color="primary"
+          >
+            <FontAwesomeIcon icon={faPenToSquare} />
+          </IconButton>
+        </Tippy>
+        <Tippy content="Delete">
+          <IconButton
+            style={
+              params.data.status !== "not started" ? { display: "none" } : {}
+            }
+            onClick={() => handleDelete(params.data)}
+            variant="outlined"
+            color="error"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </IconButton>
+        </Tippy>
 
         <Link to={`/tasking/report/${params.data._id}`}>
-          <IconButton variant="outlined" color="primary">
-            <FontAwesomeIcon icon={faTasks} />
-          </IconButton>
+          <Tippy content="Reports">
+            <IconButton variant="outlined" color="primary">
+              <FontAwesomeIcon icon={faTasks} />
+            </IconButton>
+          </Tippy>
         </Link>
-        <IconButton
-          style={
-            params.data.status !== "in progress" ? { display: "none" } : {}
-          }
-          variant="outlined"
-          color="primary"
-          onClick={() => handleCompletedTask(params.data)}
-        >
-          <FontAwesomeIcon icon={faCheck} />
-        </IconButton>
+        <Tippy content="Complete">
+          <IconButton
+            style={
+              params.data.status !== "in progress" ? { display: "none" } : {}
+            }
+            variant="outlined"
+            color="primary"
+            onClick={() => handleCompletedTask(params.data)}
+          >
+            <FontAwesomeIcon icon={faCheck} />
+          </IconButton>
+        </Tippy>
       </div>
     );
   };

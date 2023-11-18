@@ -15,7 +15,8 @@ import swal from "sweetalert";
 import cogoToast from "cogo-toast";
 import CreateBoardForm from "./CreateBoardForm";
 import TasksByBoardTable from "../BoardPage/TasksByBoardId";
-
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 const DetailTable = (project) => {
   const [projects, setProjects] = useState([]);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
@@ -96,47 +97,54 @@ const DetailTable = (project) => {
     return (
       <div>
         <>
-          <IconButton
-            style={
-              role === "project manager" ||
-              (role === "board manager" &&
-                userId === params.data.board_leader._id)
-                ? {}
-                : { display: "none" }
-            }
-            onClick={() => handleEdit(params.data)}
-            variant="outlined"
-            color="primary"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </IconButton>
-          <IconButton
-            style={
-              role === "project manager" ||
-              (role === "board manager" &&
-                userId === params.data.board_leader._id)
-                ? {}
-                : { display: "none" }
-            }
-            disabled={params.data.countCompletedTasks > 0}
-            onClick={() => handleDelete(params.data)}
-            variant="outlined"
-            color="error"
-          >
-            <FontAwesomeIcon icon={faTrash} />
-          </IconButton>
-          <IconButton
-            onClick={() =>
-              handleOpenTable(
-                params.data._id,
-                params.data.board_name,
-                params.data.projectName
-              )
-            }
-            variant="outlined"
-          >
-            <FontAwesomeIcon icon={faEye} />
-          </IconButton>
+          {" "}
+          <Tippy content="Edit">
+            <IconButton
+              style={
+                role === "project manager" ||
+                (role === "board manager" &&
+                  userId === params.data.board_leader._id)
+                  ? {}
+                  : { display: "none" }
+              }
+              onClick={() => handleEdit(params.data)}
+              variant="outlined"
+              color="primary"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </IconButton>
+          </Tippy>
+          <Tippy content="Delete">
+            <IconButton
+              style={
+                role === "project manager" ||
+                (role === "board manager" &&
+                  userId === params.data.board_leader._id)
+                  ? {}
+                  : { display: "none" }
+              }
+              disabled={params.data.countCompletedTasks > 0}
+              onClick={() => handleDelete(params.data)}
+              variant="outlined"
+              color="error"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </IconButton>
+          </Tippy>
+          <Tippy content="Show tasks">
+            <IconButton
+              onClick={() =>
+                handleOpenTable(
+                  params.data._id,
+                  params.data.board_name,
+                  params.data.projectName
+                )
+              }
+              variant="outlined"
+            >
+              <FontAwesomeIcon icon={faEye} />
+            </IconButton>
+          </Tippy>
         </>
       </div>
     );

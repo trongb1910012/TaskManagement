@@ -16,7 +16,8 @@ import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
 import AddTasksForm from "./AddTaskForm";
 import EditTaskForm from "./EditTaskForm";
-
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 const BMTasks = () => {
   const [projects, setProjects] = useState([]);
 
@@ -95,48 +96,60 @@ const BMTasks = () => {
         <>
           {params.data.status === "not started" ? null : (
             <>
-              {" "}
               <Link to={`/tasking/extend/${params.data._id}`}>
-                <IconButton variant="outlined" color="secondary">
-                  <FontAwesomeIcon icon={faClock} />
-                </IconButton>
+                <Tippy content="Extend requests">
+                  <IconButton variant="outlined" color="secondary">
+                    <FontAwesomeIcon icon={faClock} />
+                  </IconButton>
+                </Tippy>
               </Link>
             </>
           )}
 
           <Link to={`/tasking/report/${params.data._id}`}>
-            <IconButton variant="outlined" color="primary">
-              <FontAwesomeIcon icon={faTasks} />
-            </IconButton>
+            <Tippy content="Reports">
+              <IconButton variant="outlined" color="primary">
+                <FontAwesomeIcon icon={faTasks} />
+              </IconButton>
+            </Tippy>
           </Link>
         </>
       );
     }
     return (
       <div>
-        <IconButton
-          onClick={() => openEditForm(params.data)}
-          variant="outlined"
-          color="primary"
-        >
-          <FontAwesomeIcon icon={faPenToSquare} />
-        </IconButton>
-        <IconButton
-          onClick={() => handleDelete(params.data)}
-          variant="outlined"
-          color="error"
-        >
-          <FontAwesomeIcon icon={faTrash} />
-        </IconButton>
-        <Link to={`/tasking/report/${params.data._id}`}>
-          <IconButton variant="outlined" color="primary">
-            <FontAwesomeIcon icon={faTasks} />
+        <Tippy content="Edit">
+          <IconButton
+            onClick={() => openEditForm(params.data)}
+            variant="outlined"
+            color="primary"
+          >
+            <FontAwesomeIcon icon={faPenToSquare} />
           </IconButton>
+        </Tippy>
+        <Tippy content="Delete">
+          <IconButton
+            onClick={() => handleDelete(params.data)}
+            variant="outlined"
+            color="error"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </IconButton>
+        </Tippy>
+
+        <Link to={`/tasking/report/${params.data._id}`}>
+          <Tippy content="Reports">
+            <IconButton variant="outlined" color="primary">
+              <FontAwesomeIcon icon={faTasks} />
+            </IconButton>
+          </Tippy>
         </Link>
         <Link to={`/tasking/extend/${params.data._id}`}>
-          <IconButton variant="outlined" color="secondary">
-            <FontAwesomeIcon icon={faClock} />
-          </IconButton>
+          <Tippy content="Extend requests">
+            <IconButton variant="outlined" color="secondary">
+              <FontAwesomeIcon icon={faClock} />
+            </IconButton>
+          </Tippy>
         </Link>
       </div>
     );
