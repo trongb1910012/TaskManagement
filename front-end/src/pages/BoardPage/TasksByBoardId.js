@@ -29,6 +29,7 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
 
   const userId = localStorage.getItem("userId");
   const role = localStorage.getItem("role");
+  const fullname = localStorage.getItem("fullname");
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(`/tasks/${boardId}`);
@@ -119,7 +120,10 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
           <Tippy content="Edit">
             <IconButton
               style={
-                params.data.status === "completed" ? { display: "none" } : {}
+                fullname !== params.data.creator.fullname ||
+                params.data.status === "complete"
+                  ? { display: "none" }
+                  : {}
               }
               onClick={() => openEditForm(params.data)}
               variant="outlined"
@@ -131,7 +135,10 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
           <Tippy content="Delete">
             <IconButton
               style={
-                params.data.status !== "not started" ? { display: "none" } : {}
+                fullname !== params.data.creator.fullname ||
+                params.data.status !== "not started"
+                  ? { display: "none" }
+                  : {}
               }
               onClick={() => handleDelete(params.data)}
               variant="outlined"

@@ -139,7 +139,7 @@ exports.xoa_KeHoach = async (req, res, next) => {
     const taskIds = tasks.map((task) => task._id);
 
     await Report.deleteMany({ task: { $in: taskIds } });
-    await Comment.deleteMany({ task: { $in: taskIds } });
+    await Comment.deleteMany({ task_id: { $in: taskIds } });
     await Task.deleteMany({ board: { $in: boardIds } });
     await Board.deleteMany({ project: projectId });
 

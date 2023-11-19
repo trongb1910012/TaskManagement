@@ -11,7 +11,6 @@ import {
   faClock,
   faPenToSquare,
   faTasks,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { Grid, IconButton } from "@mui/material";
 import swal from "sweetalert";
@@ -53,27 +52,7 @@ const AssignedTaskTable = () => {
     updateTasksStatus();
     fetchData();
   }, []);
-  const handleDelete = (projectId) => {
-    swal({
-      title: `You definitely want to delete ${projectId.title} task`,
-      text: "Once deleted, you will not be able to restore this report",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
-    }).then(async (willDelete) => {
-      if (willDelete) {
-        await axiosClient.delete(`/tasks/`, {
-          data: { taskIds: projectId._id },
-        });
-        swal(`${projectId.title.toUpperCase()} đã được xóa`, {
-          icon: "success",
-        });
-        await fetchData();
-      } else {
-        return;
-      }
-    });
-  };
+
   const handleAcceptTask = (task) => {
     swal({
       title: `You will accept "${task.title}" task`,
@@ -84,7 +63,7 @@ const AssignedTaskTable = () => {
     }).then(async (willAccept) => {
       if (willAccept) {
         await axiosClient.patch(`/tasks/start/${task._id}`);
-        swal(`${task.title.toUpperCase()} đã được nhận`, {
+        swal(`${task.title.toUpperCase()} have been accepted`, {
           icon: "success",
         });
         await fetchData();
@@ -153,13 +132,6 @@ const AssignedTaskTable = () => {
           color="primary"
         >
           <FontAwesomeIcon icon={faPenToSquare} />
-        </IconButton>
-        <IconButton
-          onClick={() => handleDelete(params.data)}
-          variant="outlined"
-          color="error"
-        >
-          <FontAwesomeIcon icon={faTrash} />
         </IconButton>
         <Link to={`/tasking/report/${params.data._id}`}>
           <IconButton variant="outlined" color="primary">
