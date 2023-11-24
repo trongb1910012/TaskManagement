@@ -20,7 +20,12 @@ import EditTaskForm from "./EditTaskByBoardForm";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 
-const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
+const TasksByBoardTable = ({
+  boardId,
+  boardName,
+  projectName,
+  onDataUpdated,
+}) => {
   const [boards, setBoards] = useState([]);
   const [boardInfo, setBoardInfo] = useState([]);
   const [rowDataForForm, setRowDataForForm] = useState(null);
@@ -35,6 +40,9 @@ const TasksByBoardTable = ({ boardId, boardName, projectName }) => {
       const response = await axiosClient.get(`/tasks/${boardId}`);
 
       setBoards(response.data.tasks);
+      if (onDataUpdated) {
+        onDataUpdated();
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }

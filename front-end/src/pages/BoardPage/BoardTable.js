@@ -250,6 +250,7 @@ const ProjectTable = () => {
             boardId={selectedProjectId}
             boardName={selectedBoardName}
             projectName={selectedProjectName}
+            onDataUpdated={fetchData}
           />
         )}
       </div>

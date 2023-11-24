@@ -245,6 +245,7 @@ const DetailTable = (project) => {
           <TasksByBoardTable
             boardId={selectedProjectId}
             boardName={selectedProjectName}
+            onDataUpdated={fetchData}
           />
         )}
       </div>
