@@ -20,7 +20,7 @@ const EditUserForm = ({ onBoardCreated, rowData, closeForm }) => {
 
     try {
       await axiosClient.put(`/users/${rowData._id}`, formData);
-      cogoToast.success("Updated user successfully");
+      cogoToast.success("Updating user successfully");
 
       // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
       onBoardCreated();
@@ -34,7 +34,7 @@ const EditUserForm = ({ onBoardCreated, rowData, closeForm }) => {
         email: "",
       });
     } catch (error) {
-      cogoToast.error("Updated user failed"); // Xử lý lỗi một cách phù hợp
+      cogoToast.error("Updating user failed"); // Xử lý lỗi một cách phù hợp
     }
   };
 

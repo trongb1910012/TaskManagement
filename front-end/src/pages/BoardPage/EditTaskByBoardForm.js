@@ -30,7 +30,7 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
     try {
       const response = await axiosClient.put(`/tasks/${rowData._id}`, formData);
       console.log(response);
-      cogoToast.success("Update task successfully", {
+      cogoToast.success("Updating task successfully", {
         position: "bottom-right",
       });
 

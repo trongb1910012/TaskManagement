@@ -26,7 +26,7 @@ const CreateBoardForm = ({ onBoardCreated, onClose }) => {
         {}
       );
       console.log(response);
-      cogoToast.success("Added board successfully", {
+      cogoToast.success("Adding board successfully", {
         position: "bottom-right",
       });
 

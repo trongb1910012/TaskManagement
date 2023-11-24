@@ -236,7 +236,6 @@ const ProjectTable = () => {
           onGridReady={fetchData}
           pagination={true}
           pivotPanelShow={"always"}
-          // autoGroupColumnDef={autoGroupColumnDef}
           rowGroupPanelShow={"always"}
           paginationPageSize={5}
         ></AgGridReact>

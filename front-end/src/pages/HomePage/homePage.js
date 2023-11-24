@@ -3,7 +3,6 @@ import classNames from "classnames/bind";
 import styles from "./homepage.module.scss";
 import { Grid, Button } from "@mui/material";
 import AssignedTaskTable from "../TaskPage/AssignedTaskTable";
-// import ProjectList from "../TaskPage/taskTable";
 import { AdminStat } from "./AdminStat";
 import PieChart from "../PieChart/PieChart";
 import ProjectPieChart from "../PieChart/ProjectPieChart";
@@ -11,8 +10,6 @@ import ProjectMangerTasks from "../TaskPage/PmTaskTable";
 import BMTasks from "../TaskPage/BmTaskTable";
 import { PMStat, BMStat, UserStat } from "./PMStat";
 import { PMExtendRequestList } from "../Extend/PMExtendList";
-// import TableComponent from "../GanttTask/GanttTask";
-// import MyCalendar from "../Calendar/Calendar";
 const cx = classNames.bind(styles);
 function HomePage() {
   const [role, setRole] = useState("");
@@ -45,7 +42,6 @@ function HomePage() {
               <Grid item xs={12} md={12} xl={12}>
                 <PMStat />
               </Grid>
-
               <Grid item xs={6} md={3} xl={3}>
                 <Button
                   variant="contained"

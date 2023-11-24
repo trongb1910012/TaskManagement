@@ -113,11 +113,6 @@ const UserListTable = () => {
           return params.data[params.colDef.title];
         }
       },
-      headerCheckboxSelection: true,
-      cellRenderer: "agGroupCellRenderer",
-      cellRendererParams: {
-        checkbox: true,
-      },
     };
   }, []);
   const defaultColDef = useMemo(() => {
