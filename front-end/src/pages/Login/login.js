@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Grid,
-  Paper,
-  Avatar,
-  TextField,
-  Typography,
-  Link,
-} from "@material-ui/core";
+import { Grid, Paper, Avatar, TextField } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { useState } from "react";
 import axiosClient from "../../api/api";
@@ -113,12 +106,6 @@ const Login = () => {
                 </Grid>
               </Grid>
             </form>
-
-            <Typography variant="h6">
-              {" "}
-              Do you have an account ?
-              <Link href="/tasking/signup">Sign Up</Link>
-            </Typography>
           </Paper>
         </Grid>
       </div>
