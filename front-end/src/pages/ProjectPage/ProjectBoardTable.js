@@ -16,10 +16,7 @@ import "./ProjectTable.css";
 import AddBoardByProject from "./AddBoardByProject";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
-var headerCheckboxSelection = function (params) {
-  // we put checkbox on the name if we are not doing grouping
-  return params.columnApi.getRowGroupColumns().length === 0;
-};
+
 const ProjectBoardTable = ({ projectId, projectName }) => {
   const [projects, setProjects] = useState([]);
   const [isCreateFormOpen, setIsCreateFormOpen] = useState(false);
@@ -115,7 +112,6 @@ const ProjectBoardTable = ({ projectId, projectName }) => {
       field: "board_name",
       sortable: true,
       filter: true,
-      headerCheckboxSelection: headerCheckboxSelection,
     },
     {
       headerName: "Leader",

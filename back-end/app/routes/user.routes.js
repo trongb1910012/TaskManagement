@@ -10,6 +10,7 @@ module.exports = (app) => {
   router.get("/dsBM", users.get_all_board_mananger);
   router.get("/dsUser", users.get_only_user);
   router.get("/userinfo", users.get_user_info);
+  router.delete("/:id", users.deleteUser);
   router.put("/:id", users.update_user);
   app.use("/api/users", router);
 };

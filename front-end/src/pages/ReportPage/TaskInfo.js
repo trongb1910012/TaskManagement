@@ -49,6 +49,9 @@ export const TaskInfo = () => {
             <Typography color="text.secondary" variant="h5" gutterBottom>
               Description: {taskData.task.description}
             </Typography>
+            <Typography color="text.secondary" variant="h5" gutterBottom>
+              Due Date: {taskData.task.dueDate}
+            </Typography>
             <p>
               Member:{" "}
               {taskData.task.members.map((mb) => (

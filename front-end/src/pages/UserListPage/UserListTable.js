@@ -4,10 +4,15 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import axiosClient from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAdd, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAdd,
+  faPenToSquare,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { Grid, IconButton } from "@mui/material";
 import AddUserForm from "./UserAddForm";
 import EditUserForm from "./UserEditForm";
+import swal from "sweetalert";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 const UserListTable = () => {
@@ -41,6 +46,25 @@ const UserListTable = () => {
     setIsEditFormOpen(true);
     setRowDataForForm(rowData);
   };
+  const handleDelete = (userId) => {
+    swal({
+      title: `You definitely want to delete ${userId.fullname} user`,
+      text: "Once deleted, user data cannot be restored",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then(async (willDelete) => {
+      if (willDelete) {
+        await axiosClient.delete(`/users/${userId._id}`);
+        swal(`${userId.fullname.toUpperCase()} has been deleted`, {
+          icon: "success",
+        });
+        await fetchData();
+      } else {
+        return;
+      }
+    });
+  };
   const actionCellRenderer = (params) => {
     if (params.columnApi.getRowGroupColumns().length > 0) {
       return null;
@@ -56,6 +80,15 @@ const UserListTable = () => {
               color="primary"
             >
               <FontAwesomeIcon icon={faPenToSquare} />
+            </IconButton>
+          </Tippy>
+          <Tippy content="Delete">
+            <IconButton
+              onClick={() => handleDelete(params.data)}
+              variant="outlined"
+              color="error"
+            >
+              <FontAwesomeIcon icon={faTrash} />
             </IconButton>
           </Tippy>
         </>

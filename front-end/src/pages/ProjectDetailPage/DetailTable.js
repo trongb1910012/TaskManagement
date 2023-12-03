@@ -23,6 +23,7 @@ const DetailTable = (project) => {
   const [isTaskTableOpen, setIsTaskTableOpen] = useState(false);
   const [selectedProjectId, setSelectedBoardId] = useState(null);
   const [selectedProjectName, setSelectedBoardName] = useState(null);
+  const [selectedPName, setSelectedPName] = useState(null);
   const userId = localStorage.getItem("userId");
   const role = localStorage.getItem("role");
   const fetchData = async () => {
@@ -84,10 +85,11 @@ const DetailTable = (project) => {
       }
     });
   };
-  const handleOpenTable = (boardID, boardName) => {
+  const handleOpenTable = (boardID, boardName, PName) => {
     setIsTaskTableOpen(!isTaskTableOpen);
     setSelectedBoardId(boardID);
     setSelectedBoardName(boardName);
+    setSelectedPName(PName);
   };
   const actionCellRenderer = (params) => {
     if (params.columnApi.getRowGroupColumns().length > 0) {
@@ -137,7 +139,7 @@ const DetailTable = (project) => {
                 handleOpenTable(
                   params.data._id,
                   params.data.board_name,
-                  params.data.projectName
+                  params.data.project.title
                 )
               }
               variant="outlined"
@@ -245,6 +247,7 @@ const DetailTable = (project) => {
           <TasksByBoardTable
             boardId={selectedProjectId}
             boardName={selectedProjectName}
+            projectName={selectedPName}
             onDataUpdated={fetchData}
           />
         )}

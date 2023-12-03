@@ -90,16 +90,16 @@ const AssignedTaskTable = () => {
     if (userinfo._id !== params.data.creator._id) {
       return (
         <>
+          {" "}
+          <Link to={`/tasking/report/${params.data._id}`}>
+            <Tippy content="Reports">
+              <IconButton variant="outlined" color="primary">
+                <FontAwesomeIcon icon={faTasks} />
+              </IconButton>
+            </Tippy>
+          </Link>{" "}
           {params.data.status === "not started" ? null : (
             <>
-              {" "}
-              <Link to={`/tasking/report/${params.data._id}`}>
-                <Tippy content="Reports">
-                  <IconButton variant="outlined" color="primary">
-                    <FontAwesomeIcon icon={faTasks} />
-                  </IconButton>
-                </Tippy>
-              </Link>{" "}
               <Link to={`/tasking/extend/${params.data._id}`}>
                 <Tippy content="Extend requests">
                   <IconButton variant="outlined" color="secondary">

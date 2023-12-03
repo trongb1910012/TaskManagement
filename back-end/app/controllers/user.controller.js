@@ -184,3 +184,29 @@ exports.update_user = async (req, res, next) => {
     );
   }
 };
+exports.deleteUser = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Tìm người dùng theo ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Nếu vai trò của người dùng là "project manager"
+    if (user.role === "project manager") {
+      // Xóa các dự án có chủ sở hữu là ID của người dùng
+      await Project.deleteMany({ owner: userId });
+    }
+
+    // Thực hiện xóa người dùng
+    await user.remove();
+
+    return res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
