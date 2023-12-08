@@ -257,7 +257,7 @@ export const ExtendRequestList = () => {
         <Grid item xl={12}>
           {" "}
           <h1>Task: {taskData.title}</h1>
-          <h3>Task: {taskData.dueDate}</h3>
+          <h3>Due date: {taskData.dueDate}</h3>
         </Grid>
         <Grid item xl={12}>
           {shouldShowAddReportForm && <ExtendRequestForm fetch={fetchData} />}

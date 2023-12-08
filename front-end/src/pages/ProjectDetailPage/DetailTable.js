@@ -118,13 +118,7 @@ const DetailTable = (project) => {
           </Tippy>
           <Tippy content="Delete">
             <IconButton
-              style={
-                role === "project manager" ||
-                (role === "board manager" &&
-                  userId === params.data.board_leader._id)
-                  ? {}
-                  : { display: "none" }
-              }
+              style={role !== "project manager" ? { display: "none" } : {}}
               disabled={params.data.countCompletedTasks > 0}
               onClick={() => handleDelete(params.data)}
               variant="outlined"

@@ -33,14 +33,18 @@ exports.get_all_user = async (req, res) => {
     const pms = await User.find({
       role: "project manager",
     }).select("-password");
+    const projectCount = await Project.find();
     const inProgressTasks = await Task.find({ status: "in progress" });
+    const inProgressProjects = await Project.find({ status: "in progress" });
     const response = {
       userCount: users1.length,
       pmCount: pms.length,
       bmCount: bms.length,
       tasksCount: tasks.length,
       reportsCount: reports.length,
+      projectCount: projectCount.length,
       inProgressTasks: inProgressTasks.length,
+      inProgressProjects: inProgressProjects.length,
       users: users.map((user) => ({
         ...user._doc,
         birthDay: user.birthDay.toISOString().split("T")[0],

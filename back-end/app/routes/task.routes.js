@@ -12,6 +12,7 @@ module.exports = (app) => {
   router.get("/leaderTasks", tasks.getBoardsTasks);
   router.get("/taskinfo", tasks.getTaskById);
   router.get("/deadline", tasks.getTasksNearDeadline);
+  router.get("/open/:taskId", tasks.getOpenReport);
   router.get("/:id", tasks.get_CV_KeHoach);
   router.post("/", tasks.them_CongViec);
   router.post("/updateStatus", tasks.updateTaskStatus);

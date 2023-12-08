@@ -111,6 +111,7 @@ const ProjectTable = () => {
           </Tippy>
           <Tippy content="Delete">
             <IconButton
+              style={role !== "project manager" ? { display: "none" } : {}}
               onClick={() => handleDelete(params.data)}
               variant="outlined"
               color="error"

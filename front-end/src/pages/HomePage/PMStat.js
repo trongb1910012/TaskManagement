@@ -20,11 +20,19 @@ export function PMStat() {
   return (
     <div className={cx("stats")}>
       <button className={cx("stat")}>
+        <span className={cx("stat-label")}>Projects: </span>
+        <span className={cx("count")}>{stat.projectCount}</span>
+      </button>
+      <button className={cx("stat")}>
+        <span className={cx("stat-label")}>In progress projects: </span>
+        <span className={cx("count")}>{stat.inProgressProjects}</span>
+      </button>
+      <button className={cx("stat")}>
         <span className={cx("stat-label")}>Tasks: </span>
         <span className={cx("count")}>{stat.tasksCount}</span>
       </button>
       <button className={cx("stat")}>
-        <span className={cx("stat-label")}>In progress: </span>
+        <span className={cx("stat-label")}>In progress tasks: </span>
         <span className={cx("count")}>{stat.inProgressTasks}</span>
       </button>
       <button className={cx("stat")}>

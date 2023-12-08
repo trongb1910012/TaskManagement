@@ -582,6 +582,7 @@ exports.AcceptTask1 = async (req, res) => {
   }
 };
 //Xác nhận công việc hoàn thành
+
 exports.ConfirmCompletedTask = async (req, res) => {
   try {
     const { taskId } = req.params;
@@ -601,11 +602,21 @@ exports.ConfirmCompletedTask = async (req, res) => {
       });
     }
 
+    // Check if there are any open reports for this task
+    const openReports = await Report.find({ task: taskId, status: "open" });
+    if (openReports.length > 0) {
+      return res.status(400).send({
+        message:
+          "Cannot confirm completion. There are open reports for this task.",
+      });
+    }
+
+    // Update task status to "completed"
     task.status = "completed";
     await task.save();
 
     res.send({
-      message: "Task started successfully",
+      message: "Task confirmed as completed successfully",
     });
   } catch (error) {
     res.status(500).send({
@@ -613,6 +624,33 @@ exports.ConfirmCompletedTask = async (req, res) => {
     });
   }
 };
+
+exports.getOpenReport = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    // Validate taskId
+    if (!taskId) {
+      return res.status(400).json({
+        message: "Task id is required",
+      });
+    }
+
+    // Check for open reports
+    const openReports = await Report.find({ task: taskId, status: "open" });
+
+    // Respond with the result
+    res.json({
+      hasOpenReports: openReports.length > 0,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
 exports.getTaskStatusCounts = async (req, res) => {
   try {
     const completedCount = await Task.countDocuments({ status: "completed" });

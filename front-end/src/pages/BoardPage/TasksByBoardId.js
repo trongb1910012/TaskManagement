@@ -106,11 +106,38 @@ const TasksByBoardTable = ({
       dangerMode: true,
     }).then(async (willAccept) => {
       if (willAccept) {
-        await axiosClient.patch(`/tasks/complete/${task._id}`);
-        swal(`${task.title.toUpperCase()} has been confirmed as completed`, {
-          icon: "success",
-        });
-        await fetchData();
+        try {
+          // Perform the request to check for open reports
+          const response = await axiosClient.get(`/tasks/open/${task._id}`);
+
+          // Check if there are open reports
+          if (response.data.hasOpenReports) {
+            // Display error message in swal
+            swal({
+              title: "Error",
+              text: "Cannot confirm completion. There are open reports for this task.",
+              icon: "error",
+            });
+          } else {
+            // No open reports, proceed with completing the task
+            await axiosClient.patch(`/tasks/complete/${task._id}`);
+            swal(
+              `${task.title.toUpperCase()} has been confirmed as completed`,
+              {
+                icon: "success",
+              }
+            );
+            await fetchData();
+          }
+        } catch (error) {
+          // Handle any request error and display an error message in swal
+          swal({
+            title: "Error",
+            text: "An error occurred while confirming the task completion.",
+            icon: "error",
+          });
+          console.error(error);
+        }
       } else {
         return;
       }
