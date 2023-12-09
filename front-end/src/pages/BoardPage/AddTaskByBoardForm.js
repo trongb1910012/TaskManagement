@@ -21,6 +21,40 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
   const [userList, setUserList] = useState([]);
   const [taskList, setTaskList] = useState([]);
   const [errors, setErrors] = useState({});
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   if (!validateForm()) {
+  //     return;
+  //   }
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const response = await axiosClient.post(
+  //       `/tasks?token=${token}`,
+  //       formData
+  //     );
+  //     console.log(response);
+  //     cogoToast.success("Adding board successfully", {
+  //       position: "bottom-right",
+  //     });
+
+  //     // Cập nhật trực tiếp mảng dSKeHoach với dự án mới
+  //     onBoardCreated();
+  //     closeForm();
+  //     // Xóa nội dung của hàng nhập liệu sau khi gửi thành công
+  //     setFormData({
+  //       board_id: boardId,
+  //       title: "",
+  //       description: "",
+  //       dueDate: "",
+  //       members: [],
+  //       previousTask: "",
+  //     });
+  //   } catch (error) {
+  //     cogoToast.error("An error occurred while adding board", {
+  //       position: "bottom-right",
+  //     }); // Xử lý lỗi một cách phù hợp
+  //   }
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateForm()) {
@@ -50,9 +84,17 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
         previousTask: "",
       });
     } catch (error) {
-      cogoToast.error("An error occurred while adding board", {
-        position: "bottom-right",
-      }); // Xử lý lỗi một cách phù hợp
+      if (error.response) {
+        // Nếu có phản hồi từ server và có thông báo lỗi
+        cogoToast.error(`${error.response.data.message}`, {
+          position: "bottom-right",
+        });
+      } else {
+        // Nếu có lỗi xảy ra nhưng không có phản hồi từ server
+        cogoToast.error("An error occurred while adding task", {
+          position: "bottom-right",
+        });
+      }
     }
   };
   useEffect(() => {

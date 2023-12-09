@@ -58,9 +58,6 @@ export const AccountProfile = () => {
             <Typography color="text.secondary" variant="h5">
               {userData.role}
             </Typography>
-            <Typography color="text.secondary" variant="h6">
-              {userData._id}
-            </Typography>
           </Box>
         ) : (
           <Typography>Loading user data...</Typography>

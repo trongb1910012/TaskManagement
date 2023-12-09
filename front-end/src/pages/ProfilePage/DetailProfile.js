@@ -139,6 +139,9 @@ export const AccountProfileDetails = () => {
                     label="User name"
                     name="username"
                     onChange={handleChange}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                     required
                     value={values.username}
                   />

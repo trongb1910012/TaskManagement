@@ -98,11 +98,17 @@ exports.them_CongViec = async (req, res, next) => {
     });
     if (req.body.previousTask) {
       const prevTask = await Task.findById(req.body.previousTask);
-
+      const rawDueDate = new Date(prevTask.dueDate);
+      const formattedDueDate = `${rawDueDate.getDate()}/${
+        rawDueDate.getMonth() + 1
+      }/${rawDueDate.getFullYear()}`;
       // Kiểm tra dueDate lớn hơn dueDate của previousTask
       if (task.dueDate <= prevTask.dueDate) {
-        throw new Error(
-          `Due date phải lớn hơn previous task ${prevTask.dueDate}`
+        return next(
+          new BadRequestError(
+            400,
+            `Due date must be greater than ${formattedDueDate}`
+          )
         );
       }
     }
@@ -291,10 +297,16 @@ exports.sua_CongViec = async (req, res, next) => {
         const previousTask = await Task.findById(previousTaskId);
         const updatedDueDate = new Date(updates.dueDate);
         const previousDueDate = new Date(previousTask.dueDate);
+        const formattedDueDate = `${previousDueDate.getDate()}/${
+          previousDueDate.getMonth() + 1
+        }/${previousDueDate.getFullYear()}`;
         // Kiểm tra "dueDate" của công việc đang được cập nhật phải lớn hơn "dueDate" của previousTask
         if (updatedDueDate <= previousDueDate) {
-          throw new Error(
-            `Due date must be greater than the due date of the previous task ${updatedDueDate} ${updatedDueDate}`
+          return next(
+            new BadRequestError(
+              400,
+              `Due date must be greater than   ${formattedDueDate}`
+            )
           );
         }
       }

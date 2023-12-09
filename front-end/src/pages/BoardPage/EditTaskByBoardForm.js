@@ -46,9 +46,17 @@ const EditTaskForm = ({ onBoardCreated, rowData, closeForm }) => {
         members: [],
       });
     } catch (error) {
-      cogoToast.error("An error occurred while updating task", {
-        position: "bottom-right",
-      }); // Xử lý lỗi một cách phù hợp
+      if (error.response) {
+        // Nếu có phản hồi từ server và có thông báo lỗi
+        cogoToast.error(`${error.response.data.message}`, {
+          position: "bottom-right",
+        });
+      } else {
+        // Nếu có lỗi xảy ra nhưng không có phản hồi từ server
+        cogoToast.error("An error occurred while adding task", {
+          position: "bottom-right",
+        });
+      }
     }
   };
 

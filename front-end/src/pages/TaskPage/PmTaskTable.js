@@ -257,7 +257,7 @@ const ProjectMangerTasks = () => {
     <div>
       <Grid container justifyContent="space-between">
         <Grid item>
-          <h1>My project's tasks</h1>{" "}
+          <h1>All tasks</h1>{" "}
         </Grid>
       </Grid>
       <div
