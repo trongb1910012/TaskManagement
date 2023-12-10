@@ -156,7 +156,7 @@ const TasksByBoardTable = ({
             <IconButton
               style={
                 fullname !== params.data.creator.fullname ||
-                params.data.status === "complete"
+                params.data.status !== "not started"
                   ? { display: "none" }
                   : {}
               }

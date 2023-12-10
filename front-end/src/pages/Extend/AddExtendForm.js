@@ -3,9 +3,6 @@ import { useParams } from "react-router-dom";
 import axiosClient from "../../api/api";
 import classNames from "classnames/bind";
 import styles from "../ReportPage/ReportPage.module.scss";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Grid, IconButton } from "@mui/material";
 import cogoToast from "cogo-toast";
 const cx = classNames.bind(styles);
 export const ExtendRequestForm = ({ fetch }) => {
@@ -70,13 +67,6 @@ export const ExtendRequestForm = ({ fetch }) => {
   };
   return (
     <div className={cx("popup-form")}>
-      <Grid container justifyContent="flex-end">
-        <Grid item>
-          <IconButton className={cx("close-button")}>
-            <FontAwesomeIcon icon={faXmark} />
-          </IconButton>
-        </Grid>
-      </Grid>
       <div className={cx("form-title")}>Extend Request</div>
       <form onSubmit={handleSubmit}>
         <div>
