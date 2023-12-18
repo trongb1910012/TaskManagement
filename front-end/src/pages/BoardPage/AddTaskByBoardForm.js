@@ -67,7 +67,7 @@ const AddTasksForm = ({ onBoardCreated, closeForm, boardId }) => {
         formData
       );
       console.log(response);
-      cogoToast.success("Adding board successfully", {
+      cogoToast.success("Adding task successfully", {
         position: "bottom-right",
       });
 

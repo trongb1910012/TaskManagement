@@ -36,10 +36,6 @@ const EditProjectForm = ({ onBoardCreated, rowData, closeForm }) => {
       newErrors.endDate = "End Date should be after Start Date";
       isValid = false;
     }
-    if (formData.startDate < new Date().toISOString().substring(0, 10)) {
-      newErrors.startDate = "Due Date should be in the future";
-      isValid = false;
-    }
     if (formData.endDate < new Date().toISOString().substring(0, 10)) {
       newErrors.endDate = "End Date should be in the future";
       isValid = false;

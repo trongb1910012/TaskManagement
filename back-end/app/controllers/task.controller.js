@@ -70,7 +70,9 @@ exports.them_CongViec = async (req, res, next) => {
       return next(
         new BadRequestError(
           400,
-          "Due date cannot be after the project end date"
+          `Due date must be in (${
+            project.startDate.toISOString().split("T")[0]
+          } - ${project.endDate.toISOString().split("T")[0]})`
         )
       );
     }
@@ -81,7 +83,9 @@ exports.them_CongViec = async (req, res, next) => {
       return next(
         new BadRequestError(
           400,
-          "Due date cannot be before the project start date"
+          `Due date cannot be before ${
+            project.startDate.toISOString().split("T")[0]
+          }`
         )
       );
     }
@@ -305,7 +309,7 @@ exports.sua_CongViec = async (req, res, next) => {
           return next(
             new BadRequestError(
               400,
-              `Due date must be greater than   ${formattedDueDate}`
+              `Due date must be greater than ${formattedDueDate}`
             )
           );
         }
